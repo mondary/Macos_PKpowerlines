@@ -1,14 +1,3 @@
-#!/bin/bash
-
-swift build -c release
-
-APP_NAME="Maram.app"
-APP_PATH="release/$APP_NAME"
-
-mkdir -p "$APP_PATH/Contents/MacOS"
-mkdir -p "$APP_PATH/Contents/Resources"
-
-cat > "$APP_PATH/Contents/Info.plist" <<'EOF'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -29,8 +18,3 @@ cat > "$APP_PATH/Contents/Info.plist" <<'EOF'
     <string>13.0</string>
 </dict>
 </plist>
-EOF
-
-cp ".build/release/Maram" "$APP_PATH/Contents/MacOS/"
-
-echo "App créée : $APP_PATH"
