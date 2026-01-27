@@ -1,0 +1,33 @@
+# Swift
+.build/
+*.swiftmodule
+*.swiftdoc
+*.o
+.a
+.d
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Xcode
+xcuserdata/
+DerivedData/
+*.moved-aside
+*.xcuserstate
+
+# Package Manager
+.build/
+Packages/
+Package.resolved
+*.xcodeproj
+!*.xcodeproj/project.pbxproj
+
+# Release builds
+release/
+build/
+
+# Temporary files
+*.log
+*.tmp
