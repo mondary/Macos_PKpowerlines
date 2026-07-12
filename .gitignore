@@ -31,3 +31,17 @@ build/
 # Temporary files
 *.log
 *.tmp
+.agent
+/AGENT.md
+/AGENTS.md
+/CLAUDE.md
+/CODEX.md
+/GEMINI.md
+/GLM.md
+/OPENCODE.md
+.*
+node_modules/
+dist/
+.env
+.venv/
+__pycache__/
