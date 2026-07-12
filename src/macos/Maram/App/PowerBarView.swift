@@ -7,6 +7,7 @@ final class PowerBarView: NSView {
     private var currentColor: NSColor = .systemRed
     private var currentLabel: String = "0%"
     private var opacity: Double = 1.0
+    private var font: BarFont = .systemBold
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
@@ -29,7 +30,6 @@ final class PowerBarView: NSView {
         self.barFill = bar
 
         let label = NSTextField(labelWithString: "0%")
-        label.font = NSFont.boldSystemFont(ofSize: 10)
         label.textColor = NSColor.white
         label.backgroundColor = .clear
         label.isBezeled = false
@@ -44,17 +44,30 @@ final class PowerBarView: NSView {
     }
 
     private func updateBarFrame() {
+        let barHeight = bounds.height
         let width = bounds.width * currentPercentage
-        barFill?.frame = NSRect(x: 0, y: 0, width: width, height: bounds.height)
+        barFill?.frame = NSRect(x: 0, y: 0, width: width, height: barHeight)
+
         percentageLabel?.stringValue = currentLabel
 
-        if let label = percentageLabel {
-            let labelWidth: CGFloat = 50
-            let labelHeight: CGFloat = 14
-            var labelX = width - labelWidth - 5
-            if labelX < 5 { labelX = 5 }
-            label.frame = NSRect(x: labelX, y: -2, width: labelWidth, height: labelHeight)
+        guard barHeight >= 8 else {
+            percentageLabel?.isHidden = true
+            return
         }
+        percentageLabel?.isHidden = false
+
+        let fontSize = max(6, min(barHeight * 0.75, 22))
+        let nsFont = font.nsFont(size: fontSize)
+        percentageLabel?.font = nsFont
+
+        guard let label = percentageLabel else { return }
+        let fontHeight = nsFont.boundingRectForFont.height
+        let labelWidth: CGFloat = 60
+        let labelHeight = max(fontHeight, fontSize + 2)
+        let y = (barHeight - labelHeight) / 2
+        var labelX = width - labelWidth - 5
+        if labelX < 5 { labelX = 5 }
+        label.frame = NSRect(x: labelX, y: y, width: labelWidth, height: labelHeight)
     }
 
     func updateUsage(percentage: Double, color: NSColor, label: String) {
@@ -68,5 +81,10 @@ final class PowerBarView: NSView {
     func updateOpacity(_ value: Double) {
         opacity = value
         barFill?.layer?.backgroundColor = currentColor.withAlphaComponent(opacity).cgColor
+    }
+
+    func updateFont(_ value: BarFont) {
+        font = value
+        updateBarFrame()
     }
 }

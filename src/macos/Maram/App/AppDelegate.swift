@@ -2,7 +2,16 @@ import AppKit
 import Combine
 import SwiftUI
 
-final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
+enum AppIcon {
+    static var image: NSImage? {
+        if let url = Bundle.main.url(forResource: "icon", withExtension: "png") {
+            return NSImage(contentsOf: url)
+        }
+        return NSImage(named: "icon")
+    }
+}
+
+final class AppDelegate: NSObject, NSApplicationDelegate {
     let settings = AppSettings()
 
     private var barWindows: [NSWindow] = []
@@ -15,6 +24,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     private var cancellables = Set<AnyCancellable>()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        NSApp.applicationIconImage = AppIcon.image
         setupStatusBar()
         setupWindows()
         startMonitoring()
@@ -24,8 +34,26 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     // MARK: - Status bar
 
     private func setupStatusBar() {
-        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        statusItem?.button?.title = "Maram"
+        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
+
+        if let button = statusItem?.button {
+            if let icon = AppIcon.image {
+                let size: CGFloat = 18
+                let resized = NSImage(size: NSSize(width: size, height: size), flipped: false) { dst in
+                    icon.draw(in: NSRect(x: 0, y: 0, width: size, height: size),
+                              from: .zero,
+                              operation: .sourceOver,
+                              fraction: 1)
+                    return true
+                }
+                resized.isTemplate = false
+                button.image = resized
+                button.image?.isTemplate = false
+                button.imagePosition = .imageOnly
+            } else {
+                button.title = "Maram"
+            }
+        }
 
         let menu = NSMenu()
 
@@ -57,10 +85,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             let hosting = NSHostingController(rootView: rootView)
             let window = NSWindow(contentViewController: hosting)
             window.title = "Maram — Réglages"
+            window.subtitle = "Surveillance RAM & Batterie"
             window.styleMask = [.titled, .closable, .miniaturizable, .fullSizeContentView]
+            window.titlebarAppearsTransparent = false
             window.isReleasedWhenClosed = false
             window.delegate = self
             window.setFrameAutosaveName("MaramSettings")
+            if let icon = AppIcon.image {
+                window.representedURL = URL(fileURLWithPath: "/")
+                NSApplication.shared.applicationIconImage = icon
+            }
             settingsWindow = window
         }
         NSApp.activate(ignoringOtherApps: true)
@@ -125,6 +159,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             .sink { [weak self] op in self?.barViews.forEach { $0.updateOpacity(op) } }
             .store(in: &cancellables)
 
+        settings.$barFont
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] f in self?.barViews.forEach { $0.updateFont(f) } }
+            .store(in: &cancellables)
+
         settings.$monitorType
             .removeDuplicates()
             .dropFirst()
@@ -162,6 +203,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         let frame = barFrame(on: screen)
         let view = PowerBarView()
         view.updateOpacity(settings.barOpacity)
+        view.updateFont(settings.barFont)
         barViews.append(view)
 
         let window = NSWindow(
@@ -254,9 +296,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         }
     }
 
-    // MARK: - NSWindowDelegate
-
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         return false
     }
 }
+
+extension AppDelegate: NSWindowDelegate {}

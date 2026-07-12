@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.5.0] - 2026-07-13
+### Added
+- **Icône app** `icon.png` utilisée partout : menu bar (remplace le texte "Maram"), sidebar réglages, icône app
+- `icon.png` bundlé dans `Contents/Resources/icon.png` (build_app.sh)
+- Onglet **Apparence → Police** : 7 polices (Système, Helvetica Neue, Menlo, SF Mono, Monaco, Courier) avec aperçu multi-tailles
+- Enum `BarFont` + helper `AppIcon`
+
+### Changed
+- `%` toujours centré verticalement dans la barre
+- Taille de police auto-adaptative : `max(6, min(barHeight * 0.75, 22))` pt
+- Label masqué automatiquement sous 8 px de hauteur
+- `statusItem.lengthLength` = `squareLength` pour l'icône
+- `NSImage.isTemplate = false` pour garder l'icône en couleur dans la menu bar
+
 ## [1.4.0] - 2026-07-13
 ### Added
 - **Offset vertical pixel par pixel** depuis le bord brut de l'écran (slider -40 à +400 + stepper 1px)

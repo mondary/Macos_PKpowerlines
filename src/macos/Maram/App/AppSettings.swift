@@ -11,6 +11,7 @@ final class AppSettings: ObservableObject {
         static let barOpacity = "barOpacity"
         static let barPosition = "barPosition"
         static let barOffset = "barOffset"
+        static let barFont = "barFont"
         static let ramColor = "ramColor"
         static let batteryColor = "batteryColor"
         static let batteryLowColor = "batteryLowColor"
@@ -23,6 +24,7 @@ final class AppSettings: ObservableObject {
     @Published var barOpacity: Double { didSet { defaults.set(barOpacity, forKey: Keys.barOpacity) } }
     @Published var barPosition: BarPosition { didSet { defaults.set(barPosition.rawValue, forKey: Keys.barPosition) } }
     @Published var barOffset: CGFloat { didSet { defaults.set(Double(barOffset), forKey: Keys.barOffset) } }
+    @Published var barFont: BarFont { didSet { defaults.set(barFont.rawValue, forKey: Keys.barFont) } }
     @Published var ramColorHex: String { didSet { defaults.set(ramColorHex, forKey: Keys.ramColor) } }
     @Published var batteryColorHex: String { didSet { defaults.set(batteryColorHex, forKey: Keys.batteryColor) } }
     @Published var batteryLowColorHex: String { didSet { defaults.set(batteryLowColorHex, forKey: Keys.batteryLowColor) } }
@@ -53,6 +55,8 @@ final class AppSettings: ObservableObject {
         self.barPosition = BarPosition(rawValue: posRaw) ?? .top
         let storedOffset = defaults.object(forKey: Keys.barOffset) as? Double
         self.barOffset = CGFloat(storedOffset ?? 0)
+        let fontRaw = defaults.string(forKey: Keys.barFont) ?? BarFont.systemBold.rawValue
+        self.barFont = BarFont(rawValue: fontRaw) ?? .systemBold
         self.ramColorHex = defaults.string(forKey: Keys.ramColor) ?? "#FF3B30"
         self.batteryColorHex = defaults.string(forKey: Keys.batteryColor) ?? "#34C759"
         self.batteryLowColorHex = defaults.string(forKey: Keys.batteryLowColor) ?? "#FF3B30"

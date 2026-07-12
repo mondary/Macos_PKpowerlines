@@ -10,10 +10,13 @@ struct SettingsView: View {
             }
             .safeAreaInset(edge: .top, spacing: 0) {
                 HStack(spacing: 10) {
-                    Image(nsImage: NSImage(named: NSImage.applicationIconName) ?? NSImage())
-                        .resizable()
-                        .frame(width: 26, height: 26)
-                        .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+                    if let icon = AppIcon.image {
+                        Image(nsImage: icon)
+                            .resizable()
+                            .interpolation(.high)
+                            .frame(width: 26, height: 26)
+                            .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+                    }
                     Text("Maram")
                         .font(.headline)
                     Spacer(minLength: 0)

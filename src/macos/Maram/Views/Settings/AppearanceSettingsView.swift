@@ -1,11 +1,16 @@
 import SwiftUI
 
+extension Color {
+    static var darkGray: Color { Color(NSColor.darkGray) }
+}
+
 struct AppearanceSettingsView: View {
     @EnvironmentObject var settings: AppSettings
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
+                fontSection
                 heightSection
                 opacitySection
                 ramColorSection
@@ -14,6 +19,61 @@ struct AppearanceSettingsView: View {
             }
             .padding(24)
         }
+    }
+
+    private var fontSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Police du %")
+                .font(.headline)
+
+            Picker("Police", selection: $settings.barFont) {
+                ForEach(BarFont.allCases) { f in
+                    Text(f.displayName).tag(f)
+                }
+            }
+            .frame(maxWidth: 320)
+
+            Text("La taille s'adapte automatiquement à la hauteur de la barre (de 6 à 22 pt). Le % reste centré verticalement quelle que soit la hauteur. Masqué automatiquement sous 8 px.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            fontPreview
+        }
+    }
+
+    private var fontPreview: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("Aperçu")
+                .font(.caption.weight(.medium))
+                .foregroundStyle(.secondary)
+            HStack(spacing: 8) {
+                ForEach([8, 12, 20, 40], id: \.self) { h in
+                    VStack(spacing: 4) {
+                        ZStack {
+                            Color.darkGray.opacity(0.6)
+                            Text("42%")
+                                .font(customFont(settings.barFont, height: CGFloat(h)))
+                                .foregroundStyle(.white)
+                        }
+                        .frame(width: 56, height: CGFloat(h))
+                        .cornerRadius(2)
+                        Text("\(h) px").font(.caption2).foregroundStyle(.tertiary)
+                    }
+                }
+                Spacer()
+            }
+        }
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .fill(Color(NSColor.controlBackgroundColor))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
+        )
     }
 
     private var heightSection: some View {
@@ -127,6 +187,19 @@ struct AppearanceSettingsView: View {
     }
     private var batteryLowColorBinding: Binding<Color> {
         Binding(get: { settings.batteryLowColor }, set: { settings.batteryLowColorHex = $0.toHex() })
+    }
+
+    private func customFont(_ barFont: BarFont, height: CGFloat) -> SwiftUI.Font {
+        let size = max(6, min(height * 0.75, 22))
+        switch barFont {
+        case .systemBold:    return .system(size: size, weight: .bold)
+        case .systemRegular: return .system(size: size)
+        case .helveticaNeue: return .custom("Helvetica Neue", size: size)
+        case .menlo:         return .custom("Menlo", size: size)
+        case .sfMono:        return .custom("SF Mono", size: size)
+        case .monaco:        return .custom("Monaco", size: size)
+        case .courier:       return .custom("Courier", size: size)
+        }
     }
 
     private func presetButton(_ title: String, height: CGFloat) -> some View {

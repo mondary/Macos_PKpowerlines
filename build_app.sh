@@ -26,7 +26,7 @@ cat > "$APP_PATH/Contents/Info.plist" <<'EOF'
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.4.0</string>
+    <string>1.5.0</string>
     <key>CFBundleVersion</key>
     <string>2</string>
     <key>LSMinimumSystemVersion</key>
@@ -38,6 +38,28 @@ cat > "$APP_PATH/Contents/Info.plist" <<'EOF'
 EOF
 
 cp "$BINARY_SRC" "$APP_PATH/Contents/MacOS/"
+cp "icon.png" "$APP_PATH/Contents/Resources/icon.png" 2>/dev/null || echo "  (icon.png absent, ignoré)"
+
+# Génère l'icône .icns (optionnel, si icon2.png existe)
+if [ -f "icon2.png" ]; then
+    mkdir -p "$APP_PATH/Contents/Resources/icon.iconset"
+    sips -z 16 16     icon2.png --out "$APP_PATH/Contents/Resources/icon.iconset/icon_16x16.png" > /dev/null 2>&1
+    sips -z 32 32     icon2.png --out "$APP_PATH/Contents/Resources/icon.iconset/icon_16x16@2x.png" > /dev/null 2>&1
+    sips -z 32 32     icon2.png --out "$APP_PATH/Contents/Resources/icon.iconset/icon_32x32.png" > /dev/null 2>&1
+    sips -z 64 64     icon2.png --out "$APP_PATH/Contents/Resources/icon.iconset/icon_32x32@2x.png" > /dev/null 2>&1
+    sips -z 128 128   icon2.png --out "$APP_PATH/Contents/Resources/icon.iconset/icon_128x128.png" > /dev/null 2>&1
+    sips -z 256 256   icon2.png --out "$APP_PATH/Contents/Resources/icon.iconset/icon_128x128@2x.png" > /dev/null 2>&1
+    sips -z 256 256   icon2.png --out "$APP_PATH/Contents/Resources/icon.iconset/icon_256x256.png" > /dev/null 2>&1
+    sips -z 512 512   icon2.png --out "$APP_PATH/Contents/Resources/icon.iconset/icon_256x256@2x.png" > /dev/null 2>&1
+    sips -z 512 512   icon2.png --out "$APP_PATH/Contents/Resources/icon.iconset/icon_512x512.png" > /dev/null 2>&1
+    sips -z 1024 1024 icon2.png --out "$APP_PATH/Contents/Resources/icon.iconset/icon_512x512@2x.png" > /dev/null 2>&1
+    iconutil -c icns "$APP_PATH/Contents/Resources/icon.iconset" -o "$APP_PATH/Contents/Resources/AppIcon.icns" > /dev/null 2>&1 && rm -rf "$APP_PATH/Contents/Resources/icon.iconset"
+fi
+
+# Ajoute la référence icône au Info.plist si AppIcon.icns existe
+if [ -f "$APP_PATH/Contents/Resources/AppIcon.icns" ]; then
+    /usr/libexec/PlistBuddy -c "Add :CFBundleIconFile string AppIcon.icns" "$APP_PATH/Contents/Info.plist" 2>/dev/null
+fi
 
 echo "✓ App créée : $APP_PATH"
 file "$APP_PATH/Contents/MacOS/Maram"

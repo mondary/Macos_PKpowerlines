@@ -12,6 +12,7 @@
 - 🖥️ **Multi-écrans** — une barre par écran
 - 🌌 **Toujours visible** — tous les Spaces, niveau barre système, click-through
 - 🎨 **Couleurs custom** — RAM, Batterie, Batterie faible, couleur de charge, toutes modifiables via ColorPicker
+- 🔤 **Police custom** — 7 polices au choix, taille auto-adaptative, % centré verticalement
 - 🎚️ **Hauteur custom** — slider 4–40px + 3 presets (⌘1/⌘2/⌘3)
 - 💧 **Opacité** — de 20% à 100%
 - ↕️ **Position** — haut ou bas + offset pixel par pixel (peut chevaucher la menu bar)
