@@ -12,7 +12,10 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "Maram",
-            path: "Sources"
+            path: "Sources",
+            linkerSettings: [
+                .linkedFramework("IOKit")
+            ]
         )
     ]
 )

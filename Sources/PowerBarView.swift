@@ -1,9 +1,11 @@
 import AppKit
 
-class RAMBarView: NSView {
-    private var redBar: NSView?
+class PowerBarView: NSView {
+    private var barFill: NSView?
     private var percentageLabel: NSTextField?
     private var currentPercentage: Double = 0
+    private var currentColor: NSColor = .systemRed
+    private var currentLabel: String = "0%"
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
@@ -21,9 +23,9 @@ class RAMBarView: NSView {
 
         let bar = NSView()
         bar.wantsLayer = true
-        bar.layer?.backgroundColor = NSColor.systemRed.cgColor
+        bar.layer?.backgroundColor = currentColor.cgColor
         addSubview(bar)
-        self.redBar = bar
+        self.barFill = bar
 
         let label = NSTextField(labelWithString: "0%")
         label.font = NSFont.boldSystemFont(ofSize: 10)
@@ -42,27 +44,23 @@ class RAMBarView: NSView {
 
     private func updateBarFrame() {
         let width = bounds.width * currentPercentage
-
-        redBar?.frame = NSRect(x: 0, y: 0, width: width, height: bounds.height)
-
-        let percentage = Int(currentPercentage * 100)
-        percentageLabel?.stringValue = "\(percentage)%"
+        barFill?.frame = NSRect(x: 0, y: 0, width: width, height: bounds.height)
+        percentageLabel?.stringValue = currentLabel
 
         if let label = percentageLabel {
-            let labelWidth = 40
+            let labelWidth: CGFloat = 50
             let labelHeight: CGFloat = 14
-            var labelX = width - CGFloat(labelWidth) - 5
-
-            if labelX < 5 {
-                labelX = 5
-            }
-
-            label.frame = NSRect(x: labelX, y: -2, width: CGFloat(labelWidth), height: labelHeight)
+            var labelX = width - labelWidth - 5
+            if labelX < 5 { labelX = 5 }
+            label.frame = NSRect(x: labelX, y: -2, width: labelWidth, height: labelHeight)
         }
     }
 
-    func updateUsage(_ usage: RAMUsage) {
-        currentPercentage = min(max(usage.usedPercentage, 0), 100) / 100.0
+    func updateUsage(percentage: Double, color: NSColor, label: String) {
+        currentPercentage = min(max(percentage, 0), 100) / 100.0
+        currentColor = color
+        currentLabel = label
+        barFill?.layer?.backgroundColor = color.cgColor
         updateBarFrame()
     }
 }

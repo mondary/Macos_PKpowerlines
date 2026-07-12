@@ -1,9 +1,12 @@
 #!/bin/bash
+set -e
 
-swift build -c release
+echo "→ Build release universel (arm64 + x86_64)…"
+swift build -c release --arch arm64 --arch x86_64
 
 APP_NAME="Maram.app"
 APP_PATH="release/$APP_NAME"
+BINARY_SRC=".build/apple/Products/Release/Maram"
 
 mkdir -p "$APP_PATH/Contents/MacOS"
 mkdir -p "$APP_PATH/Contents/Resources"
@@ -31,6 +34,7 @@ cat > "$APP_PATH/Contents/Info.plist" <<'EOF'
 </plist>
 EOF
 
-cp ".build/release/Maram" "$APP_PATH/Contents/MacOS/"
+cp "$BINARY_SRC" "$APP_PATH/Contents/MacOS/"
 
-echo "App créée : $APP_PATH"
+echo "✓ App créée : $APP_PATH"
+file "$APP_PATH/Contents/MacOS/Maram"
