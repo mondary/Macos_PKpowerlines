@@ -7,8 +7,10 @@ struct AppearanceSettingsView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
                 heightSection
-                presetsSection
-                shortcutHintSection
+                opacitySection
+                ramColorSection
+                batteryColorSection
+                batteryLowSection
             }
             .padding(24)
         }
@@ -27,28 +29,12 @@ struct AppearanceSettingsView: View {
                         .frame(width: 56, alignment: .trailing)
                         .foregroundStyle(.secondary)
                 }
-
                 HStack(spacing: 6) {
-                    Text("\(Int(AppSettings.minHeight)) px")
-                        .font(.caption2)
-                        .foregroundStyle(.tertiary)
+                    Text("\(Int(AppSettings.minHeight)) px").font(.caption2).foregroundStyle(.tertiary)
                     Spacer()
-                    Text("\(Int(AppSettings.maxHeight)) px")
-                        .font(.caption2)
-                        .foregroundStyle(.tertiary)
+                    Text("\(Int(AppSettings.maxHeight)) px").font(.caption2).foregroundStyle(.tertiary)
                 }
             }
-
-            Text("La hauteur s'applique en direct sur tous les écrans.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-        }
-    }
-
-    private var presetsSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Préréglages")
-                .font(.headline)
 
             HStack(spacing: 10) {
                 presetButton("Fin", height: 8)
@@ -59,17 +45,96 @@ struct AppearanceSettingsView: View {
         }
     }
 
+    private var opacitySection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Opacité")
+                .font(.headline)
+
+            HStack(spacing: 12) {
+                Slider(value: $settings.barOpacity, in: AppSettings.minOpacity...AppSettings.maxOpacity)
+                Text("\(Int(settings.barOpacity * 100)) %")
+                    .monospacedDigit()
+                    .frame(width: 56, alignment: .trailing)
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    private var ramColorSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Couleur RAM")
+                .font(.headline)
+
+            HStack(spacing: 12) {
+                ColorPicker("RAM", selection: ramColorBinding, supportsOpacity: false)
+                    .labelsHidden()
+                Text("Couleur affichée quand la source est RAM.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Spacer()
+            }
+        }
+    }
+
+    private var batteryColorSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Couleur Batterie")
+                .font(.headline)
+
+            HStack(spacing: 12) {
+                ColorPicker("Batterie", selection: batteryColorBinding, supportsOpacity: false)
+                    .labelsHidden()
+                Text("Couleur quand la batterie est chargée.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Spacer()
+            }
+        }
+    }
+
+    private var batteryLowSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Batterie faible")
+                .font(.headline)
+
+            HStack(spacing: 12) {
+                ColorPicker("Faible", selection: batteryLowColorBinding, supportsOpacity: false)
+                    .labelsHidden()
+
+                Stepper(value: $settings.batteryLowThreshold, in: 5...50, step: 5) {
+                    HStack(spacing: 6) {
+                        Text("Seuil")
+                        Text("\(settings.batteryLowThreshold) %")
+                            .monospacedDigit()
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                Spacer()
+            }
+
+            Text("En dessous de ce seuil, la batterie prend la couleur « Faible ». La couleur bleue est utilisée pendant la charge.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    private var ramColorBinding: Binding<Color> {
+        Binding(get: { settings.ramColor }, set: { settings.ramColorHex = $0.toHex() })
+    }
+    private var batteryColorBinding: Binding<Color> {
+        Binding(get: { settings.batteryColor }, set: { settings.batteryColorHex = $0.toHex() })
+    }
+    private var batteryLowColorBinding: Binding<Color> {
+        Binding(get: { settings.batteryLowColor }, set: { settings.batteryLowColorHex = $0.toHex() })
+    }
+
     private func presetButton(_ title: String, height: CGFloat) -> some View {
         let isActive = abs(settings.barHeight - height) < 0.01
-        return Button {
-            settings.barHeight = height
-        } label: {
+        return Button { settings.barHeight = height } label: {
             VStack(spacing: 4) {
                 Text(title).font(.caption.weight(.medium))
-                Text("\(Int(height)) px")
-                    .font(.caption2)
-                    .monospacedDigit()
-                    .foregroundStyle(.secondary)
+                Text("\(Int(height)) px").font(.caption2).monospacedDigit().foregroundStyle(.secondary)
             }
             .frame(width: 86, height: 48)
             .background(
@@ -82,21 +147,5 @@ struct AppearanceSettingsView: View {
             )
         }
         .buttonStyle(.plain)
-    }
-
-    private var shortcutHintSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Raccourcis")
-                .font(.headline)
-            HStack(spacing: 16) {
-                Label("Fin  ⌘1", systemImage: "1.circle")
-                Label("Normal  ⌘2", systemImage: "2.circle")
-                Label("Épais  ⌘3", systemImage: "3.circle")
-                Label("Réglages  ⌘,", systemImage: "gearshape")
-                Spacer()
-            }
-            .font(.caption)
-            .foregroundStyle(.secondary)
-        }
     }
 }

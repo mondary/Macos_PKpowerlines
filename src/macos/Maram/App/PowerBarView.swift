@@ -6,6 +6,7 @@ final class PowerBarView: NSView {
     private var currentPercentage: Double = 0
     private var currentColor: NSColor = .systemRed
     private var currentLabel: String = "0%"
+    private var opacity: Double = 1.0
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
@@ -19,11 +20,11 @@ final class PowerBarView: NSView {
 
     private func setupView() {
         wantsLayer = true
-        layer?.backgroundColor = NSColor.darkGray.cgColor
+        layer?.backgroundColor = NSColor.darkGray.withAlphaComponent(0.6).cgColor
 
         let bar = NSView()
         bar.wantsLayer = true
-        bar.layer?.backgroundColor = currentColor.cgColor
+        bar.layer?.backgroundColor = currentColor.withAlphaComponent(opacity).cgColor
         addSubview(bar)
         self.barFill = bar
 
@@ -60,7 +61,12 @@ final class PowerBarView: NSView {
         currentPercentage = min(max(percentage, 0), 100) / 100.0
         currentColor = color
         currentLabel = label
-        barFill?.layer?.backgroundColor = color.cgColor
+        barFill?.layer?.backgroundColor = color.withAlphaComponent(opacity).cgColor
         updateBarFrame()
+    }
+
+    func updateOpacity(_ value: Double) {
+        opacity = value
+        barFill?.layer?.backgroundColor = currentColor.withAlphaComponent(opacity).cgColor
     }
 }

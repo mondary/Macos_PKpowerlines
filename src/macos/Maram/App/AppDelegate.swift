@@ -1,7 +1,8 @@
 import AppKit
 import Combine
+import SwiftUI
 
-final class AppDelegate: NSObject, NSApplicationDelegate {
+final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     let settings = AppSettings()
 
     private var barWindows: [NSWindow] = []
@@ -10,10 +11,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let batteryMonitor = BatteryMonitor()
     private var updateTimer: Timer?
     private var statusItem: NSStatusItem?
+    private var settingsWindow: NSWindow?
     private var cancellables = Set<AnyCancellable>()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        NSApp.setActivationPolicy(.accessory)
         setupStatusBar()
         setupWindows()
         startMonitoring()
@@ -34,12 +35,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         menu.addItem(NSMenuItem.separator())
 
-        let presets: [(String, CGFloat, String)] = [
-            ("Fin (8px)", 8, "1"),
-            ("Normal (12px)", 12, "2"),
-            ("Épais (20px)", 20, "3")
-        ]
-        for (title, _, key) in presets {
+        for (title, key) in [("Fin (8px)", "1"), ("Normal (12px)", "2"), ("Épais (20px)", "3")] {
             let item = NSMenuItem(title: title, action: #selector(setPresetHeight), keyEquivalent: key)
             item.target = self
             menu.addItem(item)
@@ -56,12 +52,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func openSettings() {
-        if #available(macOS 13, *) {
-            NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
-        } else {
-            NSApp.sendAction(Selector(("showPreferencesWindow:")), to: nil, from: nil)
+        if settingsWindow == nil {
+            let rootView = SettingsView().environmentObject(settings)
+            let hosting = NSHostingController(rootView: rootView)
+            let window = NSWindow(contentViewController: hosting)
+            window.title = "Maram — Réglages"
+            window.styleMask = [.titled, .closable, .miniaturizable, .fullSizeContentView]
+            window.isReleasedWhenClosed = false
+            window.delegate = self
+            window.setFrameAutosaveName("MaramSettings")
+            settingsWindow = window
         }
         NSApp.activate(ignoringOtherApps: true)
+        settingsWindow?.center()
+        settingsWindow?.makeKeyAndOrderFront(nil)
     }
 
     @objc private func quitApp() {
@@ -97,60 +101,94 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .removeDuplicates()
             .dropFirst()
             .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
-                self?.refreshMenuStates()
-                self?.resizeWindows()
-            }
+            .sink { [weak self] _ in self?.refreshMenuStates(); self?.resizeAndReposition() }
+            .store(in: &cancellables)
+
+        settings.$barPosition
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in self?.resizeAndReposition() }
+            .store(in: &cancellables)
+
+        settings.$barOpacity
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] op in self?.barViews.forEach { $0.updateOpacity(op) } }
             .store(in: &cancellables)
 
         settings.$monitorType
             .removeDuplicates()
             .dropFirst()
             .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
-                self?.updateUsage()
-            }
+            .sink { [weak self] _ in self?.updateUsage() }
             .store(in: &cancellables)
+
+        settings.$updateInterval
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in self?.restartTimer() }
+            .store(in: &cancellables)
+
+        Publishers.Merge3(
+            settings.$ramColorHex.map { _ in () },
+            settings.$batteryColorHex.map { _ in () },
+            settings.$batteryLowColorHex.map { _ in () }
+        )
+        .dropFirst()
+        .receive(on: RunLoop.main)
+        .sink { [weak self] _ in self?.updateUsage() }
+        .store(in: &cancellables)
     }
 
     // MARK: - Bar windows
 
     private func setupWindows() {
-        let height = settings.barHeight
         for screen in NSScreen.screens {
-            let sf = screen.frame
-            let vf = screen.visibleFrame
-            let view = PowerBarView()
-            barViews.append(view)
-
-            let window = NSWindow(
-                contentRect: NSRect(x: sf.origin.x, y: vf.maxY - height, width: sf.width, height: height),
-                styleMask: .borderless,
-                backing: .buffered,
-                defer: false
-            )
-            window.level = .statusBar
-            window.backgroundColor = .clear
-            window.isOpaque = false
-            window.ignoresMouseEvents = true
-            window.collectionBehavior = [.canJoinAllSpaces, .stationary]
-            window.contentView = view
-            barWindows.append(window)
-            window.orderFrontRegardless()
+            createWindow(for: screen)
         }
     }
 
-    private func resizeWindows() {
-        let height = settings.barHeight
+    private func createWindow(for screen: NSScreen) {
+        let frame = barFrame(on: screen)
+        let view = PowerBarView()
+        view.updateOpacity(settings.barOpacity)
+        barViews.append(view)
+
+        let window = NSWindow(
+            contentRect: frame,
+            styleMask: .borderless,
+            backing: .buffered,
+            defer: false
+        )
+        window.level = .statusBar
+        window.backgroundColor = .clear
+        window.isOpaque = false
+        window.ignoresMouseEvents = true
+        window.collectionBehavior = [.canJoinAllSpaces, .stationary]
+        window.contentView = view
+        barWindows.append(window)
+        window.orderFrontRegardless()
+    }
+
+    private func barFrame(on screen: NSScreen) -> NSRect {
+        let sf = screen.frame
+        let vf = screen.visibleFrame
+        let h = settings.barHeight
+        switch settings.barPosition {
+        case .top:
+            return NSRect(x: sf.origin.x, y: vf.maxY - h, width: sf.width, height: h)
+        case .bottom:
+            return NSRect(x: sf.origin.x, y: vf.minY, width: sf.width, height: h)
+        }
+    }
+
+    private func resizeAndReposition() {
         for window in barWindows {
             guard let screen = NSScreen.screens.first(where: { $0.frame.intersects(window.frame) }) else { continue }
-            let sf = screen.frame
-            let vf = screen.visibleFrame
-            window.setFrame(
-                NSRect(x: sf.origin.x, y: vf.maxY - height, width: sf.width, height: height),
-                display: true,
-                animate: false
-            )
+            window.setFrame(barFrame(on: screen), display: true, animate: false)
         }
     }
 
@@ -158,7 +196,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func startMonitoring() {
         updateUsage()
-        updateTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak self] _ in
+        restartTimer()
+    }
+
+    private func restartTimer() {
+        updateTimer?.invalidate()
+        updateTimer = Timer.scheduledTimer(withTimeInterval: settings.updateInterval, repeats: true) { [weak self] _ in
             self?.updateUsage()
         }
     }
@@ -167,14 +210,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         switch settings.monitorType {
         case .ram:
             let usage = ramMonitor.getRAMUsage()
+            let color = NSColor(settings.ramColor)
             let label = "\(Int(usage.usedPercentage))%"
             DispatchQueue.main.async { [weak self] in
                 self?.barViews.forEach {
-                    $0.updateUsage(percentage: usage.usedPercentage, color: .systemRed, label: label)
+                    $0.updateUsage(percentage: usage.usedPercentage, color: color, label: label)
                 }
             }
         case .battery:
             let battery = batteryMonitor.getBatteryUsage()
+            let threshold = settings.batteryLowThreshold
+            let chargingColor = NSColor(settings.chargingColor)
+            let lowColor = NSColor(settings.batteryLowColor)
+            let normalColor = NSColor(settings.batteryColor)
             DispatchQueue.main.async { [weak self] in
                 guard battery.percentage >= 0 else {
                     self?.barViews.forEach {
@@ -182,9 +230,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                     }
                     return
                 }
-                let color: NSColor = battery.isCharging
-                    ? .systemBlue
-                    : (battery.percentage < 20 ? .systemRed : .systemGreen)
+                let color: NSColor
+                if battery.isCharging {
+                    color = chargingColor
+                } else if battery.percentage < Double(threshold) {
+                    color = lowColor
+                } else {
+                    color = normalColor
+                }
                 let prefix = battery.isCharging ? "⚡ " : ""
                 let label = "\(prefix)\(Int(battery.percentage))%"
                 self?.barViews.forEach {
@@ -193,6 +246,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
     }
+
+    // MARK: - NSWindowDelegate
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         return false

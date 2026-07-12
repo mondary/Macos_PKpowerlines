@@ -9,13 +9,15 @@
 ## ✅ Fonctionnalités
 
 - 📊 **Deux modes** — RAM (active + wired) ou Batterie (pourcentage, état de charge, couleur dynamique)
-- 🖥️ **Multi-écrans** — une barre par écran, alignée en haut
+- 🖥️ **Multi-écrans** — une barre par écran
 - 🌌 **Toujours visible** — tous les Spaces, niveau barre système, click-through
+- 🎨 **Couleurs custom** — RAM, Batterie, Batterie faible, couleur de charge, toutes modifiables via ColorPicker
 - 🎚️ **Hauteur custom** — slider 4–40px + 3 presets (⌘1/⌘2/⌘3)
+- 💧 **Opacité** — de 20% à 100%
+- ↕️ **Position** — haut ou bas de l'écran
+- ⏱️ **Fréquence** — mise à jour toutes les 1–10s
 - 🧩 **Binaire universel** — `arm64` + `x86_64`
-- 🪟 **Fenêtre de réglages SwiftUI** — style macOS natif (TabView Général/Apparence)
-- 🔋 **Aperçu live** dans les réglages
-- 💾 **Persistant** — mode et hauteur mémorisés entre les lancements
+- 🪟 **Fenêtre de réglages SwiftUI** — sidebar 3 onglets style macOS natif
 
 ## 🧠 Utilisation
 
@@ -29,9 +31,15 @@
 
 | Réglage | Valeurs | Accès |
 |---|---|---|
-| Mode | RAM / Batterie | Réglages → Général |
-| Hauteur custom | 4–40px | Réglages → Apparence (slider) |
+| Source | RAM / Batterie | Réglages → Général |
+| Fréquence | 1–10s | Réglages → Général |
+| Hauteur | 4–40px | Réglages → Apparence (slider) |
 | Presets hauteur | 8 / 12 / 20px | Réglages → Apparence ou ⌘1/⌘2/⌘3 |
+| Opacité | 20–100% | Réglages → Apparence |
+| Couleur RAM | ColorPicker | Réglages → Apparence |
+| Couleur Batterie | ColorPicker | Réglages → Apparence |
+| Couleur Batterie faible | ColorPicker + seuil | Réglages → Apparence |
+| Position | Haut / Bas | Réglages → Position |
 | Quitter | — | ⌘Q |
 
 ## 📦 Build & Package

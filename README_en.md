@@ -9,13 +9,15 @@
 ## ✅ Features
 
 - 📊 **Two modes** — RAM (active + wired) or Battery (percentage, charging state, dynamic color)
-- 🖥️ **Multi-screen** — one bar per screen, top aligned
+- 🖥️ **Multi-screen** — one bar per screen
 - 🌌 **Always visible** — every Space, status bar level, click-through
+- 🎨 **Custom colors** — RAM, Battery, Low-battery, Charging colors via ColorPicker
 - 🎚️ **Custom height** — slider 4–40px + 3 presets (⌘1/⌘2/⌘3)
+- 💧 **Opacity** — 20% to 100%
+- ↕️ **Position** — top or bottom of screen
+- ⏱️ **Frequency** — refresh every 1–10s
 - 🧩 **Universal binary** — `arm64` + `x86_64`
-- 🪟 **SwiftUI settings window** — native macOS style (TabView General/Appearance)
-- 🔋 **Live preview** in settings
-- 💾 **Persistent** — mode and height remembered across launches
+- 🪟 **SwiftUI settings window** — 3-tab sidebar, native macOS style
 
 ## 🧠 Usage
 
@@ -29,9 +31,15 @@
 
 | Setting | Values | Access |
 |---|---|---|
-| Mode | RAM / Battery | Settings → General |
-| Custom height | 4–40px | Settings → Appearance (slider) |
+| Source | RAM / Battery | Settings → General |
+| Frequency | 1–10s | Settings → General |
+| Height | 4–40px | Settings → Appearance (slider) |
 | Height presets | 8 / 12 / 20px | Settings → Appearance or ⌘1/⌘2/⌘3 |
+| Opacity | 20–100% | Settings → Appearance |
+| RAM color | ColorPicker | Settings → Appearance |
+| Battery color | ColorPicker | Settings → Appearance |
+| Low-battery color | ColorPicker + threshold | Settings → Appearance |
+| Position | Top / Bottom | Settings → Position |
 | Quit | — | ⌘Q |
 
 ## 📦 Build & Package
