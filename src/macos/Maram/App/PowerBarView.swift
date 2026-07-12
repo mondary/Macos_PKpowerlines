@@ -1,6 +1,6 @@
 import AppKit
 
-class PowerBarView: NSView {
+final class PowerBarView: NSView {
     private var barFill: NSView?
     private var percentageLabel: NSTextField?
     private var currentPercentage: Double = 0

@@ -12,7 +12,7 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "Maram",
-            path: "Sources",
+            path: "src/macos/Maram",
             linkerSettings: [
                 .linkedFramework("IOKit")
             ]

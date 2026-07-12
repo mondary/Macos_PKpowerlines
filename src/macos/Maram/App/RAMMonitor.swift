@@ -6,11 +6,11 @@ struct RAMUsage {
     let totalGB: Double
 }
 
-class RAMMonitor {
+final class RAMMonitor {
     func getRAMUsage() -> RAMUsage {
         var totalMemory: UInt64 = 0
         var size = MemoryLayout<UInt64>.size
-        
+
         sysctlbyname("hw.memsize", &totalMemory, &size, nil, 0)
 
         var vmStat = vm_statistics64()

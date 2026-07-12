@@ -1,27 +1,30 @@
 import AppKit
+import Combine
 
-class AppDelegate: NSObject, NSApplicationDelegate {
-    var barWindows: [NSWindow] = []
-    var barViews: [PowerBarView] = []
-    let ramMonitor = RAMMonitor()
-    let batteryMonitor = BatteryMonitor()
-    var updateTimer: Timer?
-    var statusItem: NSStatusItem?
-    var settingsController: SettingsWindowController?
+final class AppDelegate: NSObject, NSApplicationDelegate {
+    let settings = AppSettings()
+
+    private var barWindows: [NSWindow] = []
+    private var barViews: [PowerBarView] = []
+    private let ramMonitor = RAMMonitor()
+    private let batteryMonitor = BatteryMonitor()
+    private var updateTimer: Timer?
+    private var statusItem: NSStatusItem?
+    private var cancellables = Set<AnyCancellable>()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        NSApp.setActivationPolicy(.accessory)
         setupStatusBar()
         setupWindows()
         startMonitoring()
+        observeSettings()
     }
 
     // MARK: - Status bar
 
-    func setupStatusBar() {
+    private func setupStatusBar() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        if let button = statusItem?.button {
-            button.title = "Maram"
-        }
+        statusItem?.button?.title = "Maram"
 
         let menu = NSMenu()
 
@@ -31,17 +34,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         menu.addItem(NSMenuItem.separator())
 
-        let thinItem = NSMenuItem(title: "Fin (8px)", action: #selector(setThinHeight), keyEquivalent: "1")
-        thinItem.target = self
-        menu.addItem(thinItem)
-
-        let normalItem = NSMenuItem(title: "Normal (12px)", action: #selector(setNormalHeight), keyEquivalent: "2")
-        normalItem.target = self
-        menu.addItem(normalItem)
-
-        let thickItem = NSMenuItem(title: "Épais (20px)", action: #selector(setThickHeight), keyEquivalent: "3")
-        thickItem.target = self
-        menu.addItem(thickItem)
+        let presets: [(String, CGFloat, String)] = [
+            ("Fin (8px)", 8, "1"),
+            ("Normal (12px)", 12, "2"),
+            ("Épais (20px)", 20, "3")
+        ]
+        for (title, _, key) in presets {
+            let item = NSMenuItem(title: title, action: #selector(setPresetHeight), keyEquivalent: key)
+            item.target = self
+            menu.addItem(item)
+        }
 
         menu.addItem(NSMenuItem.separator())
 
@@ -50,37 +52,34 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(quitItem)
 
         statusItem?.menu = menu
-        updateMenuStates()
+        refreshMenuStates()
     }
 
-    @objc func openSettings() {
-        if settingsController == nil {
-            let controller = SettingsWindowController()
-            controller.delegate = self
-            settingsController = controller
+    @objc private func openSettings() {
+        if #available(macOS 13, *) {
+            NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+        } else {
+            NSApp.sendAction(Selector(("showPreferencesWindow:")), to: nil, from: nil)
         }
-        settingsController?.refreshUI()
-        settingsController?.showWindow(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
 
-    @objc func quitApp() {
+    @objc private func quitApp() {
         NSApplication.shared.terminate(nil)
     }
 
-    @objc func setThinHeight() { setBarHeight(8) }
-    @objc func setNormalHeight() { setBarHeight(12) }
-    @objc func setThickHeight() { setBarHeight(20) }
-
-    func setBarHeight(_ height: CGFloat) {
-        AppPreferences.barHeight = height
-        updateMenuStates()
-        resizeWindows()
+    @objc private func setPresetHeight(_ sender: NSMenuItem) {
+        switch sender.title {
+        case "Fin (8px)": settings.barHeight = 8
+        case "Normal (12px)": settings.barHeight = 12
+        case "Épais (20px)": settings.barHeight = 20
+        default: break
+        }
     }
 
-    func updateMenuStates() {
+    private func refreshMenuStates() {
         guard let menu = statusItem?.menu else { return }
-        let current = AppPreferences.barHeight
+        let current = settings.barHeight
         for item in menu.items {
             switch item.title {
             case "Fin (8px)":     item.state = current == 8  ? .on : .off
@@ -91,52 +90,64 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    // MARK: - Windows
+    // MARK: - Settings observation
 
-    func setupWindows() {
-        let height = AppPreferences.barHeight
+    private func observeSettings() {
+        settings.$barHeight
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.refreshMenuStates()
+                self?.resizeWindows()
+            }
+            .store(in: &cancellables)
+
+        settings.$monitorType
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.updateUsage()
+            }
+            .store(in: &cancellables)
+    }
+
+    // MARK: - Bar windows
+
+    private func setupWindows() {
+        let height = settings.barHeight
         for screen in NSScreen.screens {
-            let screenFrame = screen.frame
-            let visibleFrame = screen.visibleFrame
-            let barY = visibleFrame.maxY - height
-            let barX = screenFrame.origin.x
-
+            let sf = screen.frame
+            let vf = screen.visibleFrame
             let view = PowerBarView()
             barViews.append(view)
 
             let window = NSWindow(
-                contentRect: NSRect(x: barX, y: barY, width: screenFrame.width, height: height),
+                contentRect: NSRect(x: sf.origin.x, y: vf.maxY - height, width: sf.width, height: height),
                 styleMask: .borderless,
                 backing: .buffered,
                 defer: false
             )
-
             window.level = .statusBar
             window.backgroundColor = .clear
             window.isOpaque = false
             window.ignoresMouseEvents = true
             window.collectionBehavior = [.canJoinAllSpaces, .stationary]
             window.contentView = view
-
             barWindows.append(window)
             window.orderFrontRegardless()
         }
     }
 
-    func resizeWindows() {
-        let height = AppPreferences.barHeight
+    private func resizeWindows() {
+        let height = settings.barHeight
         for window in barWindows {
-            guard let screen = NSScreen.screens.first(where: { screen in
-                screen.frame.intersects(window.frame)
-            }) else { continue }
-
-            let screenFrame = screen.frame
-            let visibleFrame = screen.visibleFrame
-            let barY = visibleFrame.maxY - height
-            let barX = screenFrame.origin.x
-
+            guard let screen = NSScreen.screens.first(where: { $0.frame.intersects(window.frame) }) else { continue }
+            let sf = screen.frame
+            let vf = screen.visibleFrame
             window.setFrame(
-                NSRect(x: barX, y: barY, width: screenFrame.width, height: height),
+                NSRect(x: sf.origin.x, y: vf.maxY - height, width: sf.width, height: height),
                 display: true,
                 animate: false
             )
@@ -145,18 +156,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     // MARK: - Monitoring
 
-    func startMonitoring() {
+    private func startMonitoring() {
         updateUsage()
-        updateTimer = Timer.scheduledTimer(
-            withTimeInterval: 2.0,
-            repeats: true
-        ) { [weak self] _ in
+        updateTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak self] _ in
             self?.updateUsage()
         }
     }
 
-    func updateUsage() {
-        switch AppPreferences.monitorType {
+    private func updateUsage() {
+        switch settings.monitorType {
         case .ram:
             let usage = ramMonitor.getRAMUsage()
             let label = "\(Int(usage.usedPercentage))%"
@@ -188,12 +196,5 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         return false
-    }
-}
-
-extension AppDelegate: SettingsDelegate {
-    func settingsDidChange() {
-        resizeWindows()
-        updateUsage()
     }
 }

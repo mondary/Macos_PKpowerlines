@@ -4,57 +4,54 @@
 
 [🇫🇷 FR](README.md) · [🇬🇧 EN](README_en.md)
 
-✨ Application macOS native qui affiche une barre en temps réel en haut de chaque écran : utilisation RAM ou niveau de batterie. Binaire universel (Intel + Apple Silicon).
+✨ Application macOS native (menu-bar) qui affiche une barre en temps réel en haut de chaque écran : RAM ou batterie. Binaire universel Intel + Apple Silicon.
 
 ## ✅ Fonctionnalités
 
-- 📊 **Deux modes** — RAM (active + wired) ou Batterie (pourcentage + état charge)
-- 🎨 **Couleurs dynamiques** — RAM en rouge, batterie en vert/rouge/bleu selon l'état
+- 📊 **Deux modes** — RAM (active + wired) ou Batterie (pourcentage, état de charge, couleur dynamique)
 - 🖥️ **Multi-écrans** — une barre par écran, alignée en haut
-- 🌌 **Toujours visible** — affichée dans tous les Spaces, au niveau de la barre système
-- 🎚️ **Hauteur personnalisable** — slider de 4px à 40px (plus 3 presets ⌘1/⌘2/⌘3)
+- 🌌 **Toujours visible** — tous les Spaces, niveau barre système, click-through
+- 🎚️ **Hauteur custom** — slider 4–40px + 3 presets (⌘1/⌘2/⌘3)
+- 🧩 **Binaire universel** — `arm64` + `x86_64`
+- 🪟 **Fenêtre de réglages SwiftUI** — style macOS natif (TabView Général/Apparence)
+- 🔋 **Aperçu live** dans les réglages
 - 💾 **Persistant** — mode et hauteur mémorisés entre les lancements
-- 🔄 **Mise à jour auto** — toutes les 2 secondes
-- 🧩 **Binaire universel** — Intel (x86_64) + Apple Silicon (arm64)
-- ⚡ **Ultra-légère** — consommation CPU minimale, fenêtre click-through
 
 ## 🧠 Utilisation
 
-1. Lance l'app → la barre apparaît en haut de l'écran.
+1. Lance l'app → la barre apparaît en haut.
 2. Clique sur **Maram** dans la barre des menus :
-   - **Réglages…** pour changer de mode et ajuster la hauteur
-   - Presets hauteur : Fin (⌘1), Normal (⌘2), Épais (⌘3)
+   - **Réglages…** (⌘,) — change le mode et la hauteur
+   - Presets hauteur (⌘1 / ⌘2 / ⌘3)
    - **Quitter** (⌘Q)
 
 ## ⚙️ Réglages
 
-| Réglage | Valeurs | Raccourci |
+| Réglage | Valeurs | Accès |
 |---|---|---|
-| Mode | RAM / Batterie | Réglages… |
-| Hauteur Fin | 8px | ⌘1 |
-| Hauteur Normal | 12px (défaut) | ⌘2 |
-| Hauteur Épais | 20px | ⌘3 |
-| Hauteur custom | 4–40px | Réglages… (slider) |
+| Mode | RAM / Batterie | Réglages → Général |
+| Hauteur custom | 4–40px | Réglages → Apparence (slider) |
+| Presets hauteur | 8 / 12 / 20px | Réglages → Apparence ou ⌘1/⌘2/⌘3 |
 | Quitter | — | ⌘Q |
 
 ## 📦 Build & Package
 
-**Build debug + exécution directe :**
+**Build debug :**
 ```bash
 swift run
 ```
 
-**Build release universel + création du `.app` :**
+**Build release universel + bundle `.app` :**
 ```bash
 ./build_app.sh
-open release/Maram.app
+open release/macos/Maram.app
 ```
 
-Le script `build_app.sh` compile en universal binary (`--arch arm64 --arch x86_64`) et génère `release/Maram.app`.
+`build_app.sh` compile en universal binary (`--arch arm64 --arch x86_64`) et génère `release/macos/Maram.app`.
 
 **Vérifier l'architecture :**
 ```bash
-file release/Maram.app/Contents/MacOS/Maram
+file release/macos/Maram.app/Contents/MacOS/Maram
 # → Mach-O universal binary with 2 architectures: [x86_64] [arm64]
 ```
 
@@ -68,28 +65,42 @@ killall Maram
 
 ```
 Maram/
-├── Sources/
-│   ├── main.swift                # Point d'entrée (NSApplication)
-│   ├── AppDelegate.swift         # Status bar, fenêtres, timer, monitoring
-│   ├── AppPreferences.swift      # UserDefaults (monitorType, barHeight)
-│   ├── MonitorType.swift         # Enum {.ram, .battery}
-│   ├── RAMMonitor.swift          # Lecture sysctl/host_statistics64
-│   ├── BatteryMonitor.swift      # IOKit (IOPMPowerSource)
-│   ├── PowerBarView.swift        # Vue de la barre générique + label
-│   └── SettingsWindowController.swift # Fenêtre de réglages
-├── Package.swift                 # Swift Package (macOS 13+, IOKit linké)
-├── build_app.sh                  # Build universel + bundle release/Maram.app
-└── README.md
+├── src/
+│   └── macos/
+│       └── Maram/
+│           ├── App/
+│           │   ├── MaramApp.swift            # @main SwiftUI App + Settings scene
+│           │   ├── AppDelegate.swift         # Status bar, fenêtres barre, monitoring
+│           │   ├── AppSettings.swift         # ObservableObject (UserDefaults)
+│           │   ├── MonitorType.swift         # {.ram, .battery}
+│           │   ├── RAMMonitor.swift          # sysctl/host_statistics64
+│           │   ├── BatteryMonitor.swift      # IOKit (IOPMPowerSource)
+│           │   └── PowerBarView.swift        # Vue AppKit de la barre
+│           └── Views/
+│               └── Settings/
+│                   ├── SettingsView.swift            # TabView racine
+│                   ├── GeneralSettingsView.swift     # Mode + aperçu live
+│                   └── AppearanceSettingsView.swift  # Slider + presets
+├── release/macos/                            # Sortie build (gitignoré)
+├── benchmark/                                # Références, captures
+├── secrets/                                  # Credentials (gitignoré)
+├── Package.swift                             # SwiftPM (macOS 13+, IOKit linké)
+├── build_app.sh                              # Build universel + bundle
+├── AGENTS.md                                 # Instructions agent
+├── LICENSE                                   # MIT
+├── README.md / README_en.md
+├── VERSION / CHANGELOG.md
+└── icon.png
 ```
 
 - **Plateforme** : macOS 13.0+
-- **Dépendances** : aucune (AppKit + IOKit natifs)
+- **Dépendances** : aucune (AppKit + SwiftUI + IOKit natifs)
 - **Architectures** : arm64 + x86_64 (universal)
+- **Activation** : `LSUIElement` (menu-bar pure, pas d'icône Dock)
 
 ## 🧾 Changelog
 
-- **1.1.0** : Binaire universel, mode Batterie (IOKit), fenêtre de réglages avec slider de hauteur, vue refactorisée en `PowerBarView` générique.
-- **1.0.0** : Version initiale — barre RAM temps réel, multi-écrans, 3 hauteurs, persistance.
+Voir [CHANGELOG.md](CHANGELOG.md).
 
 ## 🔗 Liens
 

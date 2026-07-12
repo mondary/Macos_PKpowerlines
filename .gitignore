@@ -33,7 +33,6 @@ build/
 *.tmp
 .agent
 /AGENT.md
-/AGENTS.md
 /CLAUDE.md
 /CODEX.md
 /GEMINI.md
@@ -45,3 +44,10 @@ dist/
 .env
 .venv/
 __pycache__/
+
+# Secrets / credentials (scaffold)
+secrets/
+
+# Benchmarks working files (keep directory)
+benchmark/*
+!benchmark/.gitkeep

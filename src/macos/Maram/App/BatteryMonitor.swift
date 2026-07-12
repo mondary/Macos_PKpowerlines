@@ -7,14 +7,14 @@ struct BatteryUsage {
     let isPlugged: Bool
 }
 
-class BatteryMonitor {
+final class BatteryMonitor {
     func getBatteryUsage() -> BatteryUsage {
         guard let snapshot = IOPSCopyPowerSourcesInfo()?.takeRetainedValue() else {
             return BatteryUsage(percentage: -1, isCharging: false, isPlugged: false)
         }
         let sources = IOPSCopyPowerSourcesList(snapshot).takeRetainedValue() as Array
         for source in sources {
-            if let desc = IOPSGetPowerSourceDescription(snapshot, source)?.takeRetainedValue() as? [String: Any] {
+            if let desc = IOPSGetPowerSourceDescription(snapshot, source)?.takeUnretainedValue() as? [String: Any] {
                 let current = desc[kIOPSCurrentCapacityKey] as? Int ?? 0
                 let max = desc[kIOPSMaxCapacityKey] as? Int ?? 100
                 let percentage = max > 0 ? Double(current) / Double(max) * 100 : -1
