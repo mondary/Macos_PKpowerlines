@@ -1,94 +1,81 @@
-# 🎯 Maram - RAM Usage Monitor
+# Maram
 
-Application macOS ultra-légère affichant l'utilisation de la RAM en temps réel.
+![Project icon](icon.png)
 
-## ✨ Fonctionnalités
+[🇫🇷 FR](README.md) · [🇬🇧 EN](README_en.md)
 
-- 📊 **Affichage RAM** - Barre visuelle montrant l'utilisation de la RAM en temps réel
-- 🔄 **Mise à jour automatique** - Actualisation toutes les 2 secondes
-- ⚡ **Ultra-légère** - Consommation CPU minimale (< 0.1%)
-- 🎨 **Interface visuelle** - Barre bleue proportionnelle à l'utilisation RAM
-- 🔧 **Native macOS** - Utilise `sysctl()` pour les statistiques système
+✨ Application macOS native qui affiche une barre d'utilisation de la RAM en temps réel, en haut de chaque écran.
 
-## 🚀 Installation
+## ✅ Fonctionnalités
 
-### Option 1 - Compiler et lancer
+- 📊 **Barre RAM en temps réel** — largeur proportionnelle à l'utilisation (active + wired)
+- 🖥️ **Multi-écrans** — une barre par écran, alignée en haut
+- 🌌 **Toujours visible** — affichée dans tous les Spaces, au niveau de la barre système
+- 🎚️ **3 hauteurs** — Fin (8px), Normal (12px), Épais (20px)
+- 💾 **Persistant** — la hauteur choisie est mémorisée entre les lancements
+- 🔄 **Mise à jour auto** — toutes les 2 secondes
+- ⚡ **Ultra-légère** — consommation CPU minimale, fenêtre invisible au clic
+
+## 🧠 Utilisation
+
+1. Lance l'app → une barre rouge apparaît en haut de l'écran avec le % de RAM utilisé.
+2. Clique sur **RAM** dans la barre des menus pour changer la hauteur ou quitter.
+
+## ⚙️ Réglages
+
+| Réglage | Valeurs | Raccourci |
+|---|---|---|
+| Hauteur Fin | 8px | ⌘1 |
+| Hauteur Normal | 12px (défaut) | ⌘2 |
+| Hauteur Épais | 20px | ⌘3 |
+| Quitter | — | ⌘Q |
+
+## 📦 Build & Package
+
+**Build debug + exécution directe :**
 ```bash
-swift build -c release
-./build_app.sh
-open build/Maram.app
-```
-
-### Option 2 - Lancer directement
-```bash
-swift build
 swift run
 ```
 
-### Option 3 - Version compilée
+**Build release + création du `.app` :**
+```bash
+swift build -c release
+./build_app.sh
+open release/Maram.app
+```
+
+**Exécutable seul (release) :**
 ```bash
 .build/release/Maram
 ```
 
-## 📦 Structure du projet
+## 🧪 Arrêt
 
-```
-Maram/
-├── Sources/
-│   ├── main.swift          # Point d'entrée
-│   ├── AppDelegate.swift  # Gestion de l'application et fenêtre
-│   ├── RAMMonitor.swift    # Surveillance de la RAM
-│   └── RAMBarView.swift    # Vue de la barre
-├── Package.swift           # Configuration Swift Package
-├── build_app.sh            # Script de création de l'app bundle
-└── README.md               # Ce fichier
-```
-
-## 🛠️ Développement
-
-### Compiler en mode debug
-```bash
-swift build
-```
-
-### Compiler en mode release
-```bash
-swift build -c release
-```
-
-### Créer l'application bundle
-```bash
-./build_app.sh
-```
-
-### Arrêter l'application
 ```bash
 killall Maram
 ```
 
-## 📊 Comment ça marche
+## 🛠️ Développement
 
-1. **RAMMonitor** utilise `sysctlbyname()` et `host_statistics64()` pour récupérer les statistiques RAM
-2. **RAMBarView** affiche une barre bleue dont la largeur représente l'utilisation RAM
-3. **Timer** met à jour l'affichage toutes les 2 secondes
+```
+Maram/
+├── Sources/
+│   ├── main.swift         # Point d'entrée (NSApplication)
+│   ├── AppDelegate.swift  # Status bar, fenêtres, timer, préférences
+│   ├── RAMMonitor.swift   # Lecture sysctl/host_statistics64
+│   └── RAMBarView.swift   # Vue de la barre + label %
+├── Package.swift          # Swift Package (macOS 13+)
+├── build_app.sh           # Création du bundle release/Maram.app
+└── README.md
+```
 
-## 🎮 Personnalisation
+- **Plateforme** : macOS 13.0+
+- **Dépendances** : aucune (AppKit pur)
 
-Tu peux modifier les paramètres dans `AppDelegate.swift` :
-- `barHeight` - Hauteur de la fenêtre (actuellement 80px)
-- `window.backgroundColor` - Couleur de la fenêtre
-- Timer intervalle (actuellement 2.0 secondes)
+## 🧾 Changelog
 
-## 📝 Notes
+- **1.0.0** : Version initiale — barre RAM temps réel, multi-écrans, 3 hauteurs, persistance.
 
-- Nécessite macOS 13.0 ou supérieur
-- Compatible avec écrans multiples
-- Application native Swift (SwiftUI/AppKit)
+## 🔗 Liens
 
-## 🐛 Problèmes connus
-
-Aucun problème majeur détecté.
-
-## 📄 Licence
-
-Fait avec ❤️ pour surveiller votre RAM efficacement.
+- README anglais : [README_en.md](README_en.md)
