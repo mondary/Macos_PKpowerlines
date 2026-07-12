@@ -2,6 +2,8 @@ import AppKit
 import SwiftUI
 
 extension Color {
+    static var darkGray: Color { Color(NSColor.darkGray) }
+
     init(hex: String) {
         self.init(NSColor(hex: hex) ?? .systemRed)
     }

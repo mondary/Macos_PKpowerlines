@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.7.0] - 2026-07-13
+### Added
+- **Onglet Menu Bar** : réglage du padding interne + espacement entre items de la menu bar macOS (style Sindre Sorhus)
+  - Lecture/écriture via `CFPreferences` sur `NSStatusItemSelectionPadding` et `NSStatusItemSpacing` (host courant)
+  - Application via `killall ControlCenter`
+  - Bouton « Restaurer défauts Apple »
+  - Banner d'avertissement (interrompt AirDrop/Screen Share)
+  - Indicateur d'état (Apple / personnalisée)
+
+### Changed
+- **Réorganisation** : sidebar 2 onglets au lieu de 3
+  - **Powerline** : source, fréquence, hauteur, opacité, police, couleurs RAM/Batterie/Faible, position, offset, presets, raccourcis
+  - **Menu Bar** : padding + spacing + reset
+- Suppression de GeneralSettingsView / AppearanceSettingsView / PositionSettingsView (fusionnés dans `PowerlineSettingsView`)
+
 ## [1.6.0] - 2026-07-13
 ### Changed
 - **Renommage Maram → PKpowerlines** (executable, bundle, fenêtre, menu, sidebar)

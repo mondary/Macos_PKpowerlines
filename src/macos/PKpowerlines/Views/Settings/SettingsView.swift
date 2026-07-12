@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @State private var selection: SettingsSection? = .general
+    @State private var selection: SettingsSection? = .powerline
 
     var body: some View {
         NavigationSplitView {
@@ -26,13 +26,12 @@ struct SettingsView: View {
                 .background(.regularMaterial)
             }
             .listStyle(.sidebar)
-            .frame(minWidth: 200)
+            .frame(minWidth: 220)
         } detail: {
             Group {
-                switch selection ?? .general {
-                case .general:    GeneralSettingsView()
-                case .appearance: AppearanceSettingsView()
-                case .position:   PositionSettingsView()
+                switch selection ?? .powerline {
+                case .powerline: PowerlineSettingsView()
+                case .menuBar:   MenuBarSettingsView()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -42,25 +41,22 @@ struct SettingsView: View {
 }
 
 enum SettingsSection: String, CaseIterable, Identifiable {
-    case general
-    case appearance
-    case position
+    case powerline
+    case menuBar
 
     var id: String { rawValue }
 
     var title: String {
         switch self {
-        case .general:    return "Général"
-        case .appearance: return "Apparence"
-        case .position:   return "Position"
+        case .powerline: return "Powerline"
+        case .menuBar:   return "Menu Bar"
         }
     }
 
     var icon: String {
         switch self {
-        case .general:    return "gearshape"
-        case .appearance: return "paintbrush"
-        case .position:   return "rectangle.dashed"
+        case .powerline: return "chart.bar.fill"
+        case .menuBar:   return "menubar"
         }
     }
 }
