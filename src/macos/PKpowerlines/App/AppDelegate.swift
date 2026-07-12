@@ -51,7 +51,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 button.image?.isTemplate = false
                 button.imagePosition = .imageOnly
             } else {
-                button.title = "Maram"
+                button.title = "PKpowerlines"
             }
         }
 
@@ -71,7 +71,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         menu.addItem(NSMenuItem.separator())
 
-        let quitItem = NSMenuItem(title: "Quitter Maram", action: #selector(quitApp), keyEquivalent: "q")
+        let quitItem = NSMenuItem(title: "Quitter PKpowerlines", action: #selector(quitApp), keyEquivalent: "q")
         quitItem.target = self
         menu.addItem(quitItem)
 
@@ -84,13 +84,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             let rootView = SettingsView().environmentObject(settings)
             let hosting = NSHostingController(rootView: rootView)
             let window = NSWindow(contentViewController: hosting)
-            window.title = "Maram — Réglages"
+            window.title = "PKpowerlines — Réglages"
             window.subtitle = "Surveillance RAM & Batterie"
             window.styleMask = [.titled, .closable, .miniaturizable, .fullSizeContentView]
             window.titlebarAppearsTransparent = false
             window.isReleasedWhenClosed = false
             window.delegate = self
-            window.setFrameAutosaveName("MaramSettings")
+            window.setFrameAutosaveName("PKpowerlinesSettings")
             if let icon = AppIcon.image {
                 window.representedURL = URL(fileURLWithPath: "/")
                 NSApplication.shared.applicationIconImage = icon

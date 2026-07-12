@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.6.0] - 2026-07-13
+### Changed
+- **Renommage Maram → PKpowerlines** (executable, bundle, fenêtre, menu, sidebar)
+- Fenêtre de réglages agrandie (880×560 min)
+- Nouveaux defaults : Batterie / 9 px / offset 0 / opacité 50 % / position Très haut
+
+### Removed
+- Anciens dossiers `src/macos/Maram/`, bundle `Maram.app`
+
 ## [1.5.0] - 2026-07-13
 ### Added
 - **Icône app** `icon.png` utilisée partout : menu bar (remplace le texte "Maram"), sidebar réglages, icône app

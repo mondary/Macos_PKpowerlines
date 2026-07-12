@@ -30,9 +30,10 @@ final class AppSettings: ObservableObject {
     @Published var batteryLowColorHex: String { didSet { defaults.set(batteryLowColorHex, forKey: Keys.batteryLowColor) } }
     @Published var batteryLowThreshold: Int { didSet { defaults.set(batteryLowThreshold, forKey: Keys.batteryLowThreshold) } }
 
-    static let defaultHeight: CGFloat = 12
+    static let defaultHeight: CGFloat = 9
     static let minHeight: CGFloat = 4
     static let maxHeight: CGFloat = 40
+    static let defaultOpacity: Double = 0.5
     static let minOpacity: Double = 0.2
     static let maxOpacity: Double = 1.0
     static let minInterval: Double = 1
@@ -45,12 +46,13 @@ final class AppSettings: ObservableObject {
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
-        let monitorRaw = defaults.string(forKey: Keys.monitorType) ?? MonitorType.ram.rawValue
-        self.monitorType = MonitorType(rawValue: monitorRaw) ?? .ram
+        let monitorRaw = defaults.string(forKey: Keys.monitorType) ?? MonitorType.battery.rawValue
+        self.monitorType = MonitorType(rawValue: monitorRaw) ?? .battery
         self.updateInterval = defaults.object(forKey: Keys.updateInterval) as? Double ?? 2.0
         let storedHeight = defaults.object(forKey: Keys.barHeight) as? Double
         self.barHeight = CGFloat(storedHeight ?? Self.defaultHeight)
-        self.barOpacity = defaults.object(forKey: Keys.barOpacity) as? Double ?? 1.0
+        let storedOpacity = defaults.object(forKey: Keys.barOpacity) as? Double
+        self.barOpacity = storedOpacity ?? Self.defaultOpacity
         let posRaw = defaults.string(forKey: Keys.barPosition) ?? BarPosition.top.rawValue
         self.barPosition = BarPosition(rawValue: posRaw) ?? .top
         let storedOffset = defaults.object(forKey: Keys.barOffset) as? Double

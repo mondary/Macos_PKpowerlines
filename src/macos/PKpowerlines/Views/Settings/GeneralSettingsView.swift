@@ -63,7 +63,7 @@ struct GeneralSettingsView: View {
     private var aboutSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("À propos").font(.headline)
-            Text("Maram affiche une barre en temps réel en haut (ou bas) de chaque écran. Modifie la source, la couleur et la position dans les autres onglets.")
+            Text("PKpowerlines affiche une barre en temps réel en haut (ou bas) de chaque écran. Modifie la source, la couleur et la position dans les autres onglets.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)

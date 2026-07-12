@@ -2,17 +2,17 @@
 import PackageDescription
 
 let package = Package(
-    name: "Maram",
+    name: "PKpowerlines",
     platforms: [
         .macOS(.v13)
     ],
     products: [
-        .executable(name: "Maram", targets: ["Maram"])
+        .executable(name: "PKpowerlines", targets: ["PKpowerlines"])
     ],
     targets: [
         .executableTarget(
-            name: "Maram",
-            path: "src/macos/Maram",
+            name: "PKpowerlines",
+            path: "src/macos/PKpowerlines",
             linkerSettings: [
                 .linkedFramework("IOKit")
             ]

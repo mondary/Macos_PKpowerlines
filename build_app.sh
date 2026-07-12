@@ -1,34 +1,35 @@
 #!/bin/bash
 set -e
 
+APP_INTERNAL_NAME="PKpowerlines"
 echo "→ Build release universel (arm64 + x86_64)…"
 swift build -c release --arch arm64 --arch x86_64
 
-APP_NAME="Maram.app"
+APP_NAME="$APP_INTERNAL_NAME.app"
 APP_PATH="release/macos/$APP_NAME"
-BINARY_SRC=".build/apple/Products/Release/Maram"
+BINARY_SRC=".build/apple/Products/Release/$APP_INTERNAL_NAME"
 
 rm -rf "$APP_PATH"
 mkdir -p "$APP_PATH/Contents/MacOS"
 mkdir -p "$APP_PATH/Contents/Resources"
 
-cat > "$APP_PATH/Contents/Info.plist" <<'EOF'
+cat > "$APP_PATH/Contents/Info.plist" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
     <key>CFBundleExecutable</key>
-    <string>Maram</string>
+    <string>$APP_INTERNAL_NAME</string>
     <key>CFBundleIdentifier</key>
-    <string>com.maram.app</string>
+    <string>com.pkpowerlines.app</string>
     <key>CFBundleName</key>
-    <string>Maram</string>
+    <string>$APP_INTERNAL_NAME</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.5.0</string>
+    <string>1.6.0</string>
     <key>CFBundleVersion</key>
-    <string>2</string>
+    <string>3</string>
     <key>LSMinimumSystemVersion</key>
     <string>13.0</string>
     <key>LSUIElement</key>
@@ -56,10 +57,9 @@ if [ -f "icon2.png" ]; then
     iconutil -c icns "$APP_PATH/Contents/Resources/icon.iconset" -o "$APP_PATH/Contents/Resources/AppIcon.icns" > /dev/null 2>&1 && rm -rf "$APP_PATH/Contents/Resources/icon.iconset"
 fi
 
-# Ajoute la référence icône au Info.plist si AppIcon.icns existe
 if [ -f "$APP_PATH/Contents/Resources/AppIcon.icns" ]; then
     /usr/libexec/PlistBuddy -c "Add :CFBundleIconFile string AppIcon.icns" "$APP_PATH/Contents/Info.plist" 2>/dev/null
 fi
 
 echo "✓ App créée : $APP_PATH"
-file "$APP_PATH/Contents/MacOS/Maram"
+file "$APP_PATH/Contents/MacOS/$APP_INTERNAL_NAME"

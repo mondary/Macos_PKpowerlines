@@ -17,7 +17,7 @@ struct SettingsView: View {
                             .frame(width: 26, height: 26)
                             .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
                     }
-                    Text("Maram")
+                    Text("PKpowerlines")
                         .font(.headline)
                     Spacer(minLength: 0)
                 }
@@ -37,7 +37,7 @@ struct SettingsView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .frame(minWidth: 640, minHeight: 420)
+        .frame(minWidth: 880, minHeight: 560)
     }
 }
 
