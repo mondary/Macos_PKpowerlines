@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.4.0] - 2026-07-13
+### Added
+- **Offset vertical pixel par pixel** depuis le bord brut de l'écran (slider -40 à +400 + stepper 1px)
+- 4 préréglages rapides d'offset (Très haut / Sous menu bar / +50 / +150)
+- Hint dynamique selon la position (chevauche menu bar / sous menu bar / au-dessus du Dock)
+- `window.level` passé au-dessus de `statusBar` → la barre peut chevaucher la menu bar
+
+### Changed
+- `barFrame` utilise `screen.frame` (bord brut) au lieu de `visibleFrame` (zone utile)
+- `barOffset: CGFloat` ajouté à `AppSettings` (default 0 = bord brut)
+
 ## [1.3.0] - 2026-07-13
 ### Added
 - Fenêtre de réglages `NavigationSplitView` (sidebar Général / Apparence / Position) — style PKwindowsManagement

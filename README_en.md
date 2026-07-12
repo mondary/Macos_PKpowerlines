@@ -14,7 +14,7 @@
 - 🎨 **Custom colors** — RAM, Battery, Low-battery, Charging colors via ColorPicker
 - 🎚️ **Custom height** — slider 4–40px + 3 presets (⌘1/⌘2/⌘3)
 - 💧 **Opacity** — 20% to 100%
-- ↕️ **Position** — top or bottom of screen
+- ↕️ **Position** — top or bottom + pixel-by-pixel offset (can overlap the menu bar)
 - ⏱️ **Frequency** — refresh every 1–10s
 - 🧩 **Universal binary** — `arm64` + `x86_64`
 - 🪟 **SwiftUI settings window** — 3-tab sidebar, native macOS style

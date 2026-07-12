@@ -111,6 +111,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             .sink { [weak self] _ in self?.resizeAndReposition() }
             .store(in: &cancellables)
 
+        settings.$barOffset
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in self?.resizeAndReposition() }
+            .store(in: &cancellables)
+
         settings.$barOpacity
             .removeDuplicates()
             .dropFirst()
@@ -163,7 +170,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             backing: .buffered,
             defer: false
         )
-        window.level = .statusBar
+        window.level = NSWindow.Level(rawValue: Int(NSWindow.Level.statusBar.rawValue) + 1)
         window.backgroundColor = .clear
         window.isOpaque = false
         window.ignoresMouseEvents = true
@@ -175,13 +182,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     private func barFrame(on screen: NSScreen) -> NSRect {
         let sf = screen.frame
-        let vf = screen.visibleFrame
         let h = settings.barHeight
+        let offset = settings.barOffset
         switch settings.barPosition {
         case .top:
-            return NSRect(x: sf.origin.x, y: vf.maxY - h, width: sf.width, height: h)
+            return NSRect(x: sf.origin.x, y: sf.maxY - h - offset, width: sf.width, height: h)
         case .bottom:
-            return NSRect(x: sf.origin.x, y: vf.minY, width: sf.width, height: h)
+            return NSRect(x: sf.origin.x, y: sf.minY + offset, width: sf.width, height: h)
         }
     }
 

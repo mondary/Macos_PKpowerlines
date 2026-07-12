@@ -14,7 +14,7 @@
 - 🎨 **Couleurs custom** — RAM, Batterie, Batterie faible, couleur de charge, toutes modifiables via ColorPicker
 - 🎚️ **Hauteur custom** — slider 4–40px + 3 presets (⌘1/⌘2/⌘3)
 - 💧 **Opacité** — de 20% à 100%
-- ↕️ **Position** — haut ou bas de l'écran
+- ↕️ **Position** — haut ou bas + offset pixel par pixel (peut chevaucher la menu bar)
 - ⏱️ **Fréquence** — mise à jour toutes les 1–10s
 - 🧩 **Binaire universel** — `arm64` + `x86_64`
 - 🪟 **Fenêtre de réglages SwiftUI** — sidebar 3 onglets style macOS natif
