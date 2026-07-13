@@ -32,6 +32,7 @@ struct SettingsView: View {
                 switch selection ?? .powerline {
                 case .powerline: PowerlineSettingsView()
                 case .menuBar:   MenuBarSettingsView()
+                case .about:     AboutSettingsView()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -43,6 +44,7 @@ struct SettingsView: View {
 enum SettingsSection: String, CaseIterable, Identifiable {
     case powerline
     case menuBar
+    case about
 
     var id: String { rawValue }
 
@@ -50,6 +52,7 @@ enum SettingsSection: String, CaseIterable, Identifiable {
         switch self {
         case .powerline: return "Powerline"
         case .menuBar:   return "Menu Bar"
+        case .about:     return "À propos"
         }
     }
 
@@ -57,6 +60,7 @@ enum SettingsSection: String, CaseIterable, Identifiable {
         switch self {
         case .powerline: return "chart.bar.fill"
         case .menuBar:   return "menubar"
+        case .about:     return "info.circle"
         }
     }
 }

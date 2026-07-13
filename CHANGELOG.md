@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.8.0] - 2026-07-13
+### Added
+- **Page À propos** dans la sidebar (style Dockspace) : icône 88px centrée, titre, version, auteur, texte + footer liens (GitHub, Issues)
+- Application **live** du menu bar spacing pendant le drag (debounce 300ms)
+
+### Changed
+- Slider « Padding » et « Spacing » réappliquent en direct via `Task.sleep` + `MenuBarSpacing.write`
+- État "Apple / personnalisée" recalculé en live
+- Suppression du bouton « Appliquer » (n'est plus nécessaire)
+
 ## [1.7.0] - 2026-07-13
 ### Added
 - **Onglet Menu Bar** : réglage du padding interne + espacement entre items de la menu bar macOS (style Sindre Sorhus)

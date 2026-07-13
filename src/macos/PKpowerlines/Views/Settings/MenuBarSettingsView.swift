@@ -4,6 +4,9 @@ struct MenuBarSettingsView: View {
     @State private var padding: Int = MenuBarSpacing.appleDefaultsPadding
     @State private var spacing: Int = MenuBarSpacing.appleDefaultsSpacing
     @State private var isAppleDefault: Bool = true
+    @State private var debounceTask: Task<Void, Never>?
+    @State private var lastAppliedPadding: Int = MenuBarSpacing.appleDefaultsPadding
+    @State private var lastAppliedSpacing: Int = MenuBarSpacing.appleDefaultsSpacing
 
     var body: some View {
         ScrollView {
@@ -11,11 +14,13 @@ struct MenuBarSettingsView: View {
                 warningSection
                 paddingSection
                 spacingSection
-                actionsSection
+                statusSection
             }
             .padding(24)
         }
         .onAppear(perform: readCurrent)
+        .onChange(of: padding) { _ in scheduleApply() }
+        .onChange(of: spacing) { _ in scheduleApply() }
     }
 
     private var warningSection: some View {
@@ -26,7 +31,7 @@ struct MenuBarSettingsView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Modifie un réglage caché de macOS")
                         .font(.subheadline.weight(.semibold))
-                    Text("Applique l'espacement en relançant ControlCenter. Ça peut interrompre un AirDrop ou un screen share en cours. Totalement réversible via « Restaurer défauts Apple ».")
+                    Text("L'espacement est appliqué en direct pendant le drag (relance ControlCenter, ~300 ms de debounce). Ça peut interrompre un AirDrop ou un screen share en cours. Totalement réversible via « Restaurer défauts Apple ».")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -103,36 +108,29 @@ struct MenuBarSettingsView: View {
         }
     }
 
-    private var actionsSection: some View {
+    private var statusSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            sectionHeader("Application", icon: "wand.and.stars")
-            HStack(spacing: 10) {
-                Button {
-                    MenuBarSpacing.write(padding: padding, spacing: spacing)
-                    isAppleDefault = (padding == MenuBarSpacing.appleDefaultsPadding && spacing == MenuBarSpacing.appleDefaultsSpacing)
-                } label: {
-                    Label("Appliquer", systemImage: "checkmark.circle.fill")
+            sectionHeader("État", icon: "checkmark.shield")
+            HStack(spacing: 12) {
+                if isAppleDefault {
+                    Label("Configuration Apple par défaut", systemImage: "checkmark.seal.fill")
+                        .font(.caption.weight(.medium)).foregroundStyle(.green)
+                } else {
+                    Label("Configuration personnalisée", systemImage: "circle.dashed")
+                        .font(.caption.weight(.medium)).foregroundStyle(.orange)
                 }
-                .buttonStyle(.borderedProminent)
-
+                Spacer()
                 Button {
                     padding = MenuBarSpacing.appleDefaultsPadding
                     spacing = MenuBarSpacing.appleDefaultsSpacing
                     MenuBarSpacing.reset()
+                    lastAppliedPadding = MenuBarSpacing.appleDefaultsPadding
+                    lastAppliedSpacing = MenuBarSpacing.appleDefaultsSpacing
                     isAppleDefault = true
                 } label: {
                     Label("Restaurer défauts Apple", systemImage: "arrow.uturn.backward")
                 }
                 .buttonStyle(.bordered)
-
-                Spacer()
-            }
-            if isAppleDefault {
-                Label("Configuration Apple par défaut", systemImage: "checkmark.seal.fill")
-                    .font(.caption).foregroundStyle(.green)
-            } else {
-                Label("Configuration personnalisée", systemImage: "circle.dashed")
-                    .font(.caption).foregroundStyle(.orange)
             }
         }
     }
@@ -145,8 +143,35 @@ struct MenuBarSettingsView: View {
     }
 
     private func readCurrent() {
-        if let p = MenuBarSpacing.readPadding() { padding = p }
-        if let s = MenuBarSpacing.readSpacing() { spacing = s }
+        if let p = MenuBarSpacing.readPadding() {
+            padding = p
+            lastAppliedPadding = p
+        }
+        if let s = MenuBarSpacing.readSpacing() {
+            spacing = s
+            lastAppliedSpacing = s
+        }
+        updateIsAppleDefault()
+    }
+
+    private func scheduleApply() {
+        updateIsAppleDefault()
+        debounceTask?.cancel()
+        let p = padding
+        let s = spacing
+        debounceTask = Task {
+            try? await Task.sleep(nanoseconds: 300_000_000)
+            if Task.isCancelled { return }
+            guard p != lastAppliedPadding || s != lastAppliedSpacing else { return }
+            await MainActor.run {
+                MenuBarSpacing.write(padding: p, spacing: s)
+                lastAppliedPadding = p
+                lastAppliedSpacing = s
+            }
+        }
+    }
+
+    private func updateIsAppleDefault() {
         isAppleDefault = (padding == MenuBarSpacing.appleDefaultsPadding && spacing == MenuBarSpacing.appleDefaultsSpacing)
     }
 }
