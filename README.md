@@ -78,24 +78,27 @@ killall PKpowerlines
 PKpowerlines/
 ├── src/
 │   └── macos/
-│       └── PKpowerlines/
-│           ├── App/
-│           │   ├── main.swift              # Point d'entrée NSApplication
-│           │   ├── AppDelegate.swift       # Status bar, fenêtres barre, monitoring
-│           │   ├── AppSettings.swift       # ObservableObject (UserDefaults)
-│           │   ├── MonitorType.swift       # {.ram, .battery}
-│           │   ├── BarPosition.swift       # {.top, .bottom}
-│           │   ├── BarFont.swift           # 7 polices au choix
-│           │   ├── ColorHex.swift          # Color <-> hex
-│           │   ├── RAMMonitor.swift        # sysctl/host_statistics64
-│           │   ├── BatteryMonitor.swift    # IOKit (IOPMPowerSource)
-│           │   └── PowerBarView.swift      # Vue AppKit de la barre
-│           └── Views/
-│               └── Settings/
-│                   ├── SettingsView.swift            # NavigationSplitView racine
-│                   ├── GeneralSettingsView.swift     # Source + fréquence
-│                   ├── AppearanceSettingsView.swift  # Police + hauteur + couleurs
-│                   └── PositionSettingsView.swift    # Position + offset + presets
+│       ├── App/
+│       │   ├── main.swift              # Point d'entrée NSApplication
+│       │   └── AppDelegate.swift       # Status bar, fenêtres barre, monitoring
+│       ├── Models/
+│       │   ├── AppSettings.swift       # ObservableObject (UserDefaults)
+│       │   ├── MonitorType.swift       # {.ram, .battery}
+│       │   ├── BarPosition.swift       # {.top, .bottom}
+│       │   ├── BarFont.swift           # 7 polices au choix
+│       │   └── MenuBarSpacing.swift    # Espacement barre / menu
+│       ├── Monitors/
+│       │   ├── RAMMonitor.swift        # sysctl/host_statistics64
+│       │   └── BatteryMonitor.swift    # IOKit (IOPMPowerSource)
+│       ├── Views/
+│       │   ├── PowerBarView.swift             # Vue AppKit de la barre
+│       │   └── Settings/
+│       │       ├── SettingsView.swift         # NavigationSplitView racine
+│       │       ├── MenuBarSettingsView.swift  # Barre menu (hauteur, opacité…)
+│       │       ├── PowerlineSettingsView.swift# Couleurs, police, position
+│       │       └── AboutSettingsView.swift    # À propos
+│       └── Utils/
+│           └── ColorHex.swift          # Color <-> hex
 ├── release/macos/                            # Sortie build (gitignoré)
 ├── benchmark/                                # Références, captures
 ├── secrets/                                  # Credentials (gitignoré)

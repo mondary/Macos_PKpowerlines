@@ -12,7 +12,7 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "PKpowerlines",
-            path: "src/macos/PKpowerlines",
+            path: "src/macos",
             linkerSettings: [
                 .linkedFramework("IOKit")
             ]

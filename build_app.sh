@@ -41,19 +41,27 @@ EOF
 cp "$BINARY_SRC" "$APP_PATH/Contents/MacOS/"
 cp "icon.png" "$APP_PATH/Contents/Resources/icon.png" 2>/dev/null || echo "  (icon.png absent, ignoré)"
 
-# Génère l'icône .icns (optionnel, si icon2.png existe)
+# Source icône pour le .icns : icon2.png si présent, sinon icon.png
+ICON_SRC=""
 if [ -f "icon2.png" ]; then
+    ICON_SRC="icon2.png"
+elif [ -f "icon.png" ]; then
+    ICON_SRC="icon.png"
+fi
+
+# Génère l'icône .icns (si une source icône est disponible)
+if [ -n "$ICON_SRC" ]; then
     mkdir -p "$APP_PATH/Contents/Resources/icon.iconset"
-    sips -z 16 16     icon2.png --out "$APP_PATH/Contents/Resources/icon.iconset/icon_16x16.png" > /dev/null 2>&1
-    sips -z 32 32     icon2.png --out "$APP_PATH/Contents/Resources/icon.iconset/icon_16x16@2x.png" > /dev/null 2>&1
-    sips -z 32 32     icon2.png --out "$APP_PATH/Contents/Resources/icon.iconset/icon_32x32.png" > /dev/null 2>&1
-    sips -z 64 64     icon2.png --out "$APP_PATH/Contents/Resources/icon.iconset/icon_32x32@2x.png" > /dev/null 2>&1
-    sips -z 128 128   icon2.png --out "$APP_PATH/Contents/Resources/icon.iconset/icon_128x128.png" > /dev/null 2>&1
-    sips -z 256 256   icon2.png --out "$APP_PATH/Contents/Resources/icon.iconset/icon_128x128@2x.png" > /dev/null 2>&1
-    sips -z 256 256   icon2.png --out "$APP_PATH/Contents/Resources/icon.iconset/icon_256x256.png" > /dev/null 2>&1
-    sips -z 512 512   icon2.png --out "$APP_PATH/Contents/Resources/icon.iconset/icon_256x256@2x.png" > /dev/null 2>&1
-    sips -z 512 512   icon2.png --out "$APP_PATH/Contents/Resources/icon.iconset/icon_512x512.png" > /dev/null 2>&1
-    sips -z 1024 1024 icon2.png --out "$APP_PATH/Contents/Resources/icon.iconset/icon_512x512@2x.png" > /dev/null 2>&1
+    sips -z 16 16     "$ICON_SRC" --out "$APP_PATH/Contents/Resources/icon.iconset/icon_16x16.png" > /dev/null 2>&1
+    sips -z 32 32     "$ICON_SRC" --out "$APP_PATH/Contents/Resources/icon.iconset/icon_16x16@2x.png" > /dev/null 2>&1
+    sips -z 32 32     "$ICON_SRC" --out "$APP_PATH/Contents/Resources/icon.iconset/icon_32x32.png" > /dev/null 2>&1
+    sips -z 64 64     "$ICON_SRC" --out "$APP_PATH/Contents/Resources/icon.iconset/icon_32x32@2x.png" > /dev/null 2>&1
+    sips -z 128 128   "$ICON_SRC" --out "$APP_PATH/Contents/Resources/icon.iconset/icon_128x128.png" > /dev/null 2>&1
+    sips -z 256 256   "$ICON_SRC" --out "$APP_PATH/Contents/Resources/icon.iconset/icon_128x128@2x.png" > /dev/null 2>&1
+    sips -z 256 256   "$ICON_SRC" --out "$APP_PATH/Contents/Resources/icon.iconset/icon_256x256.png" > /dev/null 2>&1
+    sips -z 512 512   "$ICON_SRC" --out "$APP_PATH/Contents/Resources/icon.iconset/icon_256x256@2x.png" > /dev/null 2>&1
+    sips -z 512 512   "$ICON_SRC" --out "$APP_PATH/Contents/Resources/icon.iconset/icon_512x512.png" > /dev/null 2>&1
+    sips -z 1024 1024 "$ICON_SRC" --out "$APP_PATH/Contents/Resources/icon.iconset/icon_512x512@2x.png" > /dev/null 2>&1
     iconutil -c icns "$APP_PATH/Contents/Resources/icon.iconset" -o "$APP_PATH/Contents/Resources/AppIcon.icns" > /dev/null 2>&1 && rm -rf "$APP_PATH/Contents/Resources/icon.iconset"
 fi
 

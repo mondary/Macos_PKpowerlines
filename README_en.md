@@ -78,24 +78,27 @@ killall PKpowerlines
 PKpowerlines/
 ├── src/
 │   └── macos/
-│       └── PKpowerlines/
-│           ├── App/
-│           │   ├── main.swift              # NSApplication entry point
-│           │   ├── AppDelegate.swift       # Status bar, bar windows, monitoring
-│           │   ├── AppSettings.swift       # ObservableObject (UserDefaults)
-│           │   ├── MonitorType.swift       # {.ram, .battery}
-│           │   ├── BarPosition.swift       # {.top, .bottom}
-│           │   ├── BarFont.swift           # 7 selectable fonts
-│           │   ├── ColorHex.swift          # Color <-> hex
-│           │   ├── RAMMonitor.swift        # sysctl/host_statistics64
-│           │   ├── BatteryMonitor.swift    # IOKit (IOPMPowerSource)
-│           │   └── PowerBarView.swift      # AppKit bar view
-│           └── Views/
-│               └── Settings/
-│                   ├── SettingsView.swift            # Root NavigationSplitView
-│                   ├── GeneralSettingsView.swift     # Source + frequency
-│                   ├── AppearanceSettingsView.swift  # Font + height + colors
-│                   └── PositionSettingsView.swift    # Position + offset + presets
+│       ├── App/
+│       │   ├── main.swift              # NSApplication entry point
+│       │   └── AppDelegate.swift       # Status bar, bar windows, monitoring
+│       ├── Models/
+│       │   ├── AppSettings.swift       # ObservableObject (UserDefaults)
+│       │   ├── MonitorType.swift       # {.ram, .battery}
+│       │   ├── BarPosition.swift       # {.top, .bottom}
+│       │   ├── BarFont.swift           # 7 selectable fonts
+│       │   └── MenuBarSpacing.swift    # Bar / menu spacing
+│       ├── Monitors/
+│       │   ├── RAMMonitor.swift        # sysctl/host_statistics64
+│       │   └── BatteryMonitor.swift    # IOKit (IOPMPowerSource)
+│       ├── Views/
+│       │   ├── PowerBarView.swift             # AppKit bar view
+│       │   └── Settings/
+│       │       ├── SettingsView.swift         # Root NavigationSplitView
+│       │       ├── MenuBarSettingsView.swift  # Menu bar (height, opacity…)
+│       │       ├── PowerlineSettingsView.swift# Colors, font, position
+│       │       └── AboutSettingsView.swift    # About
+│       └── Utils/
+│           └── ColorHex.swift          # Color <-> hex
 ├── release/macos/                            # Build output (gitignored)
 ├── benchmark/                                # References, screenshots
 ├── secrets/                                  # Credentials (gitignored)
