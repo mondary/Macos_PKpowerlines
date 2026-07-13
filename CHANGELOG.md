@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.9.0] - 2026-07-13
+### Added
+- **Deux nouvelles sources** : **CPU** (`host_statistics64` / `HOST_CPU_LOAD_INFO`) et **Réseau** (`getifaddrs` delta ↓/↑ toutes interfaces)
+- **Positions gauche / droite** : barre verticale sur les bords latéraux (remplissage bas→haut, % rotated)
+- **Toggle « Afficher le % »** : masque le texte tout en gardant la barre powerline
+- **Couleur CPU** + **couleur Réseau** personnalisables (ColorPicker)
+- **Plafond débit réseau** réglable (1–1000 MB/s = 100 % de la barre)
+
+### Changed
+- Le picker de source passe en `.menu` (4 sources avec icônes)
+- `MonitorType` étendu (`.cpu`, `.network`) ; `BarPosition` étendu (`.left`, `.right` + `isVertical`)
+- `PowerBarView` supporte l'orientation verticale + le flag `showPercentage`
+- Les fenêtres barre sont reconstruites quand l'orientation bascule (horizontal ↔ vertical)
+- Offset s'applique horizontalement pour les positions gauche/droite
+- Observers Combine élargis (`Publishers.MergeMany` sur les 5 couleurs)
+
 ## [1.8.0] - 2026-07-13
 ### Added
 - **Page À propos** dans la sidebar (style Dockspace) : icône 88px centrée, titre, version, auteur, texte + footer liens (GitHub, Issues)

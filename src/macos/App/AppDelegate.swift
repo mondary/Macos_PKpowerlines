@@ -18,10 +18,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var barViews: [PowerBarView] = []
     private let ramMonitor = RAMMonitor()
     private let batteryMonitor = BatteryMonitor()
+    private let cpuMonitor = CPUMonitor()
+    private let networkMonitor = NetworkMonitor()
     private var updateTimer: Timer?
     private var statusItem: NSStatusItem?
     private var settingsWindow: NSWindow?
     private var cancellables = Set<AnyCancellable>()
+    private var currentOrientationVertical: Bool = false
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.applicationIconImage = AppIcon.image
@@ -142,7 +145,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .removeDuplicates()
             .dropFirst()
             .receive(on: RunLoop.main)
-            .sink { [weak self] _ in self?.resizeAndReposition() }
+            .sink { [weak self] newPos in
+                guard let self else { return }
+                if newPos.isVertical != self.currentOrientationVertical {
+                    self.currentOrientationVertical = newPos.isVertical
+                    self.rebuildBarWindows()
+                } else {
+                    self.resizeAndReposition()
+                }
+            }
             .store(in: &cancellables)
 
         settings.$barOffset
@@ -166,6 +177,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .sink { [weak self] f in self?.barViews.forEach { $0.updateFont(f) } }
             .store(in: &cancellables)
 
+        settings.$showPercentage
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] show in self?.barViews.forEach { $0.updateShowPercentage(show) } }
+            .store(in: &cancellables)
+
         settings.$monitorType
             .removeDuplicates()
             .dropFirst()
@@ -180,10 +198,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .sink { [weak self] _ in self?.restartTimer() }
             .store(in: &cancellables)
 
-        Publishers.Merge3(
+        settings.$networkMaxMBps
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in self?.updateUsage() }
+            .store(in: &cancellables)
+
+        Publishers.MergeMany(
             settings.$ramColorHex.map { _ in () },
             settings.$batteryColorHex.map { _ in () },
-            settings.$batteryLowColorHex.map { _ in () }
+            settings.$batteryLowColorHex.map { _ in () },
+            settings.$cpuColorHex.map { _ in () },
+            settings.$networkColorHex.map { _ in () }
         )
         .dropFirst()
         .receive(on: RunLoop.main)
@@ -191,9 +218,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         .store(in: &cancellables)
     }
 
+    // MARK: - Bar windows rebuild
+
+    /// Reconstruit toutes les fenêtres barre (utile quand l'orientation change,
+    /// car la géométrie fenêtre/vue bascule entre horizontal et vertical).
+    private func rebuildBarWindows() {
+        for window in barWindows { window.orderOut(nil) }
+        barWindows.removeAll()
+        barViews.removeAll()
+        setupWindows()
+        updateUsage()
+    }
+
     // MARK: - Bar windows
 
     private func setupWindows() {
+        currentOrientationVertical = settings.barPosition.isVertical
         for screen in NSScreen.screens {
             createWindow(for: screen)
         }
@@ -202,6 +242,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func createWindow(for screen: NSScreen) {
         let frame = barFrame(on: screen)
         let view = PowerBarView()
+        view.updateOrientation(settings.barPosition.isVertical)
+        view.updateShowPercentage(settings.showPercentage)
         view.updateOpacity(settings.barOpacity)
         view.updateFont(settings.barFont)
         barViews.append(view)
@@ -224,13 +266,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func barFrame(on screen: NSScreen) -> NSRect {
         let sf = screen.frame
-        let h = settings.barHeight
+        let thickness = settings.barHeight
         let offset = settings.barOffset
         switch settings.barPosition {
         case .top:
-            return NSRect(x: sf.origin.x, y: sf.maxY - h - offset, width: sf.width, height: h)
+            return NSRect(x: sf.origin.x, y: sf.maxY - thickness - offset, width: sf.width, height: thickness)
         case .bottom:
-            return NSRect(x: sf.origin.x, y: sf.minY + offset, width: sf.width, height: h)
+            return NSRect(x: sf.origin.x, y: sf.minY + offset, width: sf.width, height: thickness)
+        case .left:
+            return NSRect(x: sf.origin.x + offset, y: sf.origin.y, width: thickness, height: sf.height)
+        case .right:
+            return NSRect(x: sf.maxX - thickness - offset, y: sf.origin.y, width: thickness, height: sf.height)
         }
     }
 
@@ -293,7 +339,31 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                     $0.updateUsage(percentage: battery.percentage, color: color, label: label)
                 }
             }
+        case .cpu:
+            let usage = cpuMonitor.getCPUUsage()
+            let color = NSColor(settings.cpuColor)
+            let label = "\(Int(usage.percentage))%"
+            DispatchQueue.main.async { [weak self] in
+                self?.barViews.forEach {
+                    $0.updateUsage(percentage: usage.percentage, color: color, label: label)
+                }
+            }
+        case .network:
+            let usage = networkMonitor.getNetworkUsage(maxMBps: settings.networkMaxMBps)
+            let color = NSColor(settings.networkColor)
+            let label = "↓ \(Self.formatSpeed(usage.downloadKBps))  ↑ \(Self.formatSpeed(usage.uploadKBps))"
+            DispatchQueue.main.async { [weak self] in
+                self?.barViews.forEach {
+                    $0.updateUsage(percentage: usage.percentage, color: color, label: label)
+                }
+            }
         }
+    }
+
+    private static func formatSpeed(_ kbps: Double) -> String {
+        if kbps < 1 { return "0 KB/s" }
+        if kbps < 1024 { return "\(Int(kbps)) KB/s" }
+        return String(format: "%.1f MB/s", kbps / 1024)
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {

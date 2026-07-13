@@ -12,10 +12,14 @@ final class AppSettings: ObservableObject {
         static let barPosition = "barPosition"
         static let barOffset = "barOffset"
         static let barFont = "barFont"
+        static let showPercentage = "showPercentage"
         static let ramColor = "ramColor"
         static let batteryColor = "batteryColor"
         static let batteryLowColor = "batteryLowColor"
         static let batteryLowThreshold = "batteryLowThreshold"
+        static let cpuColor = "cpuColor"
+        static let networkColor = "networkColor"
+        static let networkMaxMBps = "networkMaxMBps"
     }
 
     @Published var monitorType: MonitorType { didSet { defaults.set(monitorType.rawValue, forKey: Keys.monitorType) } }
@@ -25,10 +29,14 @@ final class AppSettings: ObservableObject {
     @Published var barPosition: BarPosition { didSet { defaults.set(barPosition.rawValue, forKey: Keys.barPosition) } }
     @Published var barOffset: CGFloat { didSet { defaults.set(Double(barOffset), forKey: Keys.barOffset) } }
     @Published var barFont: BarFont { didSet { defaults.set(barFont.rawValue, forKey: Keys.barFont) } }
+    @Published var showPercentage: Bool { didSet { defaults.set(showPercentage, forKey: Keys.showPercentage) } }
     @Published var ramColorHex: String { didSet { defaults.set(ramColorHex, forKey: Keys.ramColor) } }
     @Published var batteryColorHex: String { didSet { defaults.set(batteryColorHex, forKey: Keys.batteryColor) } }
     @Published var batteryLowColorHex: String { didSet { defaults.set(batteryLowColorHex, forKey: Keys.batteryLowColor) } }
     @Published var batteryLowThreshold: Int { didSet { defaults.set(batteryLowThreshold, forKey: Keys.batteryLowThreshold) } }
+    @Published var cpuColorHex: String { didSet { defaults.set(cpuColorHex, forKey: Keys.cpuColor) } }
+    @Published var networkColorHex: String { didSet { defaults.set(networkColorHex, forKey: Keys.networkColor) } }
+    @Published var networkMaxMBps: Double { didSet { defaults.set(networkMaxMBps, forKey: Keys.networkMaxMBps) } }
 
     static let defaultHeight: CGFloat = 9
     static let minHeight: CGFloat = 4
@@ -59,14 +67,20 @@ final class AppSettings: ObservableObject {
         self.barOffset = CGFloat(storedOffset ?? 0)
         let fontRaw = defaults.string(forKey: Keys.barFont) ?? BarFont.systemBold.rawValue
         self.barFont = BarFont(rawValue: fontRaw) ?? .systemBold
+        self.showPercentage = (defaults.object(forKey: Keys.showPercentage) as? Bool) ?? true
         self.ramColorHex = defaults.string(forKey: Keys.ramColor) ?? "#FF3B30"
         self.batteryColorHex = defaults.string(forKey: Keys.batteryColor) ?? "#34C759"
         self.batteryLowColorHex = defaults.string(forKey: Keys.batteryLowColor) ?? "#FF3B30"
         self.batteryLowThreshold = (defaults.object(forKey: Keys.batteryLowThreshold) as? Int) ?? 20
+        self.cpuColorHex = defaults.string(forKey: Keys.cpuColor) ?? "#FF9500"
+        self.networkColorHex = defaults.string(forKey: Keys.networkColor) ?? "#5AC8FA"
+        self.networkMaxMBps = (defaults.object(forKey: Keys.networkMaxMBps) as? Double) ?? 10.0
     }
 
     var ramColor: Color { Color(hex: ramColorHex) }
     var batteryColor: Color { Color(hex: batteryColorHex) }
     var batteryLowColor: Color { Color(hex: batteryLowColorHex) }
     var chargingColor: Color { Color(hex: "#007AFF") }
+    var cpuColor: Color { Color(hex: cpuColorHex) }
+    var networkColor: Color { Color(hex: networkColorHex) }
 }

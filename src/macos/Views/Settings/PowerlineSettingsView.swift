@@ -7,6 +7,7 @@ struct PowerlineSettingsView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 28) {
                 sourceSection
+                displaySection
                 intervalSection
                 heightSection
                 opacitySection
@@ -14,6 +15,8 @@ struct PowerlineSettingsView: View {
                 ramColorSection
                 batteryColorSection
                 batteryLowSection
+                cpuColorSection
+                networkSection
                 positionSection
                 offsetSection
                 quickPresetsSection
@@ -33,9 +36,9 @@ struct PowerlineSettingsView: View {
                     Label(type.displayName, systemImage: type.icon).tag(type)
                 }
             }
-            .pickerStyle(.segmented)
+            .pickerStyle(.menu)
             .labelsHidden()
-            .frame(maxWidth: .infinity)
+            .frame(maxWidth: 360, alignment: .leading)
 
             HStack(alignment: .top, spacing: 8) {
                 Image(systemName: "info.circle").foregroundStyle(.secondary)
@@ -43,6 +46,19 @@ struct PowerlineSettingsView: View {
                     .font(.caption).foregroundStyle(.secondary)
                 Spacer()
             }
+        }
+    }
+
+    // MARK: - Display (%)
+
+    private var displaySection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            sectionHeader("Affichage", icon: "text.bubble")
+            Toggle("Afficher le % (ou le débit)", isOn: $settings.showPercentage)
+                .toggleStyle(.switch)
+            Text("Masque le texte sur la barre. La barre powerline reste affichée dans tous les cas. Sous 8 px d'épaisseur, le texte est masqué automatiquement.")
+                .font(.caption).foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 
@@ -196,6 +212,51 @@ struct PowerlineSettingsView: View {
         }
     }
 
+    // MARK: - CPU color
+
+    private var cpuColorSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            sectionHeader("Couleur CPU", icon: "cpu")
+            HStack(spacing: 12) {
+                ColorPicker("CPU", selection: cpuColorBinding, supportsOpacity: false).labelsHidden()
+                Text("Couleur affichée quand la source est CPU.")
+                    .font(.caption).foregroundStyle(.secondary)
+                Spacer()
+            }
+        }
+    }
+
+    // MARK: - Network
+
+    private var networkSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            sectionHeader("Réseau", icon: "network")
+            HStack(spacing: 12) {
+                ColorPicker("Réseau", selection: networkColorBinding, supportsOpacity: false).labelsHidden()
+                Text("Couleur affichée quand la source est Réseau.")
+                    .font(.caption).foregroundStyle(.secondary)
+                Spacer()
+            }
+            VStack(alignment: .leading, spacing: 6) {
+                HStack(spacing: 12) {
+                    Slider(value: $settings.networkMaxMBps, in: 1...1000)
+                    Text("\(Int(settings.networkMaxMBps)) MB/s").monospacedDigit()
+                        .frame(width: 80, alignment: .trailing).foregroundStyle(.secondary)
+                }
+                HStack(spacing: 6) {
+                    Text("1 MB/s").font(.caption2).foregroundStyle(.tertiary)
+                    Spacer()
+                    Text("Plafond = 100 %").font(.caption2).foregroundStyle(.tertiary)
+                    Spacer()
+                    Text("1000 MB/s").font(.caption2).foregroundStyle(.tertiary)
+                }
+            }
+            Text("La barre se remplit proportionnellement au débit cumulé (↓ + ↑) par rapport à ce plafond. Le texte affiche toujours les débits réels.")
+                .font(.caption).foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
     // MARK: - Position
 
     private var positionSection: some View {
@@ -253,6 +314,18 @@ struct PowerlineSettingsView: View {
                 return "Offset \(Int(settings.barOffset)) px : la barre peut chevaucher le Dock (selon sa hauteur)."
             } else {
                 return "Offset \(Int(settings.barOffset)) px : la barre est au-dessus du Dock."
+            }
+        case .left:
+            if settings.barOffset < 0 {
+                return "Offset négatif : la barre déborde à gauche de l'écran."
+            } else {
+                return "Offset \(Int(settings.barOffset)) px : décale la barre vers la droite depuis le bord gauche."
+            }
+        case .right:
+            if settings.barOffset < 0 {
+                return "Offset négatif : la barre déborde à droite de l'écran."
+            } else {
+                return "Offset \(Int(settings.barOffset)) px : décale la barre vers la gauche depuis le bord droit."
             }
         }
     }
@@ -342,6 +415,12 @@ struct PowerlineSettingsView: View {
     }
     private var batteryLowColorBinding: Binding<Color> {
         Binding(get: { settings.batteryLowColor }, set: { settings.batteryLowColorHex = $0.toHex() })
+    }
+    private var cpuColorBinding: Binding<Color> {
+        Binding(get: { settings.cpuColor }, set: { settings.cpuColorHex = $0.toHex() })
+    }
+    private var networkColorBinding: Binding<Color> {
+        Binding(get: { settings.networkColor }, set: { settings.networkColorHex = $0.toHex() })
     }
 
     private func customFont(_ barFont: BarFont, height: CGFloat) -> SwiftUI.Font {

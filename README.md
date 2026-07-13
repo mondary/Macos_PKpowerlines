@@ -8,14 +8,16 @@
 
 ## ✅ Fonctionnalités
 
-- 📊 **Deux modes** — RAM (active + wired) ou Batterie (pourcentage, état de charge, couleur dynamique)
+- 📊 **Quatre sources** — RAM (active + wired), **CPU** (charge globale), **Réseau** (débit ↓/↑), Batterie (pourcentage, état de charge, couleur dynamique)
 - 🖥️ **Multi-écrans** — une barre par écran
+- 🧭 **4 bords** — haut, bas, **gauche**, **droite** (barre verticale sur les côtés)
+- 👁️ **Toggle %** — afficher ou masquer le texte (barre powerline toujours présente)
 - 🌌 **Toujours visible** — tous les Spaces, niveau barre système, click-through
-- 🎨 **Couleurs custom** — RAM, Batterie, Batterie faible, couleur de charge, toutes modifiables via ColorPicker
+- 🎨 **Couleurs custom** — RAM, CPU, Réseau, Batterie, Batterie faible, couleur de charge, toutes modifiables via ColorPicker
 - 🔤 **Police custom** — 7 polices au choix, taille auto-adaptative, % centré verticalement
 - 🎚️ **Hauteur custom** — slider 4–40px + 3 presets (⌘1/⌘2/⌘3)
 - 💧 **Opacité** — de 20% à 100%
-- ↕️ **Position** — haut ou bas + offset pixel par pixel (peut chevaucher la menu bar)
+- ↕️ **Offset** — pixel par pixel (peut chevaucher la menu bar, ou décaler sur les côtés)
 - ⏱️ **Fréquence** — mise à jour toutes les 1–10s
 - 🧩 **Binaire universel** — `arm64` + `x86_64`
 - 🪟 **Fenêtre de réglages SwiftUI** — sidebar 3 onglets style macOS natif
@@ -32,17 +34,21 @@
 
 | Réglage | Valeurs | Accès |
 |---|---|---|
-| Source | RAM / Batterie | Réglages → Général |
-| Fréquence | 1–10s | Réglages → Général |
-| Hauteur | 4–40px | Réglages → Apparence (slider) |
-| Presets hauteur | 8 / 12 / 20px | Réglages → Apparence ou ⌘1/⌘2/⌘3 |
-| Opacité | 20–100% | Réglages → Apparence |
-| Police | 7 polices | Réglages → Apparence |
-| Couleur RAM | ColorPicker | Réglages → Apparence |
-| Couleur Batterie | ColorPicker | Réglages → Apparence |
-| Couleur Batterie faible | ColorPicker + seuil | Réglages → Apparence |
-| Position | Haut / Bas | Réglages → Position |
-| Offset vertical | -40 à +400px (1px par 1px) | Réglages → Position |
+| Source | RAM / Batterie / CPU / Réseau | Réglages → Powerline |
+| Afficher le % | On / Off | Réglages → Powerline |
+| Fréquence | 1–10s | Réglages → Powerline |
+| Hauteur | 4–40px | Réglages → Powerline (slider) |
+| Presets hauteur | 8 / 12 / 20px | Réglages → Powerline ou ⌘1/⌘2/⌘3 |
+| Opacité | 20–100% | Réglages → Powerline |
+| Police | 7 polices | Réglages → Powerline |
+| Couleur RAM | ColorPicker | Réglages → Powerline |
+| Couleur CPU | ColorPicker | Réglages → Powerline |
+| Couleur Réseau | ColorPicker | Réglages → Powerline |
+| Plafond réseau | 1–1000 MB/s | Réglages → Powerline |
+| Couleur Batterie | ColorPicker | Réglages → Powerline |
+| Couleur Batterie faible | ColorPicker + seuil | Réglages → Powerline |
+| Position | Haut / Bas / Gauche / Droite | Réglages → Powerline |
+| Offset | -40 à +400px (1px par 1px) | Réglages → Powerline |
 | Quitter | — | ⌘Q |
 
 ## 📦 Build & Package
@@ -89,6 +95,8 @@ PKpowerlines/
 │       │   └── MenuBarSpacing.swift    # Espacement barre / menu
 │       ├── Monitors/
 │       │   ├── RAMMonitor.swift        # sysctl/host_statistics64
+│       │   ├── CPUMonitor.swift        # host_statistics64 / HOST_CPU_LOAD_INFO
+│       │   ├── NetworkMonitor.swift    # getifaddrs delta (↓/↑ KB/s)
 │       │   └── BatteryMonitor.swift    # IOKit (IOPMPowerSource)
 │       ├── Views/
 │       │   ├── PowerBarView.swift             # Vue AppKit de la barre

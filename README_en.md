@@ -8,14 +8,16 @@
 
 ## ✅ Features
 
-- 📊 **Two modes** — RAM (active + wired) or Battery (percentage, charging state, dynamic color)
+- 📊 **Four sources** — RAM (active + wired), **CPU** (overall load), **Network** (↓/↑ throughput), Battery (percentage, charging state, dynamic color)
 - 🖥️ **Multi-screen** — one bar per screen
+- 🧭 **4 edges** — top, bottom, **left**, **right** (vertical bar on the sides)
+- 👁️ **% toggle** — show or hide the text (powerline bar always visible)
 - 🌌 **Always visible** — every Space, status bar level, click-through
-- 🎨 **Custom colors** — RAM, Battery, Low-battery, Charging colors via ColorPicker
+- 🎨 **Custom colors** — RAM, CPU, Network, Battery, Low-battery, Charging colors via ColorPicker
 - 🔤 **Custom font** — 7 fonts, auto-adaptive size, vertically centered percentage
 - 🎚️ **Custom height** — slider 4–40px + 3 presets (⌘1/⌘2/⌘3)
 - 💧 **Opacity** — 20% to 100%
-- ↕️ **Position** — top or bottom + pixel-by-pixel offset (can overlap the menu bar)
+- ↕️ **Offset** — pixel by pixel (can overlap the menu bar, or shift on the sides)
 - ⏱️ **Frequency** — refresh every 1–10s
 - 🧩 **Universal binary** — `arm64` + `x86_64`
 - 🪟 **SwiftUI settings window** — 3-tab sidebar, native macOS style
@@ -32,17 +34,21 @@
 
 | Setting | Values | Access |
 |---|---|---|
-| Source | RAM / Battery | Settings → General |
-| Frequency | 1–10s | Settings → General |
-| Height | 4–40px | Settings → Appearance (slider) |
-| Height presets | 8 / 12 / 20px | Settings → Appearance or ⌘1/⌘2/⌘3 |
-| Opacity | 20–100% | Settings → Appearance |
-| Font | 7 fonts | Settings → Appearance |
-| RAM color | ColorPicker | Settings → Appearance |
-| Battery color | ColorPicker | Settings → Appearance |
-| Low-battery color | ColorPicker + threshold | Settings → Appearance |
-| Position | Top / Bottom | Settings → Position |
-| Vertical offset | -40 to +400px (1px steps) | Settings → Position |
+| Source | RAM / Battery / CPU / Network | Settings → Powerline |
+| Show % | On / Off | Settings → Powerline |
+| Frequency | 1–10s | Settings → Powerline |
+| Height | 4–40px | Settings → Powerline (slider) |
+| Height presets | 8 / 12 / 20px | Settings → Powerline or ⌘1/⌘2/⌘3 |
+| Opacity | 20–100% | Settings → Powerline |
+| Font | 7 fonts | Settings → Powerline |
+| RAM color | ColorPicker | Settings → Powerline |
+| CPU color | ColorPicker | Settings → Powerline |
+| Network color | ColorPicker | Settings → Powerline |
+| Network ceiling | 1–1000 MB/s | Settings → Powerline |
+| Battery color | ColorPicker | Settings → Powerline |
+| Low-battery color | ColorPicker + threshold | Settings → Powerline |
+| Position | Top / Bottom / Left / Right | Settings → Powerline |
+| Offset | -40 to +400px (1px steps) | Settings → Powerline |
 | Quit | — | ⌘Q |
 
 ## 📦 Build & Package
@@ -89,6 +95,8 @@ PKpowerlines/
 │       │   └── MenuBarSpacing.swift    # Bar / menu spacing
 │       ├── Monitors/
 │       │   ├── RAMMonitor.swift        # sysctl/host_statistics64
+│       │   ├── CPUMonitor.swift        # host_statistics64 / HOST_CPU_LOAD_INFO
+│       │   ├── NetworkMonitor.swift    # getifaddrs delta (↓/↑ KB/s)
 │       │   └── BatteryMonitor.swift    # IOKit (IOPMPowerSource)
 │       ├── Views/
 │       │   ├── PowerBarView.swift             # AppKit bar view
