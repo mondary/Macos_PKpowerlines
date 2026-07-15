@@ -25,6 +25,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var settingsWindow: NSWindow?
     private var cancellables = Set<AnyCancellable>()
     private var currentOrientationVertical: Bool = false
+    private var needsScreenRebuild = false
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.applicationIconImage = AppIcon.image
@@ -40,7 +41,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func screensDidChange() {
+        guard !needsScreenRebuild else { return }
+        needsScreenRebuild = true
         DispatchQueue.main.async { [weak self] in
+            self?.needsScreenRebuild = false
             self?.rebuildBarWindows()
         }
     }
@@ -292,8 +296,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func resizeAndReposition() {
+        let screens = NSScreen.screens
         for window in barWindows {
-            guard let screen = NSScreen.screens.first(where: { $0.frame.intersects(window.frame) }) else { continue }
+            guard let screen = screens.first(where: { $0.frame.intersects(window.frame) }) else {
+                rebuildBarWindows()
+                return
+            }
             window.setFrame(barFrame(on: screen), display: true, animate: false)
         }
     }
