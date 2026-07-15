@@ -32,6 +32,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         setupWindows()
         startMonitoring()
         observeSettings()
+
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(screensDidChange),
+            name: NSApplication.didChangeScreenParametersNotification, object: nil
+        )
+    }
+
+    @objc private func screensDidChange() {
+        DispatchQueue.main.async { [weak self] in
+            self?.rebuildBarWindows()
+        }
     }
 
     // MARK: - Status bar
