@@ -24,11 +24,12 @@
 
 ## 🧠 Utilisation
 
-1. Lance l'app → la barre apparaît en haut.
-2. Clique sur l'**icône PKpowerlines** dans la barre des menus :
-   - **Réglages…** (⌘,) — change le mode, la couleur, la position, la police
-   - Presets hauteur (⌘1 / ⌘2 / ⌘3)
-   - **Quitter** (⌘Q)
+ 1. Lance l'app → la barre apparaît en haut.
+ 2. Clique sur l'**icône PKpowerlines** dans la barre des menus :
+    - **Réglages…** (⌘,) — change le mode, la couleur, la position, la police
+    - **Repositionner** (⌘R) — force le repositionnement de la powerline (utile après changement de résolution)
+    - Presets hauteur (⌘1 / ⌘2 / ⌘3)
+    - **Quitter** (⌘Q)
 
 ## ⚙️ Réglages
 

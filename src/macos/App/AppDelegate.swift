@@ -43,9 +43,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc private func screensDidChange() {
         guard !needsScreenRebuild else { return }
         needsScreenRebuild = true
-        DispatchQueue.main.async { [weak self] in
-            self?.needsScreenRebuild = false
-            self?.rebuildBarWindows()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+            guard let self = self else { return }
+            self.needsScreenRebuild = false
+            
+            if NSScreen.screens.count != self.barWindows.count {
+                self.rebuildBarWindows()
+            } else {
+                self.forceReposition()
+            }
         }
     }
 
@@ -78,6 +85,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let settingsItem = NSMenuItem(title: "Réglages…", action: #selector(openSettings), keyEquivalent: ",")
         settingsItem.target = self
         menu.addItem(settingsItem)
+
+        menu.addItem(NSMenuItem.separator())
+
+        let reloadItem = NSMenuItem(title: "Repositionner", action: #selector(forceReposition), keyEquivalent: "r")
+        reloadItem.target = self
+        menu.addItem(reloadItem)
 
         menu.addItem(NSMenuItem.separator())
 
@@ -122,6 +135,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func quitApp() {
         NSApplication.shared.terminate(nil)
+    }
+
+    @objc private func forceReposition() {
+        rebuildBarWindows()
     }
 
     @objc private func setPresetHeight(_ sender: NSMenuItem) {
@@ -297,12 +314,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func resizeAndReposition() {
         let screens = NSScreen.screens
-        for window in barWindows {
-            guard let screen = screens.first(where: { $0.frame.intersects(window.frame) }) else {
-                rebuildBarWindows()
-                return
+        
+        for (index, window) in barWindows.enumerated() {
+            if index < screens.count {
+                let screen = screens[index]
+                let newFrame = barFrame(on: screen)
+                
+                if newFrame != window.frame {
+                    window.setFrame(newFrame, display: true, animate: false)
+                }
             }
-            window.setFrame(barFrame(on: screen), display: true, animate: false)
+        }
+        
+        if barWindows.count != screens.count {
+            rebuildBarWindows()
         }
     }
 
