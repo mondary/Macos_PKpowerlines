@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.9.1] - 2026-07-16
+### Added
+- **Preset hauteur « Extra fin » (4px)** — accessible via `⌘4` dans le menu bar et bouton « Extra fin » dans les réglages
+
 ## [1.9.0] - 2026-07-13
 ### Added
 - **Deux nouvelles sources** : **CPU** (`host_statistics64` / `HOST_CPU_LOAD_INFO`) et **Réseau** (`getifaddrs` delta ↓/↑ toutes interfaces)

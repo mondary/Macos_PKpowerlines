@@ -15,7 +15,7 @@
 - 🌌 **Always visible** — every Space, status bar level, click-through
 - 🎨 **Custom colors** — RAM, CPU, Network, Battery, Low-battery, Charging colors via ColorPicker
 - 🔤 **Custom font** — 7 fonts, auto-adaptive size, vertically centered percentage
-- 🎚️ **Custom height** — slider 4–40px + 3 presets (⌘1/⌘2/⌘3)
+- 🎚️ **Custom height** — slider 4–40px + 4 presets (⌘4/⌘1/⌘2/⌘3)
 - 💧 **Opacity** — 20% to 100%
 - ↕️ **Offset** — pixel by pixel (can overlap the menu bar, or shift on the sides)
 - ⏱️ **Frequency** — refresh every 1–10s
@@ -28,7 +28,7 @@
  2. Click the **PKpowerlines icon** in the menu bar:
     - **Settings…** (⌘,) — change mode, color, position, font
     - **Reposition** (⌘R) — force powerline repositioning (useful after resolution change)
-    - Height presets (⌘1 / ⌘2 / ⌘3)
+    - Height presets (⌘4 / ⌘1 / ⌘2 / ⌘3)
     - **Quit** (⌘Q)
 
 ## ⚙️ Settings
@@ -39,7 +39,7 @@
 | Show % | On / Off | Settings → Powerline |
 | Frequency | 1–10s | Settings → Powerline |
 | Height | 4–40px | Settings → Powerline (slider) |
-| Height presets | 8 / 12 / 20px | Settings → Powerline or ⌘1/⌘2/⌘3 |
+| Height presets | 4 / 8 / 12 / 20px | Settings → Powerline or ⌘4/⌘1/⌘2/⌘3 |
 | Opacity | 20–100% | Settings → Powerline |
 | Font | 7 fonts | Settings → Powerline |
 | RAM color | ColorPicker | Settings → Powerline |

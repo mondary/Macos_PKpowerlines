@@ -98,6 +98,7 @@ struct PowerlineSettingsView: View {
                 }
             }
             HStack(spacing: 10) {
+                heightPreset("Extra fin", 4)
                 heightPreset("Fin", 8)
                 heightPreset("Normal", 12)
                 heightPreset("Épais", 20)
@@ -347,6 +348,7 @@ struct PowerlineSettingsView: View {
         VStack(alignment: .leading, spacing: 8) {
             sectionHeader("Raccourcis", icon: "keyboard")
             HStack(spacing: 16) {
+                Label("Extra fin  ⌘4", systemImage: "4.circle")
                 Label("Fin  ⌘1", systemImage: "1.circle")
                 Label("Normal  ⌘2", systemImage: "2.circle")
                 Label("Épais  ⌘3", systemImage: "3.circle")

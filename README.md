@@ -15,7 +15,7 @@
 - 🌌 **Toujours visible** — tous les Spaces, niveau barre système, click-through
 - 🎨 **Couleurs custom** — RAM, CPU, Réseau, Batterie, Batterie faible, couleur de charge, toutes modifiables via ColorPicker
 - 🔤 **Police custom** — 7 polices au choix, taille auto-adaptative, % centré verticalement
-- 🎚️ **Hauteur custom** — slider 4–40px + 3 presets (⌘1/⌘2/⌘3)
+- 🎚️ **Hauteur custom** — slider 4–40px + 4 presets (⌘4/⌘1/⌘2/⌘3)
 - 💧 **Opacité** — de 20% à 100%
 - ↕️ **Offset** — pixel par pixel (peut chevaucher la menu bar, ou décaler sur les côtés)
 - ⏱️ **Fréquence** — mise à jour toutes les 1–10s
@@ -28,7 +28,7 @@
  2. Clique sur l'**icône PKpowerlines** dans la barre des menus :
     - **Réglages…** (⌘,) — change le mode, la couleur, la position, la police
     - **Repositionner** (⌘R) — force le repositionnement de la powerline (utile après changement de résolution)
-    - Presets hauteur (⌘1 / ⌘2 / ⌘3)
+    - Presets hauteur (⌘4 / ⌘1 / ⌘2 / ⌘3)
     - **Quitter** (⌘Q)
 
 ## ⚙️ Réglages
@@ -39,7 +39,7 @@
 | Afficher le % | On / Off | Réglages → Powerline |
 | Fréquence | 1–10s | Réglages → Powerline |
 | Hauteur | 4–40px | Réglages → Powerline (slider) |
-| Presets hauteur | 8 / 12 / 20px | Réglages → Powerline ou ⌘1/⌘2/⌘3 |
+| Presets hauteur | 4 / 8 / 12 / 20px | Réglages → Powerline ou ⌘4/⌘1/⌘2/⌘3 |
 | Opacité | 20–100% | Réglages → Powerline |
 | Police | 7 polices | Réglages → Powerline |
 | Couleur RAM | ColorPicker | Réglages → Powerline |

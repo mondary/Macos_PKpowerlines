@@ -94,7 +94,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         menu.addItem(NSMenuItem.separator())
 
-        for (title, key) in [("Fin (8px)", "1"), ("Normal (12px)", "2"), ("Épais (20px)", "3")] {
+        for (title, key) in [("Extra fin (4px)", "4"), ("Fin (8px)", "1"), ("Normal (12px)", "2"), ("Épais (20px)", "3")] {
             let item = NSMenuItem(title: title, action: #selector(setPresetHeight), keyEquivalent: key)
             item.target = self
             menu.addItem(item)
@@ -143,6 +143,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func setPresetHeight(_ sender: NSMenuItem) {
         switch sender.title {
+        case "Extra fin (4px)": settings.barHeight = 4
         case "Fin (8px)": settings.barHeight = 8
         case "Normal (12px)": settings.barHeight = 12
         case "Épais (20px)": settings.barHeight = 20
@@ -155,9 +156,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let current = settings.barHeight
         for item in menu.items {
             switch item.title {
-            case "Fin (8px)":     item.state = current == 8  ? .on : .off
-            case "Normal (12px)": item.state = current == 12 ? .on : .off
-            case "Épais (20px)":  item.state = current == 20 ? .on : .off
+            case "Extra fin (4px)": item.state = current == 4  ? .on : .off
+            case "Fin (8px)":      item.state = current == 8  ? .on : .off
+            case "Normal (12px)":  item.state = current == 12 ? .on : .off
+            case "Épais (20px)":   item.state = current == 20 ? .on : .off
             default: break
             }
         }
