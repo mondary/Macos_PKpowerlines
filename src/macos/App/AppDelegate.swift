@@ -61,23 +61,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func setupStatusBar() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
 
-        if let button = statusItem?.button {
-            if let icon = AppIcon.image {
-                let size: CGFloat = 18
-                let resized = NSImage(size: NSSize(width: size, height: size), flipped: false) { dst in
-                    icon.draw(in: NSRect(x: 0, y: 0, width: size, height: size),
-                              from: .zero,
-                              operation: .sourceOver,
-                              fraction: 1)
-                    return true
-                }
-                resized.isTemplate = false
-                button.image = resized
-                button.image?.isTemplate = false
-                button.imagePosition = .imageOnly
-            } else {
-                button.title = "PKpowerlines"
-            }
+        if statusItem?.button != nil {
+            updateStatusBarIcon()
         }
 
         let menu = NSMenu()
@@ -108,6 +93,28 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         statusItem?.menu = menu
         refreshMenuStates()
+    }
+
+    private func updateStatusBarIcon() {
+        guard let button = statusItem?.button else { return }
+        let size: CGFloat = 66
+
+        let iconName = "powerline_white"
+        if let url = Bundle.main.url(forResource: iconName, withExtension: "png"),
+           let icon = NSImage(contentsOf: url) {
+            let resized = NSImage(size: NSSize(width: size, height: size), flipped: false) { _ in
+                icon.draw(in: NSRect(x: 0, y: 0, width: size, height: size),
+                          from: .zero,
+                          operation: .sourceOver,
+                          fraction: 1)
+                return true
+            }
+            resized.isTemplate = true
+            button.image = resized
+            button.imagePosition = .imageOnly
+        } else {
+            button.title = "PKpowerlines"
+        }
     }
 
     @objc private func openSettings() {

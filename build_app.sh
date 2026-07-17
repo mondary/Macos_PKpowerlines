@@ -27,7 +27,7 @@ cat > "$APP_PATH/Contents/Info.plist" <<EOF
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.9.0</string>
+    <string>1.9.2</string>
     <key>CFBundleVersion</key>
     <string>4</string>
     <key>LSMinimumSystemVersion</key>
@@ -40,6 +40,8 @@ EOF
 
 cp "$BINARY_SRC" "$APP_PATH/Contents/MacOS/"
 cp "icon.png" "$APP_PATH/Contents/Resources/icon.png" 2>/dev/null || echo "  (icon.png absent, ignoré)"
+cp "src/macos/Resources/powerline_black.png" "$APP_PATH/Contents/Resources/powerline_black.png" 2>/dev/null || echo "  (powerline_black.png absent, ignoré)"
+cp "src/macos/Resources/powerline_white.png" "$APP_PATH/Contents/Resources/powerline_white.png" 2>/dev/null || echo "  (powerline_white.png absent, ignoré)"
 
 # Génère l'icône .icns depuis icon.png (source unique)
 ICON_SRC="icon.png"

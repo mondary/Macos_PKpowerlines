@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.9.2] - 2026-07-17
+### Added
+- **Icône powerline menu bar** — remplace l'ancienne icône par un séparateur powerline blanc (`powerline_white.png`, `isTemplate`) redimensionné à 66px
+- Bascule automatique dark/light via `isTemplate`
+- Fichiers `powerline_black.png` / `powerline_white.png` ajoutés dans `src/macos/Resources/`
+
 ## [1.9.1] - 2026-07-16
 ### Added
 - **Preset hauteur « Extra fin » (4px)** — accessible via `⌘4` dans le menu bar et bouton « Extra fin » dans les réglages
