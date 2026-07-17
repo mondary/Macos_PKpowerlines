@@ -97,7 +97,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func updateStatusBarIcon() {
         guard let button = statusItem?.button else { return }
-        let size: CGFloat = 66
+        let size: CGFloat = 90
 
         let iconName = "powerline_white"
         if let url = Bundle.main.url(forResource: iconName, withExtension: "png"),
