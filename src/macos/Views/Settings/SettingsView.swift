@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @State private var selection: SettingsSection? = .powerline
+    @State private var selection: SettingsSection? = .source
 
     var body: some View {
         NavigationSplitView {
@@ -29,20 +29,26 @@ struct SettingsView: View {
             .frame(minWidth: 220)
         } detail: {
             Group {
-                switch selection ?? .powerline {
-                case .powerline: PowerlineSettingsView()
-                case .menuBar:   MenuBarSettingsView()
-                case .about:     AboutSettingsView()
+                switch selection ?? .source {
+                case .source:     SourceSettingsView()
+                case .appearance: AppearanceSettingsView()
+                case .colors:     ColorsSettingsView()
+                case .position:   PositionSettingsView()
+                case .menuBar:    MenuBarSettingsView()
+                case .about:      AboutSettingsView()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .frame(minWidth: 880, minHeight: 560)
+        .frame(minWidth: 820, minHeight: 520)
     }
 }
 
 enum SettingsSection: String, CaseIterable, Identifiable {
-    case powerline
+    case source
+    case appearance
+    case colors
+    case position
     case menuBar
     case about
 
@@ -50,17 +56,23 @@ enum SettingsSection: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .powerline: return "Powerline"
-        case .menuBar:   return "Menu Bar"
-        case .about:     return "À propos"
+        case .source:     return "Source"
+        case .appearance: return "Apparence"
+        case .colors:     return "Couleurs"
+        case .position:   return "Position"
+        case .menuBar:    return "Menu Bar"
+        case .about:      return "À propos"
         }
     }
 
     var icon: String {
         switch self {
-        case .powerline: return "chart.bar.fill"
-        case .menuBar:   return "menubar"
-        case .about:     return "info.circle"
+        case .source:     return "dot.radiowaves.left.and.right"
+        case .appearance: return "paintbrush"
+        case .colors:     return "paintpalette"
+        case .position:   return "rectangle.portrait"
+        case .menuBar:    return "menubar"
+        case .about:      return "info.circle"
         }
     }
 }

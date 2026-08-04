@@ -97,9 +97,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func updateStatusBarIcon() {
         guard let button = statusItem?.button else { return }
-        let size: CGFloat = 90
+        let size: CGFloat = 18
 
-        let iconName = "powerline_white"
+        let iconName = "icon"
         if let url = Bundle.main.url(forResource: iconName, withExtension: "png"),
            let icon = NSImage(contentsOf: url) {
             let resized = NSImage(size: NSSize(width: size, height: size), flipped: false) { _ in
@@ -109,7 +109,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                           fraction: 1)
                 return true
             }
-            resized.isTemplate = true
+            resized.isTemplate = false
             button.image = resized
             button.imagePosition = .imageOnly
         } else {
@@ -124,7 +124,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             let window = NSWindow(contentViewController: hosting)
             window.title = "PKpowerlines — Réglages"
             window.subtitle = "Surveillance RAM & Batterie"
-            window.styleMask = [.titled, .closable, .miniaturizable, .fullSizeContentView]
+            window.styleMask = [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView]
             window.titlebarAppearsTransparent = false
             window.isReleasedWhenClosed = false
             window.delegate = self
