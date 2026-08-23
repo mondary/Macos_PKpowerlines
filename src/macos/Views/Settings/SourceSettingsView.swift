@@ -33,6 +33,12 @@ struct SourceSettingsView: View {
                     .toggleStyle(.switch)
                 Text("Masque le texte sur la barre. La barre powerline reste affichée dans tous les cas. Sous 8 px d'épaisseur, le texte est masqué automatiquement.")
                     .font(.caption).foregroundStyle(.secondary)
+
+                Toggle("Forcer le % en batterie faible", isOn: $settings.forcePercentageWhenLow)
+                    .toggleStyle(.switch)
+                    .disabled(settings.monitorType != .battery)
+                Text("Quand la batterie passe sous le seuil « Faible » (zone rouge), le % s'affiche en permanence, même si l'option ci-dessus est désactivée. Si la barre est trop fine, elle s'épaissit à 12 px le temps de l'alerte.")
+                    .font(.caption).foregroundStyle(.secondary)
             }
         }
         .formStyle(.grouped)

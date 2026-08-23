@@ -13,6 +13,7 @@ final class AppSettings: ObservableObject {
         static let barOffset = "barOffset"
         static let barFont = "barFont"
         static let showPercentage = "showPercentage"
+        static let forcePercentageWhenLow = "forcePercentageWhenLow"
         static let ramColor = "ramColor"
         static let batteryColor = "batteryColor"
         static let batteryLowColor = "batteryLowColor"
@@ -30,6 +31,7 @@ final class AppSettings: ObservableObject {
     @Published var barOffset: CGFloat { didSet { defaults.set(Double(barOffset), forKey: Keys.barOffset) } }
     @Published var barFont: BarFont { didSet { defaults.set(barFont.rawValue, forKey: Keys.barFont) } }
     @Published var showPercentage: Bool { didSet { defaults.set(showPercentage, forKey: Keys.showPercentage) } }
+    @Published var forcePercentageWhenLow: Bool { didSet { defaults.set(forcePercentageWhenLow, forKey: Keys.forcePercentageWhenLow) } }
     @Published var ramColorHex: String { didSet { defaults.set(ramColorHex, forKey: Keys.ramColor) } }
     @Published var batteryColorHex: String { didSet { defaults.set(batteryColorHex, forKey: Keys.batteryColor) } }
     @Published var batteryLowColorHex: String { didSet { defaults.set(batteryLowColorHex, forKey: Keys.batteryLowColor) } }
@@ -68,6 +70,7 @@ final class AppSettings: ObservableObject {
         let fontRaw = defaults.string(forKey: Keys.barFont) ?? BarFont.systemBold.rawValue
         self.barFont = BarFont(rawValue: fontRaw) ?? .systemBold
         self.showPercentage = (defaults.object(forKey: Keys.showPercentage) as? Bool) ?? true
+        self.forcePercentageWhenLow = (defaults.object(forKey: Keys.forcePercentageWhenLow) as? Bool) ?? true
         self.ramColorHex = defaults.string(forKey: Keys.ramColor) ?? "#FF3B30"
         self.batteryColorHex = defaults.string(forKey: Keys.batteryColor) ?? "#34C759"
         self.batteryLowColorHex = defaults.string(forKey: Keys.batteryLowColor) ?? "#FF3B30"

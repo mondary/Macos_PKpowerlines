@@ -37,6 +37,7 @@
 |---|---|---|
 | Source | RAM / Battery / CPU / Network | Settings → Powerline |
 | Show % | On / Off | Settings → Powerline |
+| Force % on low battery | On / Off (default: On) | Settings → Powerline |
 | Frequency | 1–10s | Settings → Powerline |
 | Height | 4–40px | Settings → Powerline (slider) |
 | Height presets | 4 / 8 / 12 / 20px | Settings → Powerline or ⌘4/⌘1/⌘2/⌘3 |

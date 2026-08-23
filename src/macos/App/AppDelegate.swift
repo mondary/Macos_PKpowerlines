@@ -33,6 +33,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var cancellables = Set<AnyCancellable>()
     private var currentOrientationVertical: Bool = false
     private var needsScreenRebuild = false
+    private var isLowBatteryText = false
+
+    /// Épaisseur minimale de la barre quand le % est forcé (zone rouge) :
+    /// en dessous, le texte ne tiendrait pas et serait coupé par la fenêtre.
+    private static let forcedTextThickness: CGFloat = 12
+
+    private var effectiveBarHeight: CGFloat {
+        isLowBatteryText ? max(settings.barHeight, Self.forcedTextThickness) : settings.barHeight
+    }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.applicationIconImage = AppIcon.image
@@ -292,6 +301,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let view = PowerBarView()
         view.updateOrientation(settings.barPosition.isVertical)
         view.updateShowPercentage(settings.showPercentage)
+        view.updateForceShowText(isLowBatteryText)
         view.updateOpacity(settings.barOpacity)
         view.updateFont(settings.barFont)
         barViews.append(view)
@@ -314,7 +324,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func barFrame(on screen: NSScreen) -> NSRect {
         let sf = screen.frame
-        let thickness = settings.barHeight
+        let thickness = effectiveBarHeight
         let offset = settings.barOffset
         switch settings.barPosition {
         case .top:
@@ -361,9 +371,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+    /// Active/désactive l'affichage forcé du % (batterie faible). 
+    /// Fait grossir la barre si trop fine pour le texte, puis repositionne.
+    private func setLowBatteryText(_ active: Bool) {
+        guard isLowBatteryText != active else { return }
+        isLowBatteryText = active
+        barViews.forEach { $0.updateForceShowText(active) }
+        resizeAndReposition()
+    }
+
     private func updateUsage() {
         switch settings.monitorType {
         case .ram:
+            setLowBatteryText(false)
             let usage = ramMonitor.getRAMUsage()
             let color = NSColor(settings.ramColor)
             let label = "\(Int(usage.usedPercentage))%"
@@ -375,10 +395,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         case .battery:
             let battery = batteryMonitor.getBatteryUsage()
             let threshold = settings.batteryLowThreshold
+            let forceText = settings.forcePercentageWhenLow
             let chargingColor = NSColor(settings.chargingColor)
             let lowColor = NSColor(settings.batteryLowColor)
             let normalColor = NSColor(settings.batteryColor)
             DispatchQueue.main.async { [weak self] in
+                self?.setLowBatteryText(
+                    forceText
+                        && battery.percentage >= 0
+                        && !battery.isCharging
+                        && battery.percentage < Double(threshold)
+                )
                 guard battery.percentage >= 0 else {
                     self?.barViews.forEach {
                         $0.updateUsage(percentage: 0, color: .gray, label: "Pas de batterie")
@@ -400,6 +427,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 }
             }
         case .cpu:
+            setLowBatteryText(false)
             let usage = cpuMonitor.getCPUUsage()
             let color = NSColor(settings.cpuColor)
             let label = "\(Int(usage.percentage))%"
@@ -409,6 +437,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 }
             }
         case .network:
+            setLowBatteryText(false)
             let usage = networkMonitor.getNetworkUsage(maxMBps: settings.networkMaxMBps)
             let color = NSColor(settings.networkColor)
             let label = "↓ \(Self.formatSpeed(usage.downloadKBps))  ↑ \(Self.formatSpeed(usage.uploadKBps))"

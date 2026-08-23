@@ -10,6 +10,7 @@ final class PowerBarView: NSView {
     private var font: BarFont = .systemBold
     private var isVertical: Bool = false
     private var showPercentageFlag: Bool = true
+    private var forceShowText: Bool = false
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
@@ -63,7 +64,7 @@ final class PowerBarView: NSView {
         percentageLabel?.stringValue = currentLabel
         percentageLabel?.frameRotation = 0
 
-        let canShow = showPercentageFlag && barHeight >= 8
+        let canShow = (showPercentageFlag && barHeight >= 8) || forceShowText
         percentageLabel?.isHidden = !canShow
         guard canShow else { return }
 
@@ -92,7 +93,7 @@ final class PowerBarView: NSView {
         percentageLabel?.stringValue = currentLabel
 
         // La taille de police s'adapte à l'ÉPAISSEUR (largeur) de la barre.
-        let canShow = showPercentageFlag && w >= 8
+        let canShow = (showPercentageFlag && w >= 8) || forceShowText
         percentageLabel?.isHidden = !canShow
         guard canShow else { return }
 
@@ -149,6 +150,12 @@ final class PowerBarView: NSView {
     func updateShowPercentage(_ show: Bool) {
         guard showPercentageFlag != show else { return }
         showPercentageFlag = show
+        updateBarFrame()
+    }
+
+    func updateForceShowText(_ force: Bool) {
+        guard forceShowText != force else { return }
+        forceShowText = force
         updateBarFrame()
     }
 }
