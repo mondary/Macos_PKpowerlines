@@ -3,8 +3,15 @@ import Combine
 import SwiftUI
 
 enum AppIcon {
+    /// Bundle contenant les resources (diffère entre SwiftPM debug et bundle .app release).
+    static var resourceBundle: Bundle {
+        Bundle.main.url(forResource: "icon", withExtension: "png") != nil
+            ? Bundle.main
+            : (Bundle(url: Bundle.main.bundleURL.appendingPathComponent("PKpowerlines_PKpowerlines.bundle")) ?? .main)
+    }
+
     static var image: NSImage? {
-        if let url = Bundle.main.url(forResource: "icon", withExtension: "png") {
+        if let url = resourceBundle.url(forResource: "icon", withExtension: "png") {
             return NSImage(contentsOf: url)
         }
         return NSImage(named: "icon")
@@ -100,7 +107,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let size: CGFloat = 18
 
         let iconName = "icon"
-        if let url = Bundle.main.url(forResource: iconName, withExtension: "png"),
+        if let url = AppIcon.resourceBundle.url(forResource: iconName, withExtension: "png"),
            let icon = NSImage(contentsOf: url) {
             let resized = NSImage(size: NSSize(width: size, height: size), flipped: false) { _ in
                 icon.draw(in: NSRect(x: 0, y: 0, width: size, height: size),

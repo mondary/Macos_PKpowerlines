@@ -13,6 +13,9 @@ let package = Package(
         .executableTarget(
             name: "PKpowerlines",
             path: "src/macos",
+            resources: [
+                .process("Resources")
+            ],
             linkerSettings: [
                 .linkedFramework("IOKit")
             ]
