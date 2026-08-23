@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct AboutSettingsView: View {
-    private let appVersion = (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String) ?? "1.7.0"
+    private let appVersion = (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String) ?? "2026.08.01"
     private let appBuild = (Bundle.main.infoDictionary?["CFBundleVersion"] as? String) ?? "1"
 
     var body: some View {

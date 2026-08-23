@@ -1,5 +1,12 @@
 # Changelog
 
+## [2026.08.01] - 2026-08-23
+### Added
+- **Option « Forcer le % en batterie faible »** — sous le seuil « Faible » (zone rouge, hors charge), le pourcentage s'affiche en permanence même si « Afficher le % » est désactivé ; la barre s'épaissit à 12 px si trop fine pour le texte (toggle dans Réglages → Powerline, défaut activé)
+
+### Changed
+- Versioning passé au format PK `YYYY.MM.PATCH` ; `build_app.sh` lit désormais le fichier `VERSION` (plus de version en dur dans l'Info.plist)
+
 ## [1.9.2] - 2026-07-17
 ### Added
 - **Icône powerline menu bar** — remplace l'ancienne icône par un séparateur powerline blanc (`powerline_white.png`, `isTemplate`) redimensionné à 66px
