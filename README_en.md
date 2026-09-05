@@ -1,10 +1,12 @@
 # PKpowerlines
 
-![Project icon](icon.png)
+![PKpowerlines](store/assets/banner-1544x500.png)
 
 [🇬🇧 EN](README_en.md) · [🇫🇷 FR](README.md)
 
 ✨ Native macOS menu-bar app that displays a real-time bar at the top of every screen: RAM or battery. Universal Intel + Apple Silicon binary.
+
+![PKpowerlines — settings window](store/screenshots/02-reglages.png)
 
 ## ✅ Features
 
@@ -21,6 +23,15 @@
 - ⏱️ **Frequency** — refresh every 1–10s
 - 🧩 **Universal binary** — `arm64` + `x86_64`
 - 🪟 **SwiftUI settings window** — 3-tab sidebar, native macOS style
+
+## 🎨 Battery states
+
+![The four battery bar states: 100%, 70%, low (15%) and charging](store/screenshots/03-etats-batterie.png)
+
+- **Normal** — the bar fills proportionally to the percentage, using the Battery color (green by default)
+- **Low** — below the threshold (25% by default, adjustable): Low-battery color (red) and the percentage is forced on, even under 8 px
+- **Charging** — charging color (blue) with a ⚡ prefix before the percentage
+- Under 8 px in height, the percentage is hidden automatically (except low battery)
 
 ## 🧠 Usage
 
@@ -109,6 +120,7 @@ PKpowerlines/
 │       │       └── AboutSettingsView.swift    # About
 │       └── Utils/
 │           └── ColorHex.swift          # Color <-> hex
+├── store/                                      # Store copy + screenshots
 ├── release/macos/                            # Build output (gitignored)
 ├── benchmark/                                # References, screenshots
 ├── secrets/                                  # Credentials (gitignored)
