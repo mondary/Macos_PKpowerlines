@@ -3,7 +3,15 @@ set -e
 
 APP_INTERNAL_NAME="PKpowerlines"
 echo "→ Build release universel (arm64 + x86_64)…"
-swift build -c release --arch arm64 --arch x86_64
+if swift build -c release --arch arm64 --arch x86_64 2>/dev/null; then
+    BINARY_SRC=".build/apple/Products/Release/$APP_INTERNAL_NAME"
+else
+    # Pas de Xcode (CLT seul) : --arch multi passe par XCBuild, absent → build par triple + lipo
+    echo "  (xcbuild indisponible — build par triple + lipo)"
+    swift build -c release --triple arm64-apple-macosx13
+    swift build -c release --triple x86_64-apple-macosx13
+    BINARY_SRC=""
+fi
 
 APP_NAME="$APP_INTERNAL_NAME.app"
 APP_PATH="release/macos/$APP_NAME"
@@ -38,10 +46,20 @@ cat > "$APP_PATH/Contents/Info.plist" <<EOF
 </plist>
 EOF
 
-cp "$BINARY_SRC" "$APP_PATH/Contents/MacOS/"
+if [ -n "$BINARY_SRC" ]; then
+    cp "$BINARY_SRC" "$APP_PATH/Contents/MacOS/"
+else
+    lipo -create .build/arm64-apple-macosx/release/PKpowerlines .build/x86_64-apple-macosx/release/PKpowerlines -output "$APP_PATH/Contents/MacOS/$APP_INTERNAL_NAME"
+fi
 cp "icon.png" "$APP_PATH/Contents/Resources/icon.png" 2>/dev/null || echo "  (icon.png absent, ignoré)"
 cp "src/macos/Resources/powerline_black.png" "$APP_PATH/Contents/Resources/powerline_black.png" 2>/dev/null || echo "  (powerline_black.png absent, ignoré)"
 cp "src/macos/Resources/powerline_white.png" "$APP_PATH/Contents/Resources/powerline_white.png" 2>/dev/null || echo "  (powerline_white.png absent, ignoré)"
+
+# Icônes et captures des projets PK (page Bibliothèque des réglages)
+mkdir -p "$APP_PATH/Contents/Resources/ProjectIcons"
+cp ProjectIcons/*.png "$APP_PATH/Contents/Resources/ProjectIcons/" 2>/dev/null || echo "  (ProjectIcons absent, ignoré)"
+mkdir -p "$APP_PATH/Contents/Resources/ProjectScreenshots"
+cp ProjectScreenshots/*.png "$APP_PATH/Contents/Resources/ProjectScreenshots/" 2>/dev/null || echo "  (ProjectScreenshots absent, ignoré)"
 
 # Génère l'icône .icns depuis icon.png (source unique)
 ICON_SRC="icon.png"

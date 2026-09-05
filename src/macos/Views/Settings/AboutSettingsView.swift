@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct AboutSettingsView: View {
-    private let appVersion = (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String) ?? "2026.08.01"
+    private let appVersion = (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String) ?? "dev"
     private let appBuild = (Bundle.main.infoDictionary?["CFBundleVersion"] as? String) ?? "1"
 
     var body: some View {
@@ -104,6 +104,11 @@ struct AboutSettingsView: View {
                 Label("Issues", systemImage: "exclamationmark.bubble")
                     .font(.caption)
                     .foregroundStyle(.secondary)
+            }
+            Link(destination: ProjectLinks.koFi) {
+                Label("Offrez-moi un café", systemImage: "cup.and.saucer")
+                    .font(.caption)
+                    .foregroundStyle(.orange)
             }
             Spacer()
             Text("MIT License")

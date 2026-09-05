@@ -22,7 +22,7 @@
 - ↕️ **Offset** — pixel by pixel (can overlap the menu bar, or shift on the sides)
 - ⏱️ **Frequency** — refresh every 1–10s
 - 🧩 **Universal binary** — `arm64` + `x86_64`
-- 🪟 **SwiftUI settings window** — 3-tab sidebar, native macOS style
+- 🪟 **SwiftUI settings** — sidebar with search (POWERLINE / PK PROJECTS groups), **Project Library** (PK projects as cards) and **Help & Donate** (Ko-fi) pages
 
 ## 🎨 Battery states
 
@@ -121,6 +121,8 @@ PKpowerlines/
 │       └── Utils/
 │           └── ColorHex.swift          # Color <-> hex
 ├── store/                                      # Store copy + screenshots
+├── ProjectIcons/                               # PK project icons (Library page)
+├── ProjectScreenshots/                         # PK project screenshots (Library page)
 ├── release/macos/                            # Build output (gitignored)
 ├── benchmark/                                # References, screenshots
 ├── secrets/                                  # Credentials (gitignored)

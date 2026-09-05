@@ -1,5 +1,16 @@
 # Changelog
 
+## [2026.09.01] - 2026-09-05
+### Added
+- **Fenêtre Réglages refondue** (format PKMonitor) : sidebar dédiée avec recherche de sections, groupes « POWERLINE » et « PK PROJECTS », version en pied de sidebar
+- **Page Bibliothèque** — les projets PK en cartes (icônes + captures), PKpowerlines en vedette, liens directs GitHub
+- **Page Aide & don** — carte Ko-fi « Offrez-moi un café » + liens GitHub / Issues ; lien café ajouté au footer de la page À propos
+- En-têtes de section (titre + sous-titre + icône) sur toutes les pages POWERLINE
+- Icônes et captures des projets PK embarquées (`ProjectIcons/`, `ProjectScreenshots/` copiés dans le bundle par `build_app.sh`)
+
+### Changed
+- Version 2026.08.01 → 2026.09.01
+
 ## [2026.08.01] - 2026-08-23
 ### Added
 - **Option « Forcer le % en batterie faible »** — sous le seuil « Faible » (zone rouge, hors charge), le pourcentage s'affiche en permanence même si « Afficher le % » est désactivé ; la barre s'épaissit à 12 px si trop fine pour le texte (toggle dans Réglages → Powerline, défaut activé)
