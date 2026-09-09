@@ -45,3 +45,16 @@ macOS, menu bar, powerline, system monitor, RAM, CPU, network, battery, native, 
 - **Peut-on masquer le pourcentage ?** Oui, la barre powerline reste affichée, seule la texte disparaît (automatiquement sous 8 px de hauteur).
 - **Comment positionner la barre ?** Haut, bas, gauche ou droite de chaque écran, avec un offset réglé au pixel (elle peut chevaucher la menu bar).
 - **Comment quitter l'app ?** Icône dans la barre des menus → Quitter (⌘Q), ou `killall PKpowerlines`.
+
+## Offre
+
+- **Modèle** : Open Source
+- **Prix** : Gratuit
+
+## Plateformes
+
+- GitHub Releases : https://github.com/mondary/Macos_PKpowerlines
+
+## Liens
+
+- **Repo** : https://github.com/mondary/Macos_PKpowerlines
