@@ -1,5 +1,27 @@
 # Changelog
 
+## [2026.09.05] - 2026-09-11
+### Changed
+- Hauteur par défaut restaurée à « Extra fin » (`4 px`)
+- Icône de menu bar envoyée en image intrinsèque `14 × 14 px` avec mise à l’échelle descendante uniquement
+
+## [2026.09.04] - 2026-09-11
+### Changed
+- Numéro de version incrémenté pour identifier sans ambiguïté la build installée
+
+## [2026.09.03] - 2026-09-11
+### Fixed
+- Démarrage du mouvement fluide après l’attachement effectif de la barre à sa fenêtre
+- Mouvement rendu par la variation directe du remplissage, visible même sans charge active
+
+## [2026.09.02] - 2026-09-11
+### Added
+- Mouvement fluide visible en continu ; pulsation et balayage accéléré ajoutés lorsque la batterie est en charge
+- Version affichée en tête du menu de l’icône PKpowerlines
+
+### Changed
+- Icône de menu bar réduite visuellement de 10 %
+
 ## [2026.09.01] - 2026-09-05
 ### Added
 - **Fenêtre Réglages refondue** (format PKMonitor) : sidebar dédiée avec recherche de sections, groupes « POWERLINE » et « PK PROJECTS », version en pied de sidebar

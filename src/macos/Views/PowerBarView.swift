@@ -1,7 +1,29 @@
 import AppKit
+import Dispatch
+
+private final class FlowFillView: NSView {
+    var fillColor: NSColor = .systemRed { didSet { updateColor() } }
+    var fillOpacity: Double = 1 { didSet { updateColor() } }
+
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        wantsLayer = true
+        updateColor()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        wantsLayer = true
+        updateColor()
+    }
+
+    private func updateColor() {
+        layer?.backgroundColor = fillColor.withAlphaComponent(fillOpacity).cgColor
+    }
+}
 
 final class PowerBarView: NSView {
-    private var barFill: NSView?
+    private var barFill: FlowFillView?
     private var percentageLabel: NSTextField?
     private var currentPercentage: Double = 0
     private var currentColor: NSColor = .systemRed
@@ -11,6 +33,10 @@ final class PowerBarView: NSView {
     private var isVertical: Bool = false
     private var showPercentageFlag: Bool = true
     private var forceShowText: Bool = false
+    private var flowEnabled = true
+    private var isCharging = false
+    private var flowPhase: CGFloat = 0
+    private var flowTimer: DispatchSourceTimer?
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
@@ -26,9 +52,9 @@ final class PowerBarView: NSView {
         wantsLayer = true
         layer?.backgroundColor = NSColor.darkGray.withAlphaComponent(0.6).cgColor
 
-        let bar = NSView()
-        bar.wantsLayer = true
-        bar.layer?.backgroundColor = currentColor.withAlphaComponent(opacity).cgColor
+        let bar = FlowFillView()
+        bar.fillColor = currentColor
+        bar.fillOpacity = opacity
         addSubview(bar)
         self.barFill = bar
 
@@ -46,6 +72,13 @@ final class PowerBarView: NSView {
         updateBarFrame()
     }
 
+    override func viewDidMoveToWindow() {
+        super.viewDidMoveToWindow()
+        restartFlowTimer()
+    }
+
+    deinit { flowTimer?.cancel() }
+
     private func updateBarFrame() {
         if isVertical {
             layoutVertical()
@@ -59,7 +92,7 @@ final class PowerBarView: NSView {
     private func layoutHorizontal() {
         let barHeight = bounds.height
         let width = bounds.width * currentPercentage
-        barFill?.frame = NSRect(x: 0, y: 0, width: width, height: barHeight)
+        applyAnimatedFillFrame(wave: 0)
 
         percentageLabel?.stringValue = currentLabel
         percentageLabel?.frameRotation = 0
@@ -88,7 +121,7 @@ final class PowerBarView: NSView {
         let w = bounds.width
         let h = bounds.height
         let fillHeight = h * currentPercentage
-        barFill?.frame = NSRect(x: 0, y: 0, width: w, height: fillHeight)
+        applyAnimatedFillFrame(wave: 0)
 
         percentageLabel?.stringValue = currentLabel
 
@@ -127,13 +160,14 @@ final class PowerBarView: NSView {
         currentPercentage = min(max(percentage, 0), 100) / 100.0
         currentColor = color
         currentLabel = label
-        barFill?.layer?.backgroundColor = color.withAlphaComponent(opacity).cgColor
+        barFill?.fillColor = color
         updateBarFrame()
+        restartFlowTimer()
     }
 
     func updateOpacity(_ value: Double) {
         opacity = value
-        barFill?.layer?.backgroundColor = currentColor.withAlphaComponent(opacity).cgColor
+        barFill?.fillOpacity = opacity
     }
 
     func updateFont(_ value: BarFont) {
@@ -145,6 +179,46 @@ final class PowerBarView: NSView {
         guard isVertical != vertical else { return }
         isVertical = vertical
         updateBarFrame()
+    }
+
+    func updateAnimatedFlow(_ animated: Bool) {
+        flowEnabled = animated
+        restartFlowTimer()
+    }
+
+    func updateCharging(_ charging: Bool) {
+        isCharging = charging
+        restartFlowTimer()
+    }
+
+    private func restartFlowTimer() {
+        flowTimer?.cancel()
+        flowTimer = nil
+        guard flowEnabled, window != nil else { return }
+
+        let timer = DispatchSource.makeTimerSource(queue: .main)
+        timer.schedule(deadline: .now(), repeating: .milliseconds(50), leeway: .milliseconds(5))
+        timer.setEventHandler { [weak self] in self?.advanceFlow() }
+        flowTimer = timer
+        timer.resume()
+    }
+
+    private func advanceFlow() {
+        flowPhase += isCharging ? 0.42 : 0.24
+        let amplitude: CGFloat = isCharging ? 36 : 24
+        applyAnimatedFillFrame(wave: sin(flowPhase) * amplitude)
+    }
+
+    private func applyAnimatedFillFrame(wave: CGFloat) {
+        if isVertical {
+            let baseHeight = bounds.height * currentPercentage
+            let height = min(max(baseHeight + wave, 0), bounds.height)
+            barFill?.frame = NSRect(x: 0, y: 0, width: bounds.width, height: height)
+        } else {
+            let baseWidth = bounds.width * currentPercentage
+            let width = min(max(baseWidth + wave, 0), bounds.width)
+            barFill?.frame = NSRect(x: 0, y: 0, width: width, height: bounds.height)
+        }
     }
 
     func updateShowPercentage(_ show: Bool) {

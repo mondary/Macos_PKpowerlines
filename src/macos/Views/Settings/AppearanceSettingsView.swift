@@ -28,6 +28,12 @@ struct AppearanceSettingsView: View {
                 }
             }
 
+            Section("Mouvement") {
+                Toggle("Flux animé", isOn: $settings.animatedFlow)
+                Text("Ajoute un mouvement fluide et discret à la barre de puissance.")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+
             Section {
                 Picker("Police", selection: $settings.barFont) {
                     ForEach(BarFont.allCases) { f in Text(f.displayName).tag(f) }

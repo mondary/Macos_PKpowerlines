@@ -6,6 +6,8 @@
 
 ✨ Native macOS menu-bar app that displays a real-time bar at the top of every screen: RAM or battery. Universal Intel + Apple Silicon binary.
 
+Version **2026.09.05**
+
 ![PKpowerlines — settings window](store/screenshots/02-reglages.png)
 
 ## ✅ Features
@@ -19,6 +21,7 @@
 - 🔤 **Custom font** — 7 fonts, auto-adaptive size, vertically centered percentage
 - 🎚️ **Custom height** — slider 4–40px + 4 presets (⌘4/⌘1/⌘2/⌘3)
 - 💧 **Opacity** — 20% to 100%
+- 🌊 **Animated flow** — continuous fluid highlight, with a stronger pulse while charging
 - ↕️ **Offset** — pixel by pixel (can overlap the menu bar, or shift on the sides)
 - ⏱️ **Frequency** — refresh every 1–10s
 - 🧩 **Universal binary** — `arm64` + `x86_64`
@@ -30,7 +33,7 @@
 
 - **Normal** — the bar fills proportionally to the percentage, using the Battery color (green by default)
 - **Low** — below the threshold (25% by default, adjustable): Low-battery color (red) and the percentage is forced on, even under 8 px
-- **Charging** — charging color (blue) with a ⚡ prefix before the percentage
+- **Charging** — charging color (blue), ⚡ prefix, and an animated bar pulse
 - Under 8 px in height, the percentage is hidden automatically (except low battery)
 
 ## 🧠 Usage

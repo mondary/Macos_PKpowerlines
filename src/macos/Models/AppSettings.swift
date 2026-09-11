@@ -12,6 +12,7 @@ final class AppSettings: ObservableObject {
         static let barPosition = "barPosition"
         static let barOffset = "barOffset"
         static let barFont = "barFont"
+        static let animatedFlow = "animatedFlow"
         static let showPercentage = "showPercentage"
         static let forcePercentageWhenLow = "forcePercentageWhenLow"
         static let ramColor = "ramColor"
@@ -30,6 +31,7 @@ final class AppSettings: ObservableObject {
     @Published var barPosition: BarPosition { didSet { defaults.set(barPosition.rawValue, forKey: Keys.barPosition) } }
     @Published var barOffset: CGFloat { didSet { defaults.set(Double(barOffset), forKey: Keys.barOffset) } }
     @Published var barFont: BarFont { didSet { defaults.set(barFont.rawValue, forKey: Keys.barFont) } }
+    @Published var animatedFlow: Bool { didSet { defaults.set(animatedFlow, forKey: Keys.animatedFlow) } }
     @Published var showPercentage: Bool { didSet { defaults.set(showPercentage, forKey: Keys.showPercentage) } }
     @Published var forcePercentageWhenLow: Bool { didSet { defaults.set(forcePercentageWhenLow, forKey: Keys.forcePercentageWhenLow) } }
     @Published var ramColorHex: String { didSet { defaults.set(ramColorHex, forKey: Keys.ramColor) } }
@@ -40,7 +42,7 @@ final class AppSettings: ObservableObject {
     @Published var networkColorHex: String { didSet { defaults.set(networkColorHex, forKey: Keys.networkColor) } }
     @Published var networkMaxMBps: Double { didSet { defaults.set(networkMaxMBps, forKey: Keys.networkMaxMBps) } }
 
-    static let defaultHeight: CGFloat = 9
+    static let defaultHeight: CGFloat = 4
     static let minHeight: CGFloat = 4
     static let maxHeight: CGFloat = 40
     static let defaultOpacity: Double = 0.5
@@ -69,6 +71,7 @@ final class AppSettings: ObservableObject {
         self.barOffset = CGFloat(storedOffset ?? 0)
         let fontRaw = defaults.string(forKey: Keys.barFont) ?? BarFont.systemBold.rawValue
         self.barFont = BarFont(rawValue: fontRaw) ?? .systemBold
+        self.animatedFlow = (defaults.object(forKey: Keys.animatedFlow) as? Bool) ?? true
         self.showPercentage = (defaults.object(forKey: Keys.showPercentage) as? Bool) ?? true
         self.forcePercentageWhenLow = (defaults.object(forKey: Keys.forcePercentageWhenLow) as? Bool) ?? true
         self.ramColorHex = defaults.string(forKey: Keys.ramColor) ?? "#FF3B30"

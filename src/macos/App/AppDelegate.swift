@@ -83,6 +83,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         let menu = NSMenu()
 
+        let versionItem = NSMenuItem(title: "PKpowerlines · v\(appVersion)", action: nil, keyEquivalent: "")
+        versionItem.isEnabled = false
+        menu.addItem(versionItem)
+        menu.addItem(NSMenuItem.separator())
+
         let settingsItem = NSMenuItem(title: "Réglages…", action: #selector(openSettings), keyEquivalent: ",")
         settingsItem.target = self
         menu.addItem(settingsItem)
@@ -113,13 +118,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func updateStatusBarIcon() {
         guard let button = statusItem?.button else { return }
-        let size: CGFloat = 18
+        let iconSize: CGFloat = 14
 
         let iconName = "icon"
         if let url = AppIcon.resourceBundle.url(forResource: iconName, withExtension: "png"),
            let icon = NSImage(contentsOf: url) {
-            let resized = NSImage(size: NSSize(width: size, height: size), flipped: false) { _ in
-                icon.draw(in: NSRect(x: 0, y: 0, width: size, height: size),
+            let resized = NSImage(size: NSSize(width: iconSize, height: iconSize), flipped: false) { _ in
+                icon.draw(in: NSRect(x: 0, y: 0, width: iconSize, height: iconSize),
                           from: .zero,
                           operation: .sourceOver,
                           fraction: 1)
@@ -127,10 +132,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             }
             resized.isTemplate = false
             button.image = resized
+            button.imageScaling = .scaleProportionallyDown
             button.imagePosition = .imageOnly
         } else {
             button.title = "PKpowerlines"
         }
+    }
+
+    private var appVersion: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "dev"
     }
 
     @objc private func openSettings() {
@@ -241,6 +251,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .sink { [weak self] show in self?.barViews.forEach { $0.updateShowPercentage(show) } }
             .store(in: &cancellables)
 
+        settings.$animatedFlow
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] animated in self?.barViews.forEach { $0.updateAnimatedFlow(animated) } }
+            .store(in: &cancellables)
+
         settings.$monitorType
             .removeDuplicates()
             .dropFirst()
@@ -304,6 +321,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         view.updateForceShowText(isLowBatteryText)
         view.updateOpacity(settings.barOpacity)
         view.updateFont(settings.barFont)
+        view.updateAnimatedFlow(settings.animatedFlow)
+        view.updateCharging(false)
         barViews.append(view)
 
         let window = NSWindow(
@@ -389,6 +408,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             let label = "\(Int(usage.usedPercentage))%"
             DispatchQueue.main.async { [weak self] in
                 self?.barViews.forEach {
+                    $0.updateCharging(false)
                     $0.updateUsage(percentage: usage.usedPercentage, color: color, label: label)
                 }
             }
@@ -408,6 +428,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 )
                 guard battery.percentage >= 0 else {
                     self?.barViews.forEach {
+                        $0.updateCharging(false)
                         $0.updateUsage(percentage: 0, color: .gray, label: "Pas de batterie")
                     }
                     return
@@ -423,6 +444,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 let prefix = battery.isCharging ? "⚡ " : ""
                 let label = "\(prefix)\(Int(battery.percentage))%"
                 self?.barViews.forEach {
+                    $0.updateCharging(battery.isCharging)
                     $0.updateUsage(percentage: battery.percentage, color: color, label: label)
                 }
             }
@@ -433,6 +455,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             let label = "\(Int(usage.percentage))%"
             DispatchQueue.main.async { [weak self] in
                 self?.barViews.forEach {
+                    $0.updateCharging(false)
                     $0.updateUsage(percentage: usage.percentage, color: color, label: label)
                 }
             }
@@ -443,6 +466,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             let label = "↓ \(Self.formatSpeed(usage.downloadKBps))  ↑ \(Self.formatSpeed(usage.uploadKBps))"
             DispatchQueue.main.async { [weak self] in
                 self?.barViews.forEach {
+                    $0.updateCharging(false)
                     $0.updateUsage(percentage: usage.percentage, color: color, label: label)
                 }
             }
