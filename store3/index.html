@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#5e528a">
+  <meta name="description" content="Une ligne de couleur pour lire la batterie, la RAM, le CPU ou le réseau de votre Mac. Explorez le jardin interactif de PKpowerlines.">
+  <title>PKpowerlines — Votre Mac, en un regard.</title>
+  <link rel="icon" href="assets/bolt.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/silkscreen.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#atelier">Aller au terrain de jeu</a>
+  <main>
+    <section class="world" id="jardin" aria-label="Le jardin interactif de PKpowerlines">
+      <div class="world-stage" id="world-stage">
+        <img class="world-art" id="world-art" src="assets/garden.png" alt="Un jardin japonais en pixel art : cerisiers roses, pagode et mont Fuji sous un ciel violet et pêche." fetchpriority="high">
+        <div class="world-tint" id="world-tint"></div>
+        <div class="pixel-sun" id="pixel-sun" aria-hidden="true"></div>
+        <canvas id="petals" class="petals" aria-hidden="true"></canvas>
+        <header class="site-header">
+          <a class="brand" href="#jardin"><img src="assets/bolt.svg" alt="" width="20" height="24">PKpowerlines</a>
+          <nav aria-label="Navigation principale"><a href="#atelier">Terrain de jeu</a><a href="#application">L'application</a><a href="https://github.com/mondary/Macos_PKpowerlines" target="_blank" rel="noopener noreferrer">Code source ↗</a><a class="nav-download" href="https://github.com/mondary/Macos_PKpowerlines/releases" target="_blank" rel="noopener noreferrer">Installer sur Mac ↗</a></nav>
+        </header>
+
+        <div class="intro-copy" id="intro-copy">
+          <p class="pixel-label">UN PETIT UTILITAIRE. UN AUTRE REGARD.</p>
+          <h1>Votre Mac.<br>Une ligne pour<br>tout savoir.</h1>
+          <p class="intro-description">Batterie, mémoire, processeur, réseau.<br>Une ligne de couleur au bord de l’écran.<br>Et vous gardez l’esprit ailleurs.</p>
+          <div class="intro-actions"><a class="pixel-button light" href="https://github.com/mondary/Macos_PKpowerlines/releases" target="_blank" rel="noopener noreferrer">Installer gratuitement <span>↗</span></a><a class="pixel-button glass" href="#atelier">Essayer ici <span>↓</span></a></div>
+          <p class="compatibility">macOS 13+ · Apple Silicon & Intel · Open source</p>
+        </div>
+
+        <div class="day-copy" id="day-copy" inert>
+          <p class="pixel-label">UNE JOURNÉE DANS LE JARDIN</p>
+          <div class="day-clock" id="day-clock">08:00</div>
+          <h2 id="day-title">La journée s’étire.<br>La ligne se raccourcit.</h2>
+          <p id="day-description">Faites défiler pour avancer dans le temps. Le niveau de batterie suit le rythme de votre journée.</p>
+          <button class="pixel-button light" type="button" id="connect-button">Brancher le MagSafe <span>↗</span></button>
+          <button class="text-button" id="replay-button" type="button">↺ Revenir au matin</button>
+        </div>
+
+        <div class="laptop" id="laptop">
+          <div class="floating-notes" aria-hidden="true"><span><i class="status-dot"></i> <b id="floating-status">Batterie · 86 %</b></span><span>Une ligne. Tous vos écrans.</span></div>
+          <div class="laptop-lid"><div class="camera" aria-hidden="true"></div>
+            <div class="desktop" id="desktop">
+              <div class="desktop-wallpaper"></div>
+              <div class="mac-menu"><span>◆ &nbsp; <b>Finder</b> &nbsp; Fichier &nbsp; Édition</span><span id="mac-clock">08:00</span></div>
+              <div class="world-powerline" id="world-powerline" role="img" aria-label="Batterie 86 %"><div id="world-fill"></div><span id="world-label">86%</span></div>
+              <div class="desktop-folder" aria-hidden="true"><i></i><span>Projets</span></div>
+              <div class="screen-window">
+                <div class="screen-window-title"><span class="window-dots">● ● ●</span><span>APERÇU INTERACTIF</span></div>
+                <div class="screen-window-body"><div class="screen-source" id="screen-source">BATTERIE</div><div class="screen-number" id="screen-number">86<span>%</span></div><div class="screen-status" id="screen-status">Sur batterie. Tout va bien.</div><div class="screen-source-buttons" id="screen-sources" aria-label="Source de la simulation"><button data-source="battery" aria-pressed="true">BAT</button><button data-source="ram" aria-pressed="false">RAM</button><button data-source="cpu" aria-pressed="false">CPU</button><button data-source="network" aria-pressed="false">NET</button></div></div>
+              </div>
+              <div class="desktop-dock" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            </div>
+          </div>
+          <div class="laptop-hinge"></div>
+          <div class="laptop-base"><div class="keyboard" aria-hidden="true"></div><div class="trackpad" aria-hidden="true"></div><div class="magsafe-port" id="magsafe-port" aria-hidden="true"></div></div>
+          <div class="laptop-shadow" aria-hidden="true"></div>
+        </div>
+        <canvas class="cable-canvas" id="cable-canvas" aria-hidden="true"></canvas>
+        <button class="pixel-plug" id="pixel-plug" aria-label="Câble MagSafe : glisser vers le port ou cliquer pour brancher" aria-pressed="false"><span class="plug-body"><i></i></span><span class="plug-metal"></span></button>
+        <div class="cable-instruction" id="cable-instruction">attrapez le câble <span>↗</span></div>
+
+        <div class="world-footer">
+          <div class="time-switch" id="time-switch" aria-label="Choisir le moment de la journée"><button data-time="0" aria-pressed="true">Aube</button><button data-time="0.35" aria-pressed="false">Midi</button><button data-time="0.72" aria-pressed="false">Soir</button><button data-time="1" aria-pressed="false">Nuit</button></div>
+          <div class="scroll-cue" id="scroll-cue">FAITES DÉFILER, LE TEMPS PASSE <span>↓</span></div>
+          <button class="motion-toggle" id="motion-toggle" aria-pressed="true" aria-label="Activer ou désactiver les pétales animés">✦ Pétales : oui</button>
+        </div>
+        <div class="pixel-edge" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <section class="intro-section" id="application">
+      <div class="content-width intro-layout"><div><span class="pixel-label muted">L'INFORMATION, SANS L'INTERRUPTION.</span><h2>Un petit signal.<br>Une place naturelle.</h2></div><div class="intro-section-copy"><p>PKpowerlines transforme le bord de votre écran en indicateur vivant. Sa longueur donne la mesure ; sa couleur raconte l’état de votre Mac.</p><p>Elle reste visible sur chaque écran et dans tous les Spaces. Vos clics la traversent. Vous continuez simplement ce que vous étiez en train de faire.</p><span class="small-pixel">NATIVE SWIFT · LOCALE · SANS COMPTE</span></div></div>
+      <div class="signal-list content-width">
+        <button class="signal-row" data-pick="battery"><span class="signal-index">01</span><span class="pixel-icon battery-icon" aria-hidden="true"></span><strong>Batterie</strong><span class="signal-copy">Le niveau, la charge et le moment de brancher.</span><span class="mini-track"><i style="--signal:#34c759;--amount:76%"></i></span><span class="signal-arrow">↗</span></button>
+        <button class="signal-row" data-pick="ram"><span class="signal-index">02</span><span class="pixel-icon ram-icon" aria-hidden="true">▥</span><strong>Mémoire</strong><span class="signal-copy">La RAM active et câblée, en un coup d’œil.</span><span class="mini-track"><i style="--signal:#ff3b30;--amount:48%"></i></span><span class="signal-arrow">↗</span></button>
+        <button class="signal-row" data-pick="cpu"><span class="signal-index">03</span><span class="pixel-icon cpu-icon" aria-hidden="true">▦</span><strong>Processeur</strong><span class="signal-copy">La charge globale de votre CPU.</span><span class="mini-track"><i style="--signal:#ff9500;--amount:31%"></i></span><span class="signal-arrow">↗</span></button>
+        <button class="signal-row" data-pick="network"><span class="signal-index">04</span><span class="pixel-icon network-icon" aria-hidden="true">↕</span><strong>Réseau</strong><span class="signal-copy">Les débits descendant et montant, en direct.</span><span class="mini-track"><i style="--signal:#5ac8fa;--amount:62%"></i></span><span class="signal-arrow">↗</span></button>
+      </div>
+    </section>
+
+    <section class="workshop" id="atelier" aria-labelledby="workshop-title">
+      <div class="content-width">
+        <div class="section-heading"><div><span class="pixel-label">SAUVEGARDEZ VOTRE STYLE.</span><h2 id="workshop-title">Le terrain de jeu.</h2></div><p>Choisissez une source. Faites varier le niveau.<br>Déplacez la ligne. Trouvez votre équilibre.</p></div>
+        <div class="workshop-window">
+          <div class="workshop-title"><span>PKPOWERLINES — SIMULATEUR</span><span aria-hidden="true">− &nbsp; □ &nbsp; ×</span></div>
+          <div class="workshop-body">
+            <div class="workshop-preview">
+              <div class="preview-monitor"><div class="preview-screen" id="preview-screen"><div class="preview-bg"></div><div class="preview-menu"><span>◆ &nbsp; Finder &nbsp; Fichier</span><span>18:42</span></div><div class="preview-bar top" id="preview-bar" role="img" aria-label="Batterie"><div id="preview-fill"></div><span id="preview-label">86%</span></div><div class="preview-wordmark">less noise.<br>more pixels.</div></div><div class="monitor-chin"><span>PK</span></div><div class="monitor-foot"></div></div>
+              <div class="preview-readout"><span id="preview-state">SUR BATTERIE</span><b id="preview-value">86%</b></div>
+              <div class="zoom-label"><span>LA LIGNE, VUE DE PRÈS</span><span>↓</span></div><div class="zoom-track" id="zoom-track"><div id="zoom-fill"></div><span id="zoom-label">86%</span></div>
+              <div class="scenario-buttons" id="scenarios" aria-label="Scénarios batterie"><button data-scenario="normal">Normale</button><button data-scenario="low">Batterie faible</button><button data-scenario="charge">⚡ Charge</button><button data-scenario="full">100 %</button></div>
+            </div>
+            <form class="control-panel" onsubmit="return false">
+              <fieldset><legend>01 / SOURCE</legend><div class="source-tabs" id="source-tabs"><button type="button" data-source="battery" aria-pressed="true">Batterie</button><button type="button" data-source="ram" aria-pressed="false">RAM</button><button type="button" data-source="cpu" aria-pressed="false">CPU</button><button type="button" data-source="network" aria-pressed="false">Réseau</button></div></fieldset>
+              <div class="range-control"><label for="level"><span id="level-title">Niveau de batterie</span><output id="level-output">86 %</output></label><input type="range" id="level" min="0" max="100" value="86"></div>
+              <div class="charge-row" id="charge-row"><span>MagSafe connecté</span><button type="button" class="pixel-switch" id="charge-toggle" role="switch" aria-checked="false" aria-label="Brancher le MagSafe"><i></i></button></div>
+              <fieldset><legend>02 / POSITION</legend><div class="position-tabs" id="position-tabs"><button type="button" data-edge="top" aria-pressed="true">↑ Haut</button><button type="button" data-edge="bottom" aria-pressed="false">↓ Bas</button><button type="button" data-edge="left" aria-pressed="false">← Gauche</button><button type="button" data-edge="right" aria-pressed="false">→ Droite</button></div></fieldset>
+              <div class="range-control"><label for="thickness"><span>Épaisseur</span><output id="thickness-output">12 px</output></label><input type="range" id="thickness" min="4" max="40" value="12"></div>
+              <div class="range-control"><label for="opacity"><span>Opacité</span><output id="opacity-output">100 %</output></label><input type="range" id="opacity" min="20" max="100" value="100"></div>
+              <div class="check-row"><label><input type="checkbox" id="show-text" checked> Afficher le texte</label><label><input type="checkbox" id="flow" checked> Flux animé</label></div>
+              <details class="advanced"><summary>Plus de réglages <span>+</span></summary><div><label for="source-color">Couleur de la source</label><input type="color" id="source-color" value="#34c759"></div><div><label for="threshold">Seuil batterie faible</label><select id="threshold"><option value="10">10 %</option><option value="20" selected>20 %</option><option value="30">30 %</option><option value="50">50 %</option></select></div><label class="force-label"><input type="checkbox" id="force-text" checked> Forcer le texte en batterie faible</label></details>
+            </form>
+          </div>
+          <div class="workshop-status"><span class="small-pixel" id="workshop-tip">PRÊT À JOUER.</span><button id="reset-settings" type="button">↺ Réinitialiser</button></div>
+        </div>
+        <p class="demo-note">Une simulation pour explorer. Les valeurs ne proviennent pas de votre ordinateur. La charge est accélérée dans le jardin.</p>
+      </div>
+    </section>
+
+    <section class="details-section"><div class="content-width details-layout"><div class="details-title"><span class="pixel-label muted">PETITE LIGNE, GRAND CHOIX.</span><h2>Discrète.<br>Jusqu’au<br>dernier pixel.</h2><div class="pixel-flower" aria-hidden="true"><i></i></div></div><div class="features">
+      <article><span class="small-pixel">SUR TOUS VOS ÉCRANS</span><h3>Le bon bord, partout.</h3><p>Haut, bas, gauche ou droite. Une barre par écran, présente dans tous les Spaces. Les clics passent à travers et l’app reste dans la barre des menus, sans icône dans le Dock.</p></article>
+      <article><span class="small-pixel">À VOTRE MESURE</span><h3>De 4 à 40 pixels.</h3><p>Épaisseur, couleurs, opacité de 20 à 100 %, sept polices et décalage de −40 à +400 px. Quatre presets d’épaisseur sont accessibles au clavier.</p></article>
+      <article><span class="small-pixel">LE BON SIGNAL</span><h3>Elle sait se faire remarquer.</h3><p>Bleu et ⚡ pendant la charge active. Rouge sous votre seuil faible, réglable de 5 à 50 %. L’alerte peut forcer le pourcentage et épaissir la barre à 12 px.</p></article>
+      <article><span class="small-pixel">LE BON RYTHME</span><h3>Vivante, à votre rythme.</h3><p>Actualisation de 1 à 10 secondes, flux animé désactivable et plafond réseau de 1 à 1 000 MB/s. À moins de 8 px, le texte se masque automatiquement hors alerte.</p></article>
+      <details><summary>Et dans les réglages de l’app ? <span>+</span></summary><p>Une fenêtre SwiftUI avec recherche, le réglage de l’espacement des éléments de la barre des menus, la bibliothèque des projets PK et une page Aide & don. ⌘, ouvre les réglages, ⌘R repositionne la ligne. ⌘4, ⌘1, ⌘2 et ⌘3 appliquent les presets 4, 8, 12 et 20 px.</p></details>
+    </div></div></section>
+
+    <section class="download-section"><div class="download-landscape" aria-hidden="true"></div><div class="download-copy"><span class="pixel-label">VOTRE PROCHAINE PETITE HABITUDE.</span><h2>Une ligne dans votre Mac.<br>Un peu de calme en plus.</h2><a class="pixel-button light" href="https://github.com/mondary/Macos_PKpowerlines/releases" target="_blank" rel="noopener noreferrer">Télécharger PKpowerlines <span>↗</span></a><p>Gratuit et open source · macOS 13+ · Intel & Apple Silicon</p></div></section>
+  </main>
+  <footer><a class="brand" href="#jardin"><img src="assets/bolt.svg" alt="" width="16" height="20">PKpowerlines</a><span>Fait pour votre Mac. Tout reste sur votre Mac.</span><a href="https://github.com/mondary/Macos_PKpowerlines" target="_blank" rel="noopener noreferrer">GitHub ↗</a></footer>
+</body>
+</html>
