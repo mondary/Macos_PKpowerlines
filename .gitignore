@@ -53,3 +53,4 @@ benchmark/*
 !benchmark/.gitkeep
 .inspi
 /AGENTS.md
+packaging/probe/

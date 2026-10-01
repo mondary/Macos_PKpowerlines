@@ -1,5 +1,13 @@
 # Changelog
 
+## [2026.10.2] - 2026-10-01
+### Added
+- **Landing bilingue FR/EN** (`store/website/`) : détection automatique de la langue du navigateur, bascule manuelle persistante
+- Boutons **GitHub** (icône) et **Offrir un café** (Ko-fi, rouge) visibles dans l'en-tête de la landing
+- Bouton de téléchargement relié à la **release GitHub** (DMG direct via API), avec commandes `curl` et `brew install`
+- Pipeline de packaging DMG stylé (`packaging/` + `package_dmg.sh`) : fond animé dmgly, create-dmg vendorisé
+- Cask Homebrew `mondary/tap/pkpowerlines`
+
 ## [2026.10.1] - 2026-10-01
 ### Changed
 - Réorganisation du dépôt : assets store historiques dans `store/v1/`, landing pixel art dans `store/website/`, anciens visuels archivés dans `archives/`

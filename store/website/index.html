@@ -12,7 +12,7 @@
   <script src="app.js" defer></script>
 </head>
 <body>
-  <a class="skip" href="#atelier">Aller au terrain de jeu</a>
+  <a class="skip" href="#atelier" data-i18n="skip">Aller au terrain de jeu</a>
   <main>
     <section class="world" id="jardin" aria-label="Le jardin interactif de PKpowerlines">
       <div class="world-stage" id="world-stage">
@@ -22,36 +22,36 @@
         <canvas id="petals" class="petals" aria-hidden="true"></canvas>
         <header class="site-header">
           <a class="brand" href="#jardin"><img src="assets/bolt.svg" alt="" width="20" height="24">PKpowerlines</a>
-          <nav aria-label="Navigation principale"><a href="#atelier">Terrain de jeu</a><a href="#application">L'application</a><a href="https://github.com/mondary/Macos_PKpowerlines" target="_blank" rel="noopener noreferrer">Code source ↗</a><a class="nav-download" href="https://github.com/mondary/Macos_PKpowerlines/releases" target="_blank" rel="noopener noreferrer">Installer sur Mac ↗</a></nav>
+          <nav aria-label="Navigation principale"><a href="#atelier" data-i18n="nav_playground">Terrain de jeu</a><a href="#application" data-i18n="nav_app">L'application</a><a href="https://github.com/mondary/Macos_PKpowerlines" target="_blank" rel="noopener noreferrer" data-i18n="nav_source">Code source ↗</a><a class="nav-download" href="https://github.com/mondary/Macos_PKpowerlines/releases" target="_blank" rel="noopener noreferrer" data-i18n="nav_install">Installer sur Mac ↗</a><a class="nav-icon" href="https://github.com/mondary/Macos_PKpowerlines" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a><a class="nav-kofi" href="https://ko-fi.com/pouark" target="_blank" rel="noopener noreferrer"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 7h12v6.5A4.5 4.5 0 0 1 11.5 18h-3A4.5 4.5 0 0 1 4 13.5V7zm13 1.2h1.3a3 3 0 1 1 0 6H17v-2h1.3a1 1 0 1 0 0-2H17V8.2z"/><path fill="#ff5e5b" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" transform="translate(4.6,6.2) scale(0.42)"/></svg><span data-i18n="kofi_button">Offrir un café</span></a><div class="lang-switch" role="group" aria-label="Langue / Language"><button type="button" data-lang="fr" aria-pressed="true">FR</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div></nav>
         </header>
 
         <div class="intro-copy" id="intro-copy">
-          <p class="pixel-label">UN PETIT UTILITAIRE. UN AUTRE REGARD.</p>
-          <h1>Votre Mac.<br>Une ligne pour<br>tout savoir.</h1>
-          <p class="intro-description">Batterie, mémoire, processeur, réseau.<br>Une ligne de couleur au bord de l’écran.<br>Et vous gardez l’esprit ailleurs.</p>
-          <div class="intro-actions"><a class="pixel-button light" href="https://github.com/mondary/Macos_PKpowerlines/releases" target="_blank" rel="noopener noreferrer">Installer gratuitement <span>↗</span></a><a class="pixel-button glass" href="#atelier">Essayer ici <span>↓</span></a></div>
-          <p class="compatibility">macOS 13+ · Apple Silicon & Intel · Open source</p>
+          <p class="pixel-label" data-i18n="intro_label">UN PETIT UTILITAIRE. UN AUTRE REGARD.</p>
+          <h1 data-i18n-html="intro_title">Votre Mac.<br>Une ligne pour<br>tout savoir.</h1>
+          <p class="intro-description" data-i18n-html="intro_description">Batterie, mémoire, processeur, réseau.<br>Une ligne de couleur au bord de l'écran.<br>Et vous gardez l'esprit ailleurs.</p>
+          <div class="intro-actions"><a class="pixel-button light" href="https://github.com/mondary/Macos_PKpowerlines/releases" target="_blank" rel="noopener noreferrer" data-i18n-html="intro_cta_install">Installer gratuitement <span>↗</span></a><a class="pixel-button glass" href="#atelier" data-i18n-html="intro_cta_try">Essayer ici <span>↓</span></a></div>
+          <p class="compatibility" data-i18n="intro_compat">macOS 13+ · Apple Silicon & Intel · Open source</p>
         </div>
 
         <div class="day-copy" id="day-copy" inert>
-          <p class="pixel-label">UNE JOURNÉE DANS LE JARDIN</p>
+          <p class="pixel-label" data-i18n="day_label">UNE JOURNÉE DANS LE JARDIN</p>
           <div class="day-clock" id="day-clock">08:00</div>
-          <h2 id="day-title">La journée s’étire.<br>La ligne se raccourcit.</h2>
+          <h2 id="day-title">La journée s'étire.<br>La ligne se raccourcit.</h2>
           <p id="day-description">Faites défiler pour avancer dans le temps. Le niveau de batterie suit le rythme de votre journée.</p>
           <button class="pixel-button light" type="button" id="connect-button">Brancher le MagSafe <span>↗</span></button>
-          <button class="text-button" id="replay-button" type="button">↺ Revenir au matin</button>
+          <button class="text-button" id="replay-button" type="button" data-i18n-html="day_replay">↺ Revenir au matin</button>
         </div>
 
         <div class="laptop" id="laptop">
-          <div class="floating-notes" aria-hidden="true"><span><i class="status-dot"></i> <b id="floating-status">Batterie · 86 %</b></span><span>Une ligne. Tous vos écrans.</span></div>
+          <div class="floating-notes" aria-hidden="true"><span><i class="status-dot"></i> <b id="floating-status">Batterie · 86 %</b></span><span data-i18n="floating_line">Une ligne. Tous vos écrans.</span></div>
           <div class="laptop-lid"><div class="camera" aria-hidden="true"></div>
             <div class="desktop" id="desktop">
               <div class="desktop-wallpaper"></div>
               <div class="mac-menu"><span>◆ &nbsp; <b>Finder</b> &nbsp; Fichier &nbsp; Édition</span><span id="mac-clock">08:00</span></div>
               <div class="world-powerline" id="world-powerline" role="img" aria-label="Batterie 86 %"><div id="world-fill"></div><span id="world-label">86%</span></div>
-              <div class="desktop-folder" aria-hidden="true"><i></i><span>Projets</span></div>
+              <div class="desktop-folder" aria-hidden="true"><i></i><span data-i18n="desktop_folder">Projets</span></div>
               <div class="screen-window">
-                <div class="screen-window-title"><span class="window-dots">● ● ●</span><span>APERÇU INTERACTIF</span></div>
+                <div class="screen-window-title"><span class="window-dots">● ● ●</span><span data-i18n="screen_preview">APERÇU INTERACTIF</span></div>
                 <div class="screen-window-body"><div class="screen-source" id="screen-source">BATTERIE</div><div class="screen-number" id="screen-number">86<span>%</span></div><div class="screen-status" id="screen-status">Sur batterie. Tout va bien.</div><div class="screen-source-buttons" id="screen-sources" aria-label="Source de la simulation"><button data-source="battery" aria-pressed="true">BAT</button><button data-source="ram" aria-pressed="false">RAM</button><button data-source="cpu" aria-pressed="false">CPU</button><button data-source="network" aria-pressed="false">NET</button></div></div>
               </div>
               <div class="desktop-dock" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -66,8 +66,8 @@
         <div class="cable-instruction" id="cable-instruction">attrapez le câble <span>↗</span></div>
 
         <div class="world-footer">
-          <div class="time-switch" id="time-switch" aria-label="Choisir le moment de la journée"><button data-time="0" aria-pressed="true">Aube</button><button data-time="0.35" aria-pressed="false">Midi</button><button data-time="0.72" aria-pressed="false">Soir</button><button data-time="1" aria-pressed="false">Nuit</button></div>
-          <div class="scroll-cue" id="scroll-cue">FAITES DÉFILER, LE TEMPS PASSE <span>↓</span></div>
+          <div class="time-switch" id="time-switch" aria-label="Choisir le moment de la journée"><button data-time="0" aria-pressed="true" data-i18n="time_dawn">Aube</button><button data-time="0.35" aria-pressed="false" data-i18n="time_noon">Midi</button><button data-time="0.72" aria-pressed="false" data-i18n="time_evening">Soir</button><button data-time="1" aria-pressed="false" data-i18n="time_night">Nuit</button></div>
+          <div class="scroll-cue" id="scroll-cue" data-i18n-html="scroll_cue">FAITES DÉFILER, LE TEMPS PASSE <span>↓</span></div>
           <button class="motion-toggle" id="motion-toggle" aria-pressed="true" aria-label="Activer ou désactiver les pétales animés">✦ Pétales : oui</button>
         </div>
         <div class="pixel-edge" aria-hidden="true"></div>
@@ -75,54 +75,54 @@
     </section>
 
     <section class="intro-section" id="application">
-      <div class="content-width intro-layout"><div><span class="pixel-label muted">L'INFORMATION, SANS L'INTERRUPTION.</span><h2>Un petit signal.<br>Une place naturelle.</h2></div><div class="intro-section-copy"><p>PKpowerlines transforme le bord de votre écran en indicateur vivant. Sa longueur donne la mesure ; sa couleur raconte l’état de votre Mac.</p><p>Elle reste visible sur chaque écran et dans tous les Spaces. Vos clics la traversent. Vous continuez simplement ce que vous étiez en train de faire.</p><span class="small-pixel">NATIVE SWIFT · LOCALE · SANS COMPTE</span></div></div>
+      <div class="content-width intro-layout"><div><span class="pixel-label muted" data-i18n="app_label">L'INFORMATION, SANS L'INTERRUPTION.</span><h2 data-i18n-html="app_title">Un petit signal.<br>Une place naturelle.</h2></div><div class="intro-section-copy"><p data-i18n="app_p1">PKpowerlines transforme le bord de votre écran en indicateur vivant. Sa longueur donne la mesure ; sa couleur raconte l'état de votre Mac.</p><p data-i18n="app_p2">Elle reste visible sur chaque écran et dans tous les Spaces. Vos clics la traversent. Vous continuez simplement ce que vous étiez en train de faire.</p><span class="small-pixel" data-i18n="app_tags">NATIVE SWIFT · LOCALE · SANS COMPTE</span></div></div>
       <div class="signal-list content-width">
-        <button class="signal-row" data-pick="battery"><span class="signal-index">01</span><span class="pixel-icon battery-icon" aria-hidden="true"></span><strong>Batterie</strong><span class="signal-copy">Le niveau, la charge et le moment de brancher.</span><span class="mini-track"><i style="--signal:#34c759;--amount:76%"></i></span><span class="signal-arrow">↗</span></button>
-        <button class="signal-row" data-pick="ram"><span class="signal-index">02</span><span class="pixel-icon ram-icon" aria-hidden="true">▥</span><strong>Mémoire</strong><span class="signal-copy">La RAM active et câblée, en un coup d’œil.</span><span class="mini-track"><i style="--signal:#ff3b30;--amount:48%"></i></span><span class="signal-arrow">↗</span></button>
-        <button class="signal-row" data-pick="cpu"><span class="signal-index">03</span><span class="pixel-icon cpu-icon" aria-hidden="true">▦</span><strong>Processeur</strong><span class="signal-copy">La charge globale de votre CPU.</span><span class="mini-track"><i style="--signal:#ff9500;--amount:31%"></i></span><span class="signal-arrow">↗</span></button>
-        <button class="signal-row" data-pick="network"><span class="signal-index">04</span><span class="pixel-icon network-icon" aria-hidden="true">↕</span><strong>Réseau</strong><span class="signal-copy">Les débits descendant et montant, en direct.</span><span class="mini-track"><i style="--signal:#5ac8fa;--amount:62%"></i></span><span class="signal-arrow">↗</span></button>
+        <button class="signal-row" data-pick="battery"><span class="signal-index">01</span><span class="pixel-icon battery-icon" aria-hidden="true"></span><strong data-i18n="signal_battery">Batterie</strong><span class="signal-copy" data-i18n="signal_battery_copy">Le niveau, la charge et le moment de brancher.</span><span class="mini-track"><i style="--signal:#34c759;--amount:76%"></i></span><span class="signal-arrow">↗</span></button>
+        <button class="signal-row" data-pick="ram"><span class="signal-index">02</span><span class="pixel-icon ram-icon" aria-hidden="true">▥</span><strong data-i18n="signal_ram">Mémoire</strong><span class="signal-copy" data-i18n="signal_ram_copy">La RAM active et câblée, en un coup d'œil.</span><span class="mini-track"><i style="--signal:#ff3b30;--amount:48%"></i></span><span class="signal-arrow">↗</span></button>
+        <button class="signal-row" data-pick="cpu"><span class="signal-index">03</span><span class="pixel-icon cpu-icon" aria-hidden="true">▦</span><strong data-i18n="signal_cpu">Processeur</strong><span class="signal-copy" data-i18n="signal_cpu_copy">La charge globale de votre CPU.</span><span class="mini-track"><i style="--signal:#ff9500;--amount:31%"></i></span><span class="signal-arrow">↗</span></button>
+        <button class="signal-row" data-pick="network"><span class="signal-index">04</span><span class="pixel-icon network-icon" aria-hidden="true">↕</span><strong data-i18n="signal_network">Réseau</strong><span class="signal-copy" data-i18n="signal_network_copy">Les débits descendant et montant, en direct.</span><span class="mini-track"><i style="--signal:#5ac8fa;--amount:62%"></i></span><span class="signal-arrow">↗</span></button>
       </div>
     </section>
 
     <section class="workshop" id="atelier" aria-labelledby="workshop-title">
       <div class="content-width">
-        <div class="section-heading"><div><span class="pixel-label">SAUVEGARDEZ VOTRE STYLE.</span><h2 id="workshop-title">Le terrain de jeu.</h2></div><p>Choisissez une source. Faites varier le niveau.<br>Déplacez la ligne. Trouvez votre équilibre.</p></div>
+        <div class="section-heading"><div><span class="pixel-label" data-i18n="workshop_label">SAUVEGARDEZ VOTRE STYLE.</span><h2 id="workshop-title" data-i18n="workshop_title">Le terrain de jeu.</h2></div><p data-i18n-html="workshop_intro">Choisissez une source. Faites varier le niveau.<br>Déplacez la ligne. Trouvez votre équilibre.</p></div>
         <div class="workshop-window">
-          <div class="workshop-title"><span>PKPOWERLINES — SIMULATEUR</span><span aria-hidden="true">− &nbsp; □ &nbsp; ×</span></div>
+          <div class="workshop-title"><span data-i18n="workshop_window">PKPOWERLINES — SIMULATEUR</span><span aria-hidden="true">− &nbsp; □ &nbsp; ×</span></div>
           <div class="workshop-body">
             <div class="workshop-preview">
               <div class="preview-monitor"><div class="preview-screen" id="preview-screen"><div class="preview-bg"></div><div class="preview-menu"><span>◆ &nbsp; Finder &nbsp; Fichier</span><span>18:42</span></div><div class="preview-bar top" id="preview-bar" role="img" aria-label="Batterie"><div id="preview-fill"></div><span id="preview-label">86%</span></div><div class="preview-wordmark">less noise.<br>more pixels.</div></div><div class="monitor-chin"><span>PK</span></div><div class="monitor-foot"></div></div>
               <div class="preview-readout"><span id="preview-state">SUR BATTERIE</span><b id="preview-value">86%</b></div>
-              <div class="zoom-label"><span>LA LIGNE, VUE DE PRÈS</span><span>↓</span></div><div class="zoom-track" id="zoom-track"><div id="zoom-fill"></div><span id="zoom-label">86%</span></div>
-              <div class="scenario-buttons" id="scenarios" aria-label="Scénarios batterie"><button data-scenario="normal">Normale</button><button data-scenario="low">Batterie faible</button><button data-scenario="charge">⚡ Charge</button><button data-scenario="full">100 %</button></div>
+              <div class="zoom-label"><span data-i18n="zoom_label">LA LIGNE, VUE DE PRÈS</span><span>↓</span></div><div class="zoom-track" id="zoom-track"><div id="zoom-fill"></div><span id="zoom-label">86%</span></div>
+              <div class="scenario-buttons" id="scenarios" aria-label="Scénarios batterie"><button data-scenario="normal" data-i18n="scenario_normal">Normale</button><button data-scenario="low" data-i18n="scenario_low">Batterie faible</button><button data-scenario="charge">⚡ <span data-i18n="scenario_charge">Charge</span></button><button data-scenario="full">100 %</button></div>
             </div>
             <form class="control-panel" onsubmit="return false">
-              <fieldset><legend>01 / SOURCE</legend><div class="source-tabs" id="source-tabs"><button type="button" data-source="battery" aria-pressed="true">Batterie</button><button type="button" data-source="ram" aria-pressed="false">RAM</button><button type="button" data-source="cpu" aria-pressed="false">CPU</button><button type="button" data-source="network" aria-pressed="false">Réseau</button></div></fieldset>
+              <fieldset><legend data-i18n="legend_source">01 / SOURCE</legend><div class="source-tabs" id="source-tabs"><button type="button" data-source="battery" aria-pressed="true" data-i18n="source_battery">Batterie</button><button type="button" data-source="ram" aria-pressed="false" data-i18n="source_ram">RAM</button><button type="button" data-source="cpu" aria-pressed="false" data-i18n="source_cpu">CPU</button><button type="button" data-source="network" aria-pressed="false" data-i18n="source_network">Réseau</button></div></fieldset>
               <div class="range-control"><label for="level"><span id="level-title">Niveau de batterie</span><output id="level-output">86 %</output></label><input type="range" id="level" min="0" max="100" value="86"></div>
-              <div class="charge-row" id="charge-row"><span>MagSafe connecté</span><button type="button" class="pixel-switch" id="charge-toggle" role="switch" aria-checked="false" aria-label="Brancher le MagSafe"><i></i></button></div>
-              <fieldset><legend>02 / POSITION</legend><div class="position-tabs" id="position-tabs"><button type="button" data-edge="top" aria-pressed="true">↑ Haut</button><button type="button" data-edge="bottom" aria-pressed="false">↓ Bas</button><button type="button" data-edge="left" aria-pressed="false">← Gauche</button><button type="button" data-edge="right" aria-pressed="false">→ Droite</button></div></fieldset>
-              <div class="range-control"><label for="thickness"><span>Épaisseur</span><output id="thickness-output">12 px</output></label><input type="range" id="thickness" min="4" max="40" value="12"></div>
-              <div class="range-control"><label for="opacity"><span>Opacité</span><output id="opacity-output">100 %</output></label><input type="range" id="opacity" min="20" max="100" value="100"></div>
-              <div class="check-row"><label><input type="checkbox" id="show-text" checked> Afficher le texte</label><label><input type="checkbox" id="flow" checked> Flux animé</label></div>
-              <details class="advanced"><summary>Plus de réglages <span>+</span></summary><div><label for="source-color">Couleur de la source</label><input type="color" id="source-color" value="#34c759"></div><div><label for="threshold">Seuil batterie faible</label><select id="threshold"><option value="10">10 %</option><option value="20" selected>20 %</option><option value="30">30 %</option><option value="50">50 %</option></select></div><label class="force-label"><input type="checkbox" id="force-text" checked> Forcer le texte en batterie faible</label></details>
+              <div class="charge-row" id="charge-row"><span data-i18n="magsafe_connected">MagSafe connecté</span><button type="button" class="pixel-switch" id="charge-toggle" role="switch" aria-checked="false" aria-label="Brancher le MagSafe"><i></i></button></div>
+              <fieldset><legend data-i18n="legend_position">02 / POSITION</legend><div class="position-tabs" id="position-tabs"><button type="button" data-edge="top" aria-pressed="true" data-i18n="pos_top">↑ Haut</button><button type="button" data-edge="bottom" aria-pressed="false" data-i18n="pos_bottom">↓ Bas</button><button type="button" data-edge="left" aria-pressed="false" data-i18n="pos_left">← Gauche</button><button type="button" data-edge="right" aria-pressed="false" data-i18n="pos_right">→ Droite</button></div></fieldset>
+              <div class="range-control"><label for="thickness"><span data-i18n="label_thickness">Épaisseur</span><output id="thickness-output">12 px</output></label><input type="range" id="thickness" min="4" max="40" value="12"></div>
+              <div class="range-control"><label for="opacity"><span data-i18n="label_opacity">Opacité</span><output id="opacity-output">100 %</output></label><input type="range" id="opacity" min="20" max="100" value="100"></div>
+              <div class="check-row"><label><input type="checkbox" id="show-text" checked> <span data-i18n="label_show_text">Afficher le texte</span></label><label><input type="checkbox" id="flow" checked> <span data-i18n="label_flow">Flux animé</span></label></div>
+              <details class="advanced"><summary data-i18n-html="advanced_summary">Plus de réglages <span>+</span></summary><div><label for="source-color" data-i18n="label_source_color">Couleur de la source</label><input type="color" id="source-color" value="#34c759"></div><div><label for="threshold" data-i18n="label_threshold">Seuil batterie faible</label><select id="threshold"><option value="10">10 %</option><option value="20" selected>20 %</option><option value="30">30 %</option><option value="50">50 %</option></select></div><label class="force-label"><input type="checkbox" id="force-text" checked> <span data-i18n="label_force_text">Forcer le texte en batterie faible</span></label></details>
             </form>
           </div>
-          <div class="workshop-status"><span class="small-pixel" id="workshop-tip">PRÊT À JOUER.</span><button id="reset-settings" type="button">↺ Réinitialiser</button></div>
+          <div class="workshop-status"><span class="small-pixel" id="workshop-tip">PRÊT À JOUER.</span><button id="reset-settings" type="button" data-i18n-html="reset">↺ Réinitialiser</button></div>
         </div>
-        <p class="demo-note">Une simulation pour explorer. Les valeurs ne proviennent pas de votre ordinateur. La charge est accélérée dans le jardin.</p>
+        <p class="demo-note" data-i18n="demo_note">Une simulation pour explorer. Les valeurs ne proviennent pas de votre ordinateur. La charge est accélérée dans le jardin.</p>
       </div>
     </section>
 
-    <section class="details-section"><div class="content-width details-layout"><div class="details-title"><span class="pixel-label muted">PETITE LIGNE, GRAND CHOIX.</span><h2>Discrète.<br>Jusqu’au<br>dernier pixel.</h2><div class="pixel-flower" aria-hidden="true"><i></i></div></div><div class="features">
-      <article><span class="small-pixel">SUR TOUS VOS ÉCRANS</span><h3>Le bon bord, partout.</h3><p>Haut, bas, gauche ou droite. Une barre par écran, présente dans tous les Spaces. Les clics passent à travers et l’app reste dans la barre des menus, sans icône dans le Dock.</p></article>
-      <article><span class="small-pixel">À VOTRE MESURE</span><h3>De 4 à 40 pixels.</h3><p>Épaisseur, couleurs, opacité de 20 à 100 %, sept polices et décalage de −40 à +400 px. Quatre presets d’épaisseur sont accessibles au clavier.</p></article>
-      <article><span class="small-pixel">LE BON SIGNAL</span><h3>Elle sait se faire remarquer.</h3><p>Bleu et ⚡ pendant la charge active. Rouge sous votre seuil faible, réglable de 5 à 50 %. L’alerte peut forcer le pourcentage et épaissir la barre à 12 px.</p></article>
-      <article><span class="small-pixel">LE BON RYTHME</span><h3>Vivante, à votre rythme.</h3><p>Actualisation de 1 à 10 secondes, flux animé désactivable et plafond réseau de 1 à 1 000 MB/s. À moins de 8 px, le texte se masque automatiquement hors alerte.</p></article>
-      <details><summary>Et dans les réglages de l’app ? <span>+</span></summary><p>Une fenêtre SwiftUI avec recherche, le réglage de l’espacement des éléments de la barre des menus, la bibliothèque des projets PK et une page Aide & don. ⌘, ouvre les réglages, ⌘R repositionne la ligne. ⌘4, ⌘1, ⌘2 et ⌘3 appliquent les presets 4, 8, 12 et 20 px.</p></details>
+    <section class="details-section"><div class="content-width details-layout"><div class="details-title"><span class="pixel-label muted" data-i18n="details_label">PETITE LIGNE, GRAND CHOIX.</span><h2 data-i18n-html="details_title">Discrète.<br>Jusqu'au<br>dernier pixel.</h2><div class="pixel-flower" aria-hidden="true"><i></i></div></div><div class="features">
+      <article><span class="small-pixel" data-i18n="f1_tag">SUR TOUS VOS ÉCRANS</span><h3 data-i18n="f1_title">Le bon bord, partout.</h3><p data-i18n="f1_text">Haut, bas, gauche ou droite. Une barre par écran, présente dans tous les Spaces. Les clics passent à travers et l'app reste dans la barre des menus, sans icône dans le Dock.</p></article>
+      <article><span class="small-pixel" data-i18n="f2_tag">À VOTRE MESURE</span><h3 data-i18n="f2_title">De 4 à 40 pixels.</h3><p data-i18n="f2_text">Épaisseur, couleurs, opacité de 20 à 100 %, sept polices et décalage de −40 à +400 px. Quatre presets d'épaisseur sont accessibles au clavier.</p></article>
+      <article><span class="small-pixel" data-i18n="f3_tag">LE BON SIGNAL</span><h3 data-i18n="f3_title">Elle sait se faire remarquer.</h3><p data-i18n="f3_text">Bleu et ⚡ pendant la charge active. Rouge sous votre seuil faible, réglable de 5 à 50 %. L'alerte peut forcer le pourcentage et épaissir la barre à 12 px.</p></article>
+      <article><span class="small-pixel" data-i18n="f4_tag">LE BON RYTHME</span><h3 data-i18n="f4_title">Vivante, à votre rythme.</h3><p data-i18n="f4_text">Actualisation de 1 à 10 secondes, flux animé désactivable et plafond réseau de 1 à 1 000 MB/s. À moins de 8 px, le texte se masque automatiquement hors alerte.</p></article>
+      <details><summary data-i18n-html="app_settings_summary">Et dans les réglages de l'app ? <span>+</span></summary><p data-i18n="app_settings_text">Une fenêtre SwiftUI avec recherche, le réglage de l'espacement des éléments de la barre des menus, la bibliothèque des projets PK et une page Aide & don. ⌘, ouvre les réglages, ⌘R repositionne la ligne. ⌘4, ⌘1, ⌘2 et ⌘3 appliquent les presets 4, 8, 12 et 20 px.</p></details>
     </div></div></section>
 
-    <section class="download-section"><div class="download-landscape" aria-hidden="true"></div><div class="download-copy"><span class="pixel-label">VOTRE PROCHAINE PETITE HABITUDE.</span><h2>Une ligne dans votre Mac.<br>Un peu de calme en plus.</h2><a class="pixel-button light" href="https://github.com/mondary/Macos_PKpowerlines/releases" target="_blank" rel="noopener noreferrer">Télécharger PKpowerlines <span>↗</span></a><p>Gratuit et open source · macOS 13+ · Intel & Apple Silicon</p></div></section>
+    <section class="download-section"><div class="download-landscape" aria-hidden="true"></div><div class="download-copy"><span class="pixel-label" data-i18n="download_label">VOTRE PROCHAINE PETITE HABITUDE.</span><h2 data-i18n-html="download_title">Une ligne dans votre Mac.<br>Un peu de calme en plus.</h2><a class="pixel-button light" id="download-dmg" href="https://github.com/mondary/Macos_PKpowerlines/releases" target="_blank" rel="noopener noreferrer" data-i18n-html="download_cta">Télécharger PKpowerlines <span>↗</span></a><p class="release-badge" id="release-badge" hidden></p><div class="install-commands"><div class="cmd"><code id="cmd-curl">curl -L -o PKpowerlines.dmg https://github.com/mondary/Macos_PKpowerlines/releases/latest/download/PKpowerlines.dmg</code><button type="button" class="cmd-copy" data-copy="cmd-curl" data-i18n="copy">Copier</button></div><div class="cmd"><code id="cmd-brew">brew install --cask mondary/tap/pkpowerlines</code><button type="button" class="cmd-copy" data-copy="cmd-brew" data-i18n="copy">Copier</button></div></div><p data-i18n="download_footnote">Gratuit et open source · macOS 13+ · Intel & Apple Silicon</p></div></section>
   </main>
-  <footer><a class="brand" href="#jardin"><img src="assets/bolt.svg" alt="" width="16" height="20">PKpowerlines</a><span>Fait pour votre Mac. Tout reste sur votre Mac.</span><a href="https://github.com/mondary/Macos_PKpowerlines" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="https://ko-fi.com/pouark" target="_blank" rel="noopener noreferrer">Offrir un café ↗</a></footer>
+  <footer><a class="brand" href="#jardin"><img src="assets/bolt.svg" alt="" width="16" height="20">PKpowerlines</a><span data-i18n="footer_note">Fait pour votre Mac. Tout reste sur votre Mac.</span><a href="https://github.com/mondary/Macos_PKpowerlines" target="_blank" rel="noopener noreferrer" data-i18n-html="footer_github">GitHub ↗</a><a href="https://ko-fi.com/pouark" target="_blank" rel="noopener noreferrer" data-i18n-html="footer_kofi">Offrir un café ↗</a></footer>
 </body>
 </html>

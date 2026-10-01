@@ -6,7 +6,7 @@
 
 ✨ Native macOS menu-bar app that displays a real-time bar at the top of every screen: RAM or battery. Universal Intel + Apple Silicon binary.
 
-Version **2026.10.1**
+Version **2026.10.2**
 
 ![PKpowerlines — settings window](store/v1/screenshots/02-reglages.png)
 
@@ -66,6 +66,20 @@ Version **2026.10.1**
 | Position | Top / Bottom / Left / Right | Settings → Powerline |
 | Offset | -40 to +400px (1px steps) | Settings → Powerline |
 | Quit | — | ⌘Q |
+
+## 📦 Install
+
+**Direct download** (universal DMG, Intel + Apple Silicon):
+```bash
+curl -L -o PKpowerlines.dmg https://github.com/mondary/Macos_PKpowerlines/releases/latest/download/PKpowerlines.dmg
+```
+
+**Via Homebrew**:
+```bash
+brew install --cask mondary/tap/pkpowerlines
+```
+
+Or from the [Releases](https://github.com/mondary/Macos_PKpowerlines/releases) page — drag the app to Applications.
 
 ## 📦 Build & Package
 
