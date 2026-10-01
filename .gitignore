@@ -51,3 +51,5 @@ secrets/
 # Benchmarks working files (keep directory)
 benchmark/*
 !benchmark/.gitkeep
+.inspi
+/AGENTS.md

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Paysage de montagnes">
+  <defs>
+    <linearGradient id="distance" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#aab9c5" stop-opacity=".70"/>
+      <stop offset="1" stop-color="#718ba2" stop-opacity=".88"/>
+    </linearGradient>
+    <linearGradient id="middle" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6d829c"/>
+      <stop offset=".55" stop-color="#496780"/>
+      <stop offset="1" stop-color="#304c68"/>
+    </linearGradient>
+    <linearGradient id="near" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#344c68"/>
+      <stop offset="1" stop-color="#1b304b"/>
+    </linearGradient>
+    <linearGradient id="foreground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#203852"/>
+      <stop offset="1" stop-color="#101f34"/>
+    </linearGradient>
+  </defs>
+
+  <!-- The open top is intentional: sky and sun are animated by the page behind this SVG. -->
+  <path d="M0 588 C115 560 189 530 278 549 C356 565 402 511 492 500 C561 490 628 540 696 527 C785 510 852 456 949 463 C1051 470 1117 532 1197 523 C1297 513 1363 480 1453 503 C1510 517 1567 535 1600 529 L1600 900 H0 Z" fill="url(#distance)"/>
+  <path d="M0 635 C93 584 167 548 242 560 C318 572 372 627 448 592 C523 557 566 507 636 501 C716 493 781 586 872 570 C979 551 1036 475 1128 478 C1225 481 1268 545 1352 562 C1443 580 1527 538 1600 551 L1600 900 H0 Z" fill="url(#middle)"/>
+  <path d="M0 635 C100 579 168 550 242 560 C318 572 372 627 448 592 C524 557 565 509 636 501 C588 562 556 604 487 625 C394 651 321 601 240 610 C157 620 72 665 0 696 Z" fill="#c6d0d1" opacity=".10"/>
+  <path d="M0 706 C94 672 162 622 244 629 C345 638 398 706 494 686 C602 663 666 592 768 601 C878 611 944 682 1037 662 C1138 640 1193 566 1275 576 C1380 589 1500 672 1600 640 L1600 900 H0 Z" fill="url(#near)"/>
+  <path d="M0 706 C94 672 162 622 244 629 C345 638 398 706 494 686 C602 663 666 592 768 601 C688 654 624 700 529 717 C401 741 328 677 237 684 C147 691 62 744 0 760 Z" fill="#9eafbf" opacity=".09"/>
+  <path d="M0 785 C155 712 253 754 365 765 C476 775 516 735 625 734 C752 733 795 785 921 780 C1052 775 1128 710 1241 716 C1381 723 1506 790 1600 758 L1600 900 H0 Z" fill="url(#foreground)"/>
+  <path d="M0 862 C182 828 274 843 371 852 C488 863 582 826 700 832 C819 838 915 880 1042 859 C1160 840 1230 814 1351 829 C1442 840 1521 864 1600 846 L1600 900 H0 Z" fill="#0d1b30" opacity=".55"/>
+</svg>

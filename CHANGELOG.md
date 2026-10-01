@@ -1,5 +1,15 @@
 # Changelog
 
+## [2026.10.1] - 2026-10-01
+### Changed
+- Réorganisation du dépôt : assets store historiques dans `store/v1/`, landing pixel art dans `store/website/`, anciens visuels archivés dans `archives/`
+- Icônes et captures des projets PK déplacées dans `src/macos/Resources/Project{Icons,Screenshots}` (page Bibliothèque intacte)
+- `build_app.sh` lit désormais la version dans `CHANGELOG.md` (source de vérité) au lieu du fichier `VERSION`, supprimé
+
+### Fixed
+- Build release réparé : la suppression de `VERSION` cassait la génération de l'Info.plist
+- READMEs : chemins des bannières et captures corrigés après la réorganisation du store, lien Ko-fi ajouté
+
 ## [2026.09.05] - 2026-09-11
 ### Changed
 - Hauteur par défaut restaurée à « Extra fin » (`4 px`)

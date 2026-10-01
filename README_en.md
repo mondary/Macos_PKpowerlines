@@ -1,14 +1,14 @@
 # PKpowerlines
 
-![PKpowerlines](store/assets/banner-1544x500.png)
+![PKpowerlines](store/v1/assets/banner-1544x500.png)
 
 [🇬🇧 EN](README_en.md) · [🇫🇷 FR](README.md)
 
 ✨ Native macOS menu-bar app that displays a real-time bar at the top of every screen: RAM or battery. Universal Intel + Apple Silicon binary.
 
-Version **2026.09.05**
+Version **2026.10.1**
 
-![PKpowerlines — settings window](store/screenshots/02-reglages.png)
+![PKpowerlines — settings window](store/v1/screenshots/02-reglages.png)
 
 ## ✅ Features
 
@@ -29,7 +29,7 @@ Version **2026.09.05**
 
 ## 🎨 Battery states
 
-![The four battery bar states: 100%, 70%, low (15%) and charging](store/screenshots/03-etats-batterie.png)
+![The four battery bar states: 100%, 70%, low (15%) and charging](store/v1/screenshots/03-etats-batterie.png)
 
 - **Normal** — the bar fills proportionally to the percentage, using the Battery color (green by default)
 - **Low** — below the threshold (25% by default, adjustable): Low-battery color (red) and the percentage is forced on, even under 8 px
@@ -121,20 +121,25 @@ PKpowerlines/
 │       │       ├── MenuBarSettingsView.swift  # Menu bar (height, opacity…)
 │       │       ├── PowerlineSettingsView.swift# Colors, font, position
 │       │       └── AboutSettingsView.swift    # About
+│       ├── Resources/
+│       │   ├── powerline_black.png / powerline_white.png
+│       │   ├── ProjectIcons/                 # PK project icons (Library page)
+│       │   └── ProjectScreenshots/           # PK project screenshots (Library page)
 │       └── Utils/
 │           └── ColorHex.swift          # Color <-> hex
-├── store/                                      # Store copy + screenshots
-├── ProjectIcons/                               # PK project icons (Library page)
-├── ProjectScreenshots/                         # PK project screenshots (Library page)
+├── store/
+│   ├── v1/                               # Store copy + screenshots v1
+│   ├── v2/                               # Store landing v2
+│   └── website/                          # Pixel-art landing (interactive garden)
+├── archives/                             # Old working visuals
 ├── release/macos/                            # Build output (gitignored)
-├── benchmark/                                # References, screenshots
 ├── secrets/                                  # Credentials (gitignored)
 ├── Package.swift                             # SwiftPM (macOS 13+, links IOKit)
 ├── build_app.sh                              # Universal build + bundle
 ├── AGENTS.md                                 # Agent instructions
 ├── LICENSE                                   # MIT
 ├── README.md / README_en.md
-├── VERSION / CHANGELOG.md
+├── CHANGELOG.md                              # Version source of truth
 └── icon.png
 ```
 
@@ -150,3 +155,5 @@ See [CHANGELOG.md](CHANGELOG.md).
 ## 🔗 Links
 
 - French README: [README.md](README.md)
+- Project landing: [store/website/index.html](store/website/index.html)
+- ☕ Support development: [Ko-fi](https://ko-fi.com/pouark)

@@ -1,14 +1,14 @@
 # PKpowerlines
 
-![PKpowerlines](store/assets/banner-1544x500.png)
+![PKpowerlines](store/v1/assets/banner-1544x500.png)
 
 [🇫🇷 FR](README.md) · [🇬🇧 EN](README_en.md)
 
 ✨ Application macOS native (menu-bar) qui affiche une barre en temps réel en haut de chaque écran : RAM ou batterie. Binaire universel Intel + Apple Silicon.
 
-Version **2026.09.05**
+Version **2026.10.1**
 
-![PKpowerlines — fenêtre de réglages](store/screenshots/02-reglages.png)
+![PKpowerlines — fenêtre de réglages](store/v1/screenshots/02-reglages.png)
 
 ## ✅ Fonctionnalités
 
@@ -29,7 +29,7 @@ Version **2026.09.05**
 
 ## 🎨 États de la batterie
 
-![Les quatre états de la barre batterie : 100 %, 70 %, faible (15 %) et en charge](store/screenshots/03-etats-batterie.png)
+![Les quatre états de la barre batterie : 100 %, 70 %, faible (15 %) et en charge](store/v1/screenshots/03-etats-batterie.png)
 
 - **Normale** — la barre se remplit proportionnellement au pourcentage, avec la couleur Batterie (vert par défaut)
 - **Faible** — sous le seuil (25 % par défaut, réglable) : couleur Batterie faible (rouge) et % forcé à l'affichage, même sous 8 px
@@ -121,20 +121,25 @@ PKpowerlines/
 │       │       ├── MenuBarSettingsView.swift  # Barre menu (hauteur, opacité…)
 │       │       ├── PowerlineSettingsView.swift# Couleurs, police, position
 │       │       └── AboutSettingsView.swift    # À propos
+│       ├── Resources/
+│       │   ├── powerline_black.png / powerline_white.png
+│       │   ├── ProjectIcons/                 # Icônes des projets PK (page Bibliothèque)
+│       │   └── ProjectScreenshots/           # Captures des projets PK (page Bibliothèque)
 │       └── Utils/
 │           └── ColorHex.swift          # Color <-> hex
-├── store/                                      # Laius store + captures d'écran
-├── ProjectIcons/                               # Icônes des projets PK (page Bibliothèque)
-├── ProjectScreenshots/                         # Captures des projets PK (page Bibliothèque)
+├── store/
+│   ├── v1/                               # Laius + captures store v1
+│   ├── v2/                               # Landing store v2
+│   └── website/                          # Landing pixel art (jardin interactif)
+├── archives/                             # Anciens visuels de travail
 ├── release/macos/                            # Sortie build (gitignoré)
-├── benchmark/                                # Références, captures
 ├── secrets/                                  # Credentials (gitignoré)
 ├── Package.swift                             # SwiftPM (macOS 13+, IOKit linké)
 ├── build_app.sh                              # Build universel + bundle
 ├── AGENTS.md                                 # Instructions agent
 ├── LICENSE                                   # MIT
 ├── README.md / README_en.md
-├── VERSION / CHANGELOG.md
+├── CHANGELOG.md                              # Source de vérité version
 └── icon.png
 ```
 
@@ -150,3 +155,5 @@ Voir [CHANGELOG.md](CHANGELOG.md).
 ## 🔗 Liens
 
 - README anglais : [README_en.md](README_en.md)
+- Landing du projet : [store/website/index.html](store/website/index.html)
+- ☕ Soutenir le développement : [Ko-fi](https://ko-fi.com/pouark)

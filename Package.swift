@@ -13,6 +13,11 @@ let package = Package(
         .executableTarget(
             name: "PKpowerlines",
             path: "src/macos",
+            exclude: [
+                // Copiés dans le .app par build_app.sh (chargés via Bundle.main, pas le bundle SwiftPM)
+                "Resources/ProjectIcons",
+                "Resources/ProjectScreenshots"
+            ],
             resources: [
                 .process("Resources")
             ],

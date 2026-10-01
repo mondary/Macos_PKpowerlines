@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101828">
+  <meta name="description" content="PKpowerlines transforme le bord de votre Mac en indicateur vivant pour la batterie, la RAM, le CPU ou le réseau. Essayez la démo interactive.">
+  <meta property="og:title" content="PKpowerlines — L'état de votre Mac, d'un seul regard">
+  <meta property="og:description" content="Une powerline native et personnalisable sur chaque écran. Testez la batterie, la charge MagSafe et les quatre sources dans le playground.">
+  <meta property="og:type" content="website">
+  <title>PKpowerlines — La vie de votre Mac, au bord de l'écran</title>
+  <link rel="icon" href="assets/icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Aller au contenu</a>
+
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="PKpowerlines, accueil">
+      <img src="assets/icon.png" alt="" width="36" height="36">
+      <span>PK<span class="brand-light">powerlines</span></span>
+    </a>
+    <nav class="header-nav" aria-label="Navigation principale">
+      <a href="#experience">L'expérience</a>
+      <a href="#playground">Playground</a>
+      <a href="#fonctionnalites">Fonctionnalités</a>
+    </nav>
+    <a class="header-download" href="https://github.com/mondary/Macos_PKpowerlines/releases" target="_blank" rel="noopener noreferrer">Télécharger <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero-glow" aria-hidden="true"></div>
+      <div class="hero-content page-width">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="eyebrow-pulse" aria-hidden="true"></span> UTILITAIRE MACOS · GRATUIT ET OPEN SOURCE</div>
+          <h1 id="hero-title">Votre Mac a <span>quelque chose</span> à vous dire.</h1>
+          <p class="hero-description">Une ligne de couleur au bord de l'écran. Batterie, mémoire, processeur ou réseau : l'information est là, sans ouvrir une fenêtre.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#experience">Voir la barre en action <span aria-hidden="true">↘</span></a>
+            <a class="button button-ghost" href="https://github.com/mondary/Macos_PKpowerlines/releases" target="_blank" rel="noopener noreferrer">Télécharger pour Mac <span aria-hidden="true">↗</span></a>
+          </div>
+          <div class="hero-proof"><span class="proof-icon" aria-hidden="true">⌘</span> macOS 13+ <span class="proof-divider"></span> Apple Silicon et Intel <span class="proof-divider"></span> 100 % natif</div>
+        </div>
+
+        <div class="hero-object" aria-label="Aperçu agrandi de la powerline à 72 %">
+          <div class="hero-object-label"><span>LA POWERLINE</span><span>APERÇU AGRANDI</span></div>
+          <div class="hero-meter"><div class="hero-meter-fill" style="width:72%"><span>72%</span></div></div>
+          <div class="hero-object-caption"><span>Une seule ligne.</span><span>Un état lisible immédiatement.</span></div>
+          <div class="hero-real-size">
+            <span>Sur l'écran</span>
+            <div class="hero-mini-screen"><div class="hero-mini-menubar"><span>● <b>Finder</b> &nbsp; Fichier &nbsp; Édition</span><span>◖ &nbsp; 10:42</span></div><div class="hero-mini-fill"></div></div>
+          </div>
+          <span class="hero-orbit orbit-one" aria-hidden="true"></span>
+          <span class="hero-orbit orbit-two" aria-hidden="true"></span>
+        </div>
+      </div>
+      <div class="hero-bottom page-width"><span>Faites défiler pour voir une journée se dérouler</span><span aria-hidden="true">↓</span></div>
+    </section>
+
+    <section class="story-intro page-width" aria-labelledby="story-title">
+      <div class="section-mark"><span class="mark-line"></span> BATTERIE · UNE JOURNÉE EN ACCÉLÉRÉ</div>
+      <div class="intro-grid">
+        <h2 id="story-title">La journée avance.<br><em>La ligne raconte.</em></h2>
+        <p>Faites défiler la page : le soleil suit sa courbe, l'heure passe et la batterie baisse. Puis saisissez le câble MagSafe et clipsez-le au Mac pour voir la charge prendre le relais.</p>
+      </div>
+    </section>
+
+    <section class="scroll-story" id="experience" aria-label="Simulation de la batterie pendant une journée">
+      <div class="story-sticky">
+        <div class="story-inner page-width">
+          <div class="story-readout">
+            <div class="story-kicker"><span class="live-dot"></span> SIMULATION INTERACTIVE</div>
+            <p class="story-time-label">IL EST</p>
+            <p class="story-time" id="story-time">08:00</p>
+            <div class="story-stat"><span id="story-charge" class="story-charge">87%</span><span id="story-status" class="story-status">Sur batterie</span></div>
+            <p class="story-message" id="story-message">Une ligne verte suit le niveau de charge, à même le bord de l'écran.</p>
+            <div class="story-progress" aria-hidden="true"><span id="story-progress-fill"></span></div>
+            <p class="story-hint" id="story-hint">↓ Faites défiler pour avancer dans la journée</p>
+            <button class="story-plug-button" id="story-plug-toggle" type="button" aria-pressed="false">Brancher le MagSafe <span aria-hidden="true">↗</span></button>
+          </div>
+
+          <div class="sim-scene" id="sim-scene">
+            <div class="scene-notes"><span>01 / LE BORD DE L'ÉCRAN</span><span>APERÇU AGRANDI POUR LA DÉMO</span></div>
+            <div class="mac-device" id="mac-device">
+              <div class="mac-display">
+                <div class="desktop" id="story-desktop">
+                  <div class="desktop-sky"></div>
+                  <div class="window-arch">
+                    <div class="window-sky"></div>
+                    <div class="sun-halo" id="sun-halo"><div class="sun" id="sun"></div></div>
+                    <img class="landscape" src="assets/landscape.svg" alt="">
+                    <div class="window-glass"></div>
+                  </div>
+                  <div class="desktop-menubar"><span>● <b>Finder</b> &nbsp; Fichier &nbsp; Édition &nbsp; Présentation</span><span>◖ &nbsp; <span id="desktop-time">08:00</span></span></div>
+                  <div class="powerline story-powerline" id="story-bar" role="img" aria-label="Batterie : 87 %. Sur batterie.">
+                    <div class="powerline-fill" id="story-fill"><span id="story-fill-label">87%</span></div>
+                  </div>
+                  <span class="wallpaper-caption">UNE JOURNÉE SUR VOTRE MAC</span>
+                </div>
+              </div>
+              <div class="mac-lower"><span class="mac-port" id="mac-port" aria-hidden="true"><i></i></span><span class="mac-notch"></span></div>
+            </div>
+            <svg class="cable-line" id="cable-line" aria-hidden="true"><path id="cable-path" d=""></path></svg>
+            <button class="cable-plug" id="cable-plug" type="button" aria-label="Connecteur MagSafe : glissez vers le port du Mac ou appuyez pour brancher" aria-pressed="false"><span class="plug-housing"><span class="plug-led"></span></span><span class="plug-tip"></span></button>
+            <div class="port-guide" id="port-guide" aria-hidden="true">CLIPSEZ ICI <span>↗</span></div>
+            <div class="cable-caption">GLISSEZ LE CONNECTEUR MAGSAFE <span aria-hidden="true">↗</span></div>
+          </div>
+        </div>
+        <div class="story-bottom"><span>08:00</span><button type="button" id="story-replay">REJOUER LA JOURNÉE <span aria-hidden="true">↺</span></button><span>20:00</span></div>
+      </div>
+    </section>
+
+    <section class="after-story page-width">
+      <p class="after-lead">Sur batterie, elle se raccourcit. Sous le seuil faible, elle vire au rouge. Pendant la charge, elle devient bleue et affiche <strong>⚡</strong>. À 100 %, elle redevient verte.</p>
+      <a href="#playground">À vous de régler la barre <span aria-hidden="true">↘</span></a>
+    </section>
+
+    <section class="playground-section" id="playground" aria-labelledby="playground-title">
+      <div class="page-width">
+        <div class="section-mark"><span class="mark-line"></span> LE PLAYGROUND</div>
+        <div class="playground-heading"><h2 id="playground-title">Réglez-la <em>à votre façon.</em></h2><p>Changez la source, la valeur et l'apparence. La simulation vous montre immédiatement ce qui se passe sur le bord de l'écran.</p></div>
+        <div class="lab-grid">
+          <div class="lab-preview-panel">
+            <div class="panel-topline"><span><span class="live-dot"></span> APERÇU EN DIRECT</span><span id="lab-state-name">BATTERIE · SUR BATTERIE</span></div>
+            <div class="lab-screen" id="lab-screen">
+              <div class="lab-wallpaper"><div class="lab-wallpaper-circle"></div><div class="lab-wallpaper-form one"></div><div class="lab-wallpaper-form two"></div></div>
+              <div class="lab-menu"><span>● &nbsp; Finder &nbsp; Fichier &nbsp; Édition</span><span>◖ &nbsp; 10:42</span></div>
+              <div class="lab-bar position-top" id="lab-bar" role="img" aria-label="Batterie 72 %, sur batterie"><div class="lab-bar-fill" id="lab-fill"><span id="lab-label">72%</span></div></div>
+              <span class="lab-screen-note">Votre écran, votre signal.</span>
+            </div>
+            <div class="lab-presets" id="lab-presets" aria-label="Scénarios batterie"><span>ESSAYER UN ÉTAT</span><div><button type="button" data-preset="normal">72 % · normale</button><button type="button" data-preset="low">12 % · faible</button><button type="button" data-preset="charging">⚡ en charge</button><button type="button" data-preset="full">100 % · chargée</button></div></div>
+            <div class="lab-zoom-label"><span>VUE AGRANDIE DE LA BARRE</span><span>DÉTAIL</span></div>
+            <div class="lab-zoom-track"><div class="lab-zoom-fill" id="lab-zoom-fill"><span id="lab-zoom-text">72%</span></div></div>
+            <div class="lab-bottomline"><span id="lab-description">72 % · batterie normale</span><span>SIMULATION LOCALE</span></div>
+          </div>
+
+          <div class="lab-controls">
+            <div class="controls-heading"><span>TABLE DE RÉGLAGE</span><span>01 — 04</span></div>
+            <fieldset class="control-group">
+              <legend>Source suivie</legend>
+              <div class="source-options" id="source-options">
+                <button type="button" data-source="battery" aria-pressed="true">Batterie</button>
+                <button type="button" data-source="ram" aria-pressed="false">RAM</button>
+                <button type="button" data-source="cpu" aria-pressed="false">CPU</button>
+                <button type="button" data-source="network" aria-pressed="false">Réseau</button>
+              </div>
+            </fieldset>
+            <div class="control-group range-group">
+              <label for="lab-value"><span id="value-label">Niveau de batterie</span><output id="value-output" for="lab-value">72 %</output></label>
+              <input id="lab-value" type="range" min="0" max="100" value="72">
+              <div class="range-ends"><span>0 %</span><span>100 %</span></div>
+            </div>
+            <div class="control-group battery-only" id="charge-control"><div class="toggle-row"><div><strong>MagSafe</strong><small>Bleu et ⚡ pendant la charge</small></div><button type="button" class="switch" id="lab-charging" role="switch" aria-checked="false" aria-label="Simuler la charge MagSafe"><span></span></button></div></div>
+            <fieldset class="control-group"><legend>Position sur l'écran</legend><div class="position-options" id="position-options"><button type="button" data-position="top" aria-pressed="true">Haut</button><button type="button" data-position="bottom" aria-pressed="false">Bas</button><button type="button" data-position="left" aria-pressed="false">Gauche</button><button type="button" data-position="right" aria-pressed="false">Droite</button></div></fieldset>
+            <div class="control-group range-group"><label for="lab-thickness"><span>Épaisseur</span><output id="thickness-output" for="lab-thickness">12 px</output></label><input id="lab-thickness" type="range" min="4" max="40" value="12"><div class="range-ends"><span>4 px</span><span>40 px</span></div></div>
+            <div class="control-group range-group"><label for="lab-opacity"><span>Opacité</span><output id="opacity-output" for="lab-opacity">100 %</output></label><input id="lab-opacity" type="range" min="20" max="100" value="100"><div class="range-ends"><span>20 %</span><span>100 %</span></div></div>
+            <div class="control-group control-last"><div class="toggle-row"><div><strong>Afficher le texte</strong><small>Masqué automatiquement sous 8 px</small></div><button type="button" class="switch is-on" id="lab-show-text" role="switch" aria-checked="true" aria-label="Afficher le texte dans la barre"><span></span></button></div></div>
+          </div>
+        </div>
+        <details class="advanced-settings"><summary>Aller plus loin dans la personnalisation <span aria-hidden="true">+</span></summary><div class="advanced-grid"><label>Police du texte<select id="lab-font"><option value="system-bold">Système gras</option><option value="system">Système</option><option value="helvetica">Helvetica Neue</option><option value="menlo">Menlo</option><option value="sfmono">SF Mono</option><option value="monaco">Monaco</option><option value="courier">Courier</option></select></label><label>Couleur de la source<input type="color" id="lab-color" value="#34c759"></label><label>Seuil batterie faible <output id="threshold-output">20 %</output><input type="range" id="lab-threshold" min="5" max="50" step="5" value="20"></label><div class="advanced-toggles"><label><input type="checkbox" id="lab-flow" checked> Flux animé</label><label><input type="checkbox" id="lab-force" checked> Forcer le % en batterie faible</label></div></div></details>
+        <p class="simulation-disclaimer">Aperçu pédagogique agrandi. Sur macOS, la barre peut mesurer de 4 à 40 px ; sa taille et son rendu dépendent de vos réglages et de votre écran.</p>
+      </div>
+
+    </section>
+
+    <section class="features-section page-width" id="fonctionnalites" aria-labelledby="features-title">
+      <div class="section-mark"><span class="mark-line"></span> TOUT CE QU'ELLE SAIT FAIRE</div>
+      <div class="features-heading"><h2 id="features-title">Quatre signaux.<br><em>Une seule ligne.</em></h2><p>Choisissez la mesure qui compte à cet instant. La powerline garde la même place, et son remplissage raconte une autre histoire.</p></div>
+      <div class="signals-grid">
+        <article class="signal-card signal-battery"><div class="signal-top"><span class="signal-icon">▰</span><span>01 / ÉNERGIE</span></div><h3>Batterie</h3><p>Pourcentage, charge et alerte de batterie faible. La barre change de couleur avec l'état.</p><div class="signal-meter"><span style="width:72%"><b>72%</b></span></div></article>
+        <article class="signal-card signal-ram"><div class="signal-top"><span class="signal-icon">▥</span><span>02 / MÉMOIRE</span></div><h3>RAM</h3><p>Voyez la mémoire active et câblée utilisée, sans ouvrir le Moniteur d'activité.</p><div class="signal-meter"><span style="width:63%"><b>63%</b></span></div></article>
+        <article class="signal-card signal-cpu"><div class="signal-top"><span class="signal-icon">◉</span><span>03 / CALCUL</span></div><h3>CPU</h3><p>La charge globale du processeur s'affiche à la largeur de votre écran.</p><div class="signal-meter"><span style="width:38%"><b>38%</b></span></div></article>
+        <article class="signal-card signal-network"><div class="signal-top"><span class="signal-icon">↕</span><span>04 / TRANSFERT</span></div><h3>Réseau</h3><p>Suivez les débits descendant et montant ; ajustez le plafond qui remplit la barre.</p><div class="signal-meter"><span style="width:51%"><b>↓ 4,2 MB/s</b></span></div></article>
+      </div>
+      <div class="feature-detail-grid">
+        <div class="detail-lead"><h3>À sa place.<br><span>Selon la vôtre.</span></h3><p>La ligne s'adapte au Mac, et non l'inverse.</p></div>
+        <div class="detail-list">
+          <div><span class="detail-symbol">↔</span><div><h4>Chaque bord, chaque écran</h4><p>En haut, en bas, à gauche ou à droite. Une barre sur chaque écran, dans tous les Spaces.</p></div></div>
+          <div><span class="detail-symbol">◫</span><div><h4>Une présence sur mesure</h4><p>Épaisseur de 4 à 40 px, opacité de 20 à 100 %, couleurs personnalisables, décalage au pixel près et sept polices.</p></div></div>
+          <div><span class="detail-symbol">≈</span><div><h4>Le mouvement juste</h4><p>Le bord du remplissage oscille doucement. En charge, la pulsation s'accentue. Animation désactivable.</p></div></div>
+          <div><span class="detail-symbol">⌁</span><div><h4>Discrète et réactive</h4><p>Texte au choix, alerte faible prioritaire et actualisation réglable de 1 à 10 secondes. La barre laisse passer les clics.</p></div></div>
+        </div>
+      </div>
+      <div class="feature-accordions">
+        <details><summary>Tous les réglages, au pixel près <span>+</span></summary><p>Quatre positions, un décalage de −40 à +400 px, quatre épaisseurs prédéfinies (4, 8, 12 et 20 px), sept polices et une opacité de 20 à 100 %. Les couleurs de la batterie, de l'alerte faible, de la RAM, du CPU et du réseau se règlent séparément. Le bleu de charge reste dédié à la charge active.</p></details>
+        <details><summary>Des seuils et un rythme adaptés <span>+</span></summary><p>Actualisation de 1 à 10 secondes. Seuil de batterie faible de 5 à 50 %. Plafond réseau de 1 à 1 000 MB/s. Sous 8 px, le texte se masque automatiquement ; l'alerte faible peut le forcer et épaissir temporairement la barre à 12 px.</p></details>
+        <details><summary>Une vraie app de barre des menus <span>+</span></summary><p>Réglages SwiftUI avec recherche, sans icône dans le Dock. Ouvrez les réglages avec ⌘, ou repositionnez la barre avec ⌘R. Les raccourcis ⌘4, ⌘1, ⌘2 et ⌘3 appliquent les épaisseurs prédéfinies. Vous pouvez aussi ajuster l'espacement des éléments de la barre des menus, consulter la bibliothèque PK et soutenir le projet depuis Aide & don.</p></details>
+      </div>
+    </section>
+
+    <section class="closing-section">
+      <div class="closing-inner page-width"><div><div class="section-mark"><span class="mark-line"></span> INSTALLER PKPOWERLINES</div><h2>Une ligne suffit<br>pour <em>tout voir.</em></h2><p>Application macOS native en Swift, sans compte ni collecte de données. Compatible macOS 13 et versions ultérieures, Apple Silicon et Intel.</p><div class="closing-actions"><a class="button button-primary" href="https://github.com/mondary/Macos_PKpowerlines/releases" target="_blank" rel="noopener noreferrer">Télécharger gratuitement <span aria-hidden="true">↗</span></a><a class="button button-ghost" href="https://github.com/mondary/Macos_PKpowerlines" target="_blank" rel="noopener noreferrer">Voir le code source <span aria-hidden="true">↗</span></a></div></div><div class="closing-graphic" aria-hidden="true"><div class="closing-track"><span>⚡ 84%</span></div><div class="closing-fine"></div><span class="closing-graphic-label">PKPOWERLINES / MACOS</span></div></div>
+    </section>
+  </main>
+
+  <footer class="site-footer page-width"><a class="brand footer-brand" href="#top"><img src="assets/icon.png" alt="" width="30" height="30"><span>PK<span class="brand-light">powerlines</span></span></a><p>Une ligne pour mieux lire votre Mac.</p><a href="https://github.com/mondary/Macos_PKpowerlines" target="_blank" rel="noopener noreferrer">GitHub ↗</a></footer>
+</body>
+</html>

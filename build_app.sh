@@ -2,6 +2,21 @@
 set -e
 
 APP_INTERNAL_NAME="PKpowerlines"
+
+# Version : CHANGELOG.md est la source de vérité (dernier en-tête versionné)
+APP_VERSION=$(sed -n 's/^## \[\([0-9][0-9.]*\)\].*/\1/p' CHANGELOG.md | head -1)
+if [ -z "$APP_VERSION" ]; then
+    echo "✗ Version introuvable dans CHANGELOG.md" >&2
+    exit 1
+fi
+echo "→ Version : $APP_VERSION"
+
+# SDK stable : avec CLT seul, le SDK bêta par défaut peut manquer le plugin SwiftUIMacros
+STABLE_SDK="/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk"
+if [ -d "$STABLE_SDK" ] && [ ! -e "$STABLE_SDK/usr/lib/swift/host/plugins/libSwiftUIMacros.dylib" ] && [ ! -e "/Library/Developer/CommandLineTools/usr/lib/swift/host/plugins/libSwiftUIMacros.dylib" ]; then
+    export SDKROOT="$STABLE_SDK"
+    echo "→ SDKROOT : $STABLE_SDK (plugin SwiftUIMacros absent du SDK par défaut)"
+fi
 echo "→ Build release universel (arm64 + x86_64)…"
 if swift build -c release --arch arm64 --arch x86_64 2>/dev/null; then
     BINARY_SRC=".build/apple/Products/Release/$APP_INTERNAL_NAME"
@@ -35,9 +50,9 @@ cat > "$APP_PATH/Contents/Info.plist" <<EOF
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
-    <string>$(cat VERSION)</string>
+    <string>$APP_VERSION</string>
     <key>CFBundleVersion</key>
-    <string>$(cat VERSION | tr -d '.')</string>
+    <string>${APP_VERSION//.}</string>
     <key>LSMinimumSystemVersion</key>
     <string>13.0</string>
     <key>LSUIElement</key>
@@ -57,9 +72,9 @@ cp "src/macos/Resources/powerline_white.png" "$APP_PATH/Contents/Resources/power
 
 # Icônes et captures des projets PK (page Bibliothèque des réglages)
 mkdir -p "$APP_PATH/Contents/Resources/ProjectIcons"
-cp ProjectIcons/*.png "$APP_PATH/Contents/Resources/ProjectIcons/" 2>/dev/null || echo "  (ProjectIcons absent, ignoré)"
+cp src/macos/Resources/ProjectIcons/*.png "$APP_PATH/Contents/Resources/ProjectIcons/" 2>/dev/null || echo "  (ProjectIcons absent, ignoré)"
 mkdir -p "$APP_PATH/Contents/Resources/ProjectScreenshots"
-cp ProjectScreenshots/*.png "$APP_PATH/Contents/Resources/ProjectScreenshots/" 2>/dev/null || echo "  (ProjectScreenshots absent, ignoré)"
+cp src/macos/Resources/ProjectScreenshots/*.png "$APP_PATH/Contents/Resources/ProjectScreenshots/" 2>/dev/null || echo "  (ProjectScreenshots absent, ignoré)"
 
 # Génère l'icône .icns depuis icon.png (source unique)
 ICON_SRC="icon.png"
