@@ -41,6 +41,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var currentOrientationVertical: Bool = false
     private var needsScreenRebuild = false
     private var isLowBatteryText = false
+    private var statusMenu: NSMenu?
 
     /// Épaisseur minimale de la barre quand le % est forcé (zone rouge) :
     /// en dessous, le texte ne tiendrait pas et serait coupé par la fenêtre.
@@ -102,12 +103,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         menu.addItem(NSMenuItem.separator())
 
-        let updateItem = NSMenuItem(title: "Rechercher les mises à jour…", action: #selector(checkForUpdates), keyEquivalent: "")
-        updateItem.target = self
-        menu.addItem(updateItem)
-
-        menu.addItem(NSMenuItem.separator())
-
         let reloadItem = NSMenuItem(title: "Repositionner", action: #selector(forceReposition), keyEquivalent: "r")
         reloadItem.target = self
         menu.addItem(reloadItem)
@@ -122,12 +117,74 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         menu.addItem(NSMenuItem.separator())
 
+        let libraryItem = NSMenuItem(title: "Bibliothèque de projets…", action: #selector(openSettingsSection(_:)), keyEquivalent: "")
+        libraryItem.target = self
+        libraryItem.representedObject = SettingsSection.library.rawValue
+        menu.addItem(libraryItem)
+
+        let creditsItem = NSMenuItem(title: "Crédits…", action: #selector(openSettingsSection(_:)), keyEquivalent: "")
+        creditsItem.target = self
+        creditsItem.representedObject = SettingsSection.credits.rawValue
+        menu.addItem(creditsItem)
+
+        menu.addItem(NSMenuItem.separator())
+
+        let supportItem = NSMenuItem(title: "Soutenir sur Ko-fi", action: #selector(openKoFi), keyEquivalent: "")
+        supportItem.target = self
+        supportItem.attributedTitle = NSAttributedString(string: supportItem.title, attributes: [
+            .foregroundColor: NSColor(srgbRed: 1, green: 0.37, blue: 0.36, alpha: 1)
+        ])
+        if let logo = AppIcon.kofiLogo {
+            logo.size = NSSize(width: 16, height: 16)
+            logo.isTemplate = false
+            supportItem.image = logo
+        }
+        menu.addItem(supportItem)
+
+        let updateItem = NSMenuItem(title: "Rechercher les mises à jour…", action: #selector(checkForUpdates), keyEquivalent: "")
+        updateItem.target = self
+        menu.addItem(updateItem)
+
+        let aboutItem = NSMenuItem(title: "À propos de PKpowerlines", action: #selector(openAbout), keyEquivalent: "")
+        aboutItem.target = self
+        menu.addItem(aboutItem)
+
+        menu.addItem(NSMenuItem.separator())
+
         let quitItem = NSMenuItem(title: "Quitter PKpowerlines", action: #selector(quitApp), keyEquivalent: "q")
         quitItem.target = self
         menu.addItem(quitItem)
 
+        for item in menu.items where !item.isSeparatorItem && item.action != nil && item.image == nil {
+            let symbol: String
+            switch item.action {
+            case #selector(openSettings): symbol = "gearshape"
+            case #selector(forceReposition): symbol = "arrow.up.and.down.and.arrow.left.and.right"
+            case #selector(setPresetHeight): symbol = "line.3.horizontal"
+            case #selector(openSettingsSection(_:)):
+                symbol = item.representedObject as? String == SettingsSection.library.rawValue ? "square.grid.2x2" : "text.book.closed"
+            case #selector(openKoFi): symbol = "heart.fill"
+            case #selector(checkForUpdates): symbol = "arrow.triangle.2.circlepath"
+            case #selector(openAbout): symbol = "info.circle"
+            default: symbol = "rectangle.portrait.and.arrow.right"
+            }
+            item.image = NSImage(systemSymbolName: symbol, accessibilityDescription: item.title)
+            item.image?.size = NSSize(width: 16, height: 16)
+        }
+
+        statusMenu = menu
         statusItem?.menu = menu
+        if let button = statusItem?.button {
+            let rightClick = NSClickGestureRecognizer(target: self, action: #selector(statusItemRightClicked(_:)))
+            rightClick.buttonMask = 0x2
+            button.addGestureRecognizer(rightClick)
+        }
         refreshMenuStates()
+    }
+
+    @objc private func statusItemRightClicked(_ recognizer: NSClickGestureRecognizer) {
+        guard let button = recognizer.view, let menu = statusMenu else { return }
+        menu.popUp(positioning: nil, at: NSPoint(x: button.bounds.minX, y: button.bounds.minY), in: button)
     }
 
     private func updateStatusBarIcon() {
@@ -158,8 +215,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func openSettings() {
+        presentSettings(section: .source)
+    }
+
+    @objc private func openSettingsSection(_ sender: NSMenuItem) {
+        guard let rawValue = sender.representedObject as? String,
+              let section = SettingsSection(rawValue: rawValue) else { return }
+        presentSettings(section: section)
+    }
+
+    private func presentSettings(section: SettingsSection) {
         if settingsWindow == nil {
-            let rootView = SettingsView().environmentObject(settings)
+            let rootView = SettingsView(initialSelection: section).environmentObject(settings)
             let hosting = NSHostingController(rootView: rootView)
             let window = NSWindow(contentViewController: hosting)
             window.title = "PKpowerlines — Réglages"
@@ -178,11 +245,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.activate(ignoringOtherApps: true)
         settingsWindow?.center()
         settingsWindow?.makeKeyAndOrderFront(nil)
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: SettingsView.selectSectionNotification, object: section.rawValue)
+        }
     }
 
     @MainActor
     @objc private func checkForUpdates() {
         UpdaterManager.shared.checkForUpdates()
+    }
+
+    @objc private func openKoFi() {
+        NSWorkspace.shared.open(ProjectLinks.koFi)
+    }
+
+    @objc private func openAbout() {
+        presentSettings(section: .about)
     }
 
     @objc private func quitApp() {
@@ -204,7 +282,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func refreshMenuStates() {
-        guard let menu = statusItem?.menu else { return }
+        guard let menu = statusMenu else { return }
         let current = settings.barHeight
         for item in menu.items {
             switch item.title {

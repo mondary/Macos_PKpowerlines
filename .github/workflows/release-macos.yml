@@ -31,13 +31,16 @@ jobs:
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "bundle=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' release/macos/PKpowerlines.app/Contents/Info.plist)" >> "$GITHUB_OUTPUT"
 
+      - name: Create Sparkle update archive
+        run: ditto -c -k --sequesterRsrc --keepParent release/macos/PKpowerlines.app "dist/PKpowerlines-${{ steps.ver.outputs.version }}.zip"
+
       - name: Create GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" "dist/PKpowerlines-${{ steps.ver.outputs.version }}.dmg" \
+          gh release create "$GITHUB_REF_NAME" "dist/PKpowerlines-${{ steps.ver.outputs.version }}.dmg" "dist/PKpowerlines-${{ steps.ver.outputs.version }}.zip" \
             --target "$GITHUB_SHA" --title "PKpowerlines ${{ steps.ver.outputs.version }}" --generate-notes || \
-          gh release upload "$GITHUB_REF_NAME" "dist/PKpowerlines-${{ steps.ver.outputs.version }}.dmg" --clobber
+          gh release upload "$GITHUB_REF_NAME" "dist/PKpowerlines-${{ steps.ver.outputs.version }}.dmg" "dist/PKpowerlines-${{ steps.ver.outputs.version }}.zip" --clobber
 
       - name: Sign Stable appcast
         env:
@@ -48,7 +51,7 @@ jobs:
           awk 'BEGIN{p=0} /^## \[/{if(p)exit; p=1; next} p&&/^## /{exit} p' CHANGELOG.md > /tmp/notes.md
           python3 -m venv /tmp/sv
           /tmp/sv/bin/pip -q install cryptography
-          /tmp/sv/bin/python packaging/sparkle_release.py "dist/PKpowerlines-$VERSION.dmg" "v$VERSION" "$VERSION" "$BUNDLE_VERSION" mondary/Macos_PKpowerlines PKpowerlines 13.0 /tmp/notes.md
+          /tmp/sv/bin/python packaging/sparkle_release.py "dist/PKpowerlines-$VERSION.zip" "v$VERSION" "$VERSION" "$BUNDLE_VERSION" mondary/Macos_PKpowerlines PKpowerlines 13.0 /tmp/notes.md
 
       - name: Publish Stable appcast
         env:

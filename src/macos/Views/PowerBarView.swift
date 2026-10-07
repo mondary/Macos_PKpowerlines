@@ -92,7 +92,7 @@ final class PowerBarView: NSView {
     private func layoutHorizontal() {
         let barHeight = bounds.height
         let width = bounds.width * currentPercentage
-        applyAnimatedFillFrame(wave: 0)
+        applyAnimatedFillFrame(wave: flowWave)
 
         percentageLabel?.stringValue = currentLabel
         percentageLabel?.frameRotation = 0
@@ -121,7 +121,7 @@ final class PowerBarView: NSView {
         let w = bounds.width
         let h = bounds.height
         let fillHeight = h * currentPercentage
-        applyAnimatedFillFrame(wave: 0)
+        applyAnimatedFillFrame(wave: flowWave)
 
         percentageLabel?.stringValue = currentLabel
 
@@ -192,9 +192,14 @@ final class PowerBarView: NSView {
     }
 
     private func restartFlowTimer() {
-        flowTimer?.cancel()
-        flowTimer = nil
-        guard flowEnabled, window != nil else { return }
+        guard flowEnabled, window != nil else {
+            flowTimer?.cancel()
+            flowTimer = nil
+            flowPhase = 0
+            applyAnimatedFillFrame(wave: 0)
+            return
+        }
+        guard flowTimer == nil else { return }
 
         let timer = DispatchSource.makeTimerSource(queue: .main)
         timer.schedule(deadline: .now(), repeating: .milliseconds(50), leeway: .milliseconds(5))
@@ -205,8 +210,15 @@ final class PowerBarView: NSView {
 
     private func advanceFlow() {
         flowPhase += isCharging ? 0.42 : 0.24
-        let amplitude: CGFloat = isCharging ? 36 : 24
-        applyAnimatedFillFrame(wave: sin(flowPhase) * amplitude)
+        applyAnimatedFillFrame(wave: flowWave)
+    }
+
+    private var flowWave: CGFloat {
+        guard flowEnabled, window != nil else { return 0 }
+        let length = isVertical ? bounds.height : bounds.width
+        // Mouvement discret, réduit près de 0/100 % pour conserver le niveau réel.
+        let amplitude = min(isCharging ? 3 : 2, length * currentPercentage, length * (1 - currentPercentage))
+        return sin(flowPhase) * amplitude
     }
 
     private func applyAnimatedFillFrame(wave: CGFloat) {

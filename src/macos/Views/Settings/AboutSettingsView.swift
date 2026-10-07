@@ -57,8 +57,18 @@ struct AboutSettingsView: View {
 
     private var updateSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Mises à jour")
-                .font(.headline)
+            HStack(spacing: 12) {
+                Text("Mises à jour")
+                    .font(.headline)
+                Spacer()
+                Button {
+                    updater.checkForUpdates()
+                } label: {
+                    Label(updateButtonTitle, systemImage: updater.availableUpdateVersion == nil ? "arrow.triangle.2.circlepath" : "arrow.down.circle.fill")
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(!updater.canCheckForUpdates)
+            }
             HStack(spacing: 10) {
                 versionColumn(title: "Stable", value: updater.latestStableVersion ?? "Non publiée", status: updater.versionStatus(for: "stable"))
                 versionColumn(title: "Dev", value: updater.latestDevVersion ?? "Non publiée", status: updater.versionStatus(for: "dev"))
@@ -77,14 +87,6 @@ struct AboutSettingsView: View {
             }
             .pickerStyle(.segmented)
             .disabled(isDevBuild)
-            Button {
-                updater.refreshAvailableVersions()
-                updater.checkForUpdates()
-            } label: {
-                Label(updateButtonTitle, systemImage: updater.availableUpdateVersion == nil ? "arrow.triangle.2.circlepath" : "arrow.down.circle.fill")
-            }
-            .buttonStyle(.borderedProminent)
-            .disabled(!updater.canCheckForUpdates)
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)

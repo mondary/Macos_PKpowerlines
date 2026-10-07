@@ -1,9 +1,14 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @State private var selection: SettingsSection? = .source
+    static let selectSectionNotification = Notification.Name("PKpowerlines.selectSettingsSection")
+    @State private var selection: SettingsSection?
     @State private var searchText = ""
     @ObservedObject private var updater = UpdaterManager.shared
+
+    init(initialSelection: SettingsSection = .source) {
+        _selection = State(initialValue: initialSelection)
+    }
 
     private var filteredSections: [SettingsSection] {
         let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
@@ -41,6 +46,12 @@ struct SettingsView: View {
         .background(Color(nsColor: .windowBackgroundColor))
         .frame(minWidth: 980, minHeight: 640)
         .onAppear { updater.refreshAvailableVersions() }
+        .onReceive(NotificationCenter.default.publisher(for: Self.selectSectionNotification)) { notification in
+            guard let rawValue = notification.object as? String,
+                  let section = SettingsSection(rawValue: rawValue) else { return }
+            searchText = ""
+            selection = section
+        }
     }
 
     private var version: String {
