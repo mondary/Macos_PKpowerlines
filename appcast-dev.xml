@@ -3,7 +3,16 @@
   <channel>
     <title>PKpowerlines (dev)</title>
     <link>https://raw.githubusercontent.com/mondary/Macos_PKpowerlines/main/appcast-dev.xml</link>
-    <description>Dev builds for PKpowerlines, published from main.</description>
+    <description>Latest Dev build for PKpowerlines.</description>
     <language>en</language>
+    <item>
+      <title>PKpowerlines 2026.10.5-dev.1749</title>
+      <pubDate>Wed, 07 Oct 2026 17:50:25 +0000</pubDate>
+      <sparkle:version>1791395342</sparkle:version>
+      <sparkle:shortVersionString>2026.10.5-dev.1749</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+      <description>Automatic Dev build from main. Installed silently for the Dev channel.</description>
+      <enclosure url="https://github.com/mondary/Macos_PKpowerlines/releases/download/dev/PKpowerlines-dev.zip" type="application/octet-stream" sparkle:edSignature="c6W2bJlw1yRnsR18En98gWGDQRUXJt4/Pk10u6kdFiItTvbLB2g0vuUVusF98GnrwKwnPCVK9Ckz6uw14IQnDQ==" length="9564022" />
+    </item>
   </channel>
 </rss>
