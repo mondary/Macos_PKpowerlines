@@ -64,7 +64,7 @@ cat > "$APP_PATH/Contents/Info.plist" <<EOF
     <key>SUFeedURL</key>
     <string>https://raw.githubusercontent.com/mondary/Macos_PKpowerlines/main/appcast.xml</string>
     <key>SUPublicEDKey</key>
-    <string>OoygS0py6kkvRJBB8QAXiAli30SXSYvV7V54Z0Gtcj0=</string>
+    <string>t9Zzlc7LZD17hLCepinDvSRHk51hAWGbkFc2yVjbAYs=</string>
     <key>SUEnableInstallerLauncherService</key>
     <true/>
     <key>PKpowerlinesBuildChannel</key>

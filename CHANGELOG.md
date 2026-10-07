@@ -1,5 +1,9 @@
 # Changelog
 
+## [2026.10.5] - 2026-10-07
+### Fixed
+- Clé publique Sparkle alignée sur la clé de signature EdDSA du trousseau ; aucune build publiée ne vérifiait l'ancienne clé (feeds jamais publiés).
+
 ## [2026.10.4] - 2026-10-07
 ### Changed
 - À propos affiche les statuts Stable/Dev comparés sur les numéros de build, la version installée et le bouton de vérification manuelle ; la sidebar signale une mise à jour disponible.
