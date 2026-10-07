@@ -1,6 +1,11 @@
 import SwiftUI
 
 struct AboutSettingsView: View {
+    @AppStorage("updateChannel") private var updateChannel = "stable"
+    @ObservedObject private var updater = UpdaterManager.shared
+    private var isDevBuild: Bool {
+        (Bundle.main.object(forInfoDictionaryKey: "PKpowerlinesBuildChannel") as? String) == "dev"
+    }
     private let appVersion = (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String) ?? "dev"
     private let appBuild = (Bundle.main.infoDictionary?["CFBundleVersion"] as? String) ?? "1"
 
@@ -16,8 +21,8 @@ struct AboutSettingsView: View {
                         .font(.system(size: 24, weight: .bold))
                         .foregroundStyle(.primary)
 
-                    Text("Version \(appVersion) (\(appBuild))")
-                        .font(.system(size: 13))
+                    Text("Version installée \(appVersion) (\(appBuild))")
+                        .font(.system(size: 13, weight: .medium, design: .monospaced))
                         .foregroundStyle(.secondary)
                         .padding(.top, 4)
 
@@ -28,6 +33,10 @@ struct AboutSettingsView: View {
                         .padding(.bottom, 32)
 
                     aboutText
+                        .frame(maxWidth: 480)
+                        .padding(.bottom, 32)
+
+                    updateSection
                         .frame(maxWidth: 480)
                         .padding(.bottom, 32)
                 }
@@ -41,6 +50,58 @@ struct AboutSettingsView: View {
                 .padding(.vertical, 14)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private var updateSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Mises à jour")
+                .font(.headline)
+            HStack(spacing: 10) {
+                versionColumn(title: "Stable", value: updater.latestStableVersion ?? "Non publiée", status: updater.versionStatus(for: "stable"))
+                versionColumn(title: "Dev", value: updater.latestDevVersion ?? "Non publiée", status: updater.versionStatus(for: "dev"))
+            }
+            Picker("Canal", selection: Binding(
+                get: { isDevBuild ? "dev" : updateChannel },
+                set: {
+                    if !isDevBuild {
+                        updateChannel = $0
+                        updater.updateChannelChanged(to: $0)
+                    }
+                }
+            )) {
+                Text("Stable").tag("stable")
+                Text("Dev").tag("dev")
+            }
+            .pickerStyle(.segmented)
+            .disabled(isDevBuild)
+            Button {
+                updater.refreshAvailableVersions()
+                updater.checkForUpdates()
+            } label: {
+                Label(updateButtonTitle, systemImage: updater.availableUpdateVersion == nil ? "arrow.triangle.2.circlepath" : "arrow.down.circle.fill")
+            }
+            .buttonStyle(.borderedProminent)
+            .disabled(!updater.canCheckForUpdates)
+        }
+        .padding(16)
+        .background(RoundedRectangle(cornerRadius: 14).fill(Color.primary.opacity(0.025)))
+        .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.primary.opacity(0.08), lineWidth: 1))
+    }
+
+    private var updateButtonTitle: String {
+        guard let available = updater.availableUpdateVersion else { return "Rechercher les mises à jour…" }
+        return "Installer \(available)"
+    }
+
+    private func versionColumn(title: String, value: String, status: PowerlinesChannelVersionStatus) -> some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Text(title).font(.system(size: 10, weight: .semibold)).foregroundStyle(.secondary)
+            Text(value).font(.system(size: 14, weight: .semibold, design: .monospaced)).lineLimit(1).minimumScaleFactor(0.75).help(value)
+            Label(status.title, systemImage: status.symbol)
+                .font(.system(size: 10, weight: .medium)).foregroundStyle(status.color).lineLimit(1).minimumScaleFactor(0.75)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading).padding(10)
+        .background(Color.primary.opacity(0.045), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
 
     private var appIconLarge: some View {

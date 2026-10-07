@@ -3,6 +3,7 @@ import SwiftUI
 struct SettingsView: View {
     @State private var selection: SettingsSection? = .source
     @State private var searchText = ""
+    @ObservedObject private var updater = UpdaterManager.shared
 
     private var filteredSections: [SettingsSection] {
         let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
@@ -38,6 +39,7 @@ struct SettingsView: View {
         }
         .background(Color(nsColor: .windowBackgroundColor))
         .frame(minWidth: 980, minHeight: 640)
+        .onAppear { updater.refreshAvailableVersions() }
     }
 
     private var version: String {
@@ -112,11 +114,20 @@ struct SettingsView: View {
 
             Spacer()
 
-            Text("PKpowerlines \(version)")
-                .font(.system(size: 11, design: .monospaced))
-                .foregroundStyle(.tertiary)
-                .padding(.horizontal, 20)
-                .padding(.bottom, 18)
+            HStack(spacing: 5) {
+                Text("PKpowerlines \(version)")
+                    .font(.system(size: 10, weight: .medium, design: .monospaced))
+                    .foregroundStyle(.tertiary).lineLimit(1).minimumScaleFactor(0.75)
+                if let available = updater.availableUpdateVersion {
+                    Button { updater.checkForUpdates() } label: {
+                        Label(available, systemImage: "arrow.down.circle.fill")
+                            .font(.system(size: 9, weight: .semibold, design: .monospaced)).lineLimit(1)
+                    }
+                    .buttonStyle(.plain).foregroundStyle(Color.accentColor)
+                    .help("Installer la version \(available)")
+                }
+            }
+            .padding(.horizontal, 14).padding(.bottom, 18)
         }
         .frame(width: 220)
         .background(.regularMaterial)

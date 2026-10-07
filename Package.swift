@@ -9,9 +9,15 @@ let package = Package(
     products: [
         .executable(name: "PKpowerlines", targets: ["PKpowerlines"])
     ],
+    dependencies: [
+        .package(url: "https://github.com/sparkle-project/Sparkle", from: "2.7.0")
+    ],
     targets: [
         .executableTarget(
             name: "PKpowerlines",
+            dependencies: [
+                .product(name: "Sparkle", package: "Sparkle")
+            ],
             path: "src/macos",
             exclude: [
                 // Copiés dans le .app par build_app.sh (chargés via Bundle.main, pas le bundle SwiftPM)

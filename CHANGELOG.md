@@ -1,5 +1,14 @@
 # Changelog
 
+## [2026.10.4] - 2026-10-07
+### Changed
+- À propos affiche les statuts Stable/Dev comparés sur les numéros de build, la version installée et le bouton de vérification manuelle ; la sidebar signale une mise à jour disponible.
+- Les vérifications manuelles rafraîchissent l’appcast avant l’appel à Sparkle.
+
+## [2026.10.3] - 2026-10-07
+### Added
+- Sparkle pour les mises à jour intégrées, avec canaux Stable et Dev.
+
 ## [2026.10.2] - 2026-10-01
 ### Added
 - **Landing bilingue FR/EN** (`store/website/`) : détection automatique de la langue du navigateur, bascule manuelle persistante

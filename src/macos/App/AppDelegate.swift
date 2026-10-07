@@ -44,6 +44,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        UpdaterManager.shared.start()
         NSApp.applicationIconImage = AppIcon.image
         setupStatusBar()
         setupWindows()
@@ -91,6 +92,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let settingsItem = NSMenuItem(title: "Réglages…", action: #selector(openSettings), keyEquivalent: ",")
         settingsItem.target = self
         menu.addItem(settingsItem)
+
+        menu.addItem(NSMenuItem.separator())
+
+        let updateItem = NSMenuItem(title: "Rechercher les mises à jour…", action: #selector(checkForUpdates), keyEquivalent: "")
+        updateItem.target = self
+        menu.addItem(updateItem)
 
         menu.addItem(NSMenuItem.separator())
 
@@ -164,6 +171,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.activate(ignoringOtherApps: true)
         settingsWindow?.center()
         settingsWindow?.makeKeyAndOrderFront(nil)
+    }
+
+    @MainActor
+    @objc private func checkForUpdates() {
+        UpdaterManager.shared.checkForUpdates()
     }
 
     @objc private func quitApp() {

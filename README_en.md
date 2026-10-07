@@ -6,7 +6,7 @@
 
 ✨ Native macOS menu-bar app that displays a real-time bar at the top of every screen: RAM or battery. Universal Intel + Apple Silicon binary.
 
-Version **2026.10.2**
+Version **2026.10.4**
 
 ![PKpowerlines — settings window](store/v1/screenshots/02-reglages.png)
 
@@ -26,6 +26,7 @@ Version **2026.10.2**
 - ⏱️ **Frequency** — refresh every 1–10s
 - 🧩 **Universal binary** — `arm64` + `x86_64`
 - 🪟 **SwiftUI settings** — sidebar with search (POWERLINE / PK PROJECTS groups), **Project Library** (PK projects as cards) and **Help & Donate** (Ko-fi) pages
+- 🔄 **Sparkle updates** — About shows the installed version and compares Stable/Dev builds; the sidebar flags available updates and manual checks refresh the feed before invoking Sparkle
 
 ## 🎨 Battery states
 

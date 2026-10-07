@@ -10,6 +10,15 @@ if [ -z "$APP_VERSION" ]; then
     exit 1
 fi
 echo "→ Version : $APP_VERSION"
+BUILD_CHANNEL="release"
+if [ "${PK_DEV_BUILD:-0}" = "1" ]; then
+    BUILD_CHANNEL="dev"
+    MARKETING_VERSION="$APP_VERSION-dev.$(date -u +%H%M)"
+    BUILD_VERSION="$(date +%s)"
+else
+    MARKETING_VERSION="$APP_VERSION"
+    BUILD_VERSION="${APP_VERSION//./}"
+fi
 
 # SDK stable : avec CLT seul, le SDK bêta par défaut peut manquer le plugin SwiftUIMacros
 STABLE_SDK="/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk"
@@ -30,7 +39,6 @@ fi
 
 APP_NAME="$APP_INTERNAL_NAME.app"
 APP_PATH="release/macos/$APP_NAME"
-BINARY_SRC=".build/apple/Products/Release/$APP_INTERNAL_NAME"
 
 rm -rf "$APP_PATH"
 mkdir -p "$APP_PATH/Contents/MacOS"
@@ -50,9 +58,17 @@ cat > "$APP_PATH/Contents/Info.plist" <<EOF
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
-    <string>$APP_VERSION</string>
+    <string>$MARKETING_VERSION</string>
     <key>CFBundleVersion</key>
-    <string>${APP_VERSION//.}</string>
+    <string>$BUILD_VERSION</string>
+    <key>SUFeedURL</key>
+    <string>https://raw.githubusercontent.com/mondary/Macos_PKpowerlines/main/appcast.xml</string>
+    <key>SUPublicEDKey</key>
+    <string>OoygS0py6kkvRJBB8QAXiAli30SXSYvV7V54Z0Gtcj0=</string>
+    <key>SUEnableInstallerLauncherService</key>
+    <true/>
+    <key>PKpowerlinesBuildChannel</key>
+    <string>$BUILD_CHANNEL</string>
     <key>LSMinimumSystemVersion</key>
     <string>13.0</string>
     <key>LSUIElement</key>
@@ -63,8 +79,35 @@ EOF
 
 if [ -n "$BINARY_SRC" ]; then
     cp "$BINARY_SRC" "$APP_PATH/Contents/MacOS/"
+    FRAMEWORKS_SRC="$(dirname "$BINARY_SRC")"
 else
     lipo -create .build/arm64-apple-macosx/release/PKpowerlines .build/x86_64-apple-macosx/release/PKpowerlines -output "$APP_PATH/Contents/MacOS/$APP_INTERNAL_NAME"
+    FRAMEWORKS_SRC=".build/arm64-apple-macosx/release"
+fi
+for resource_bundle in "$FRAMEWORKS_SRC"/*.bundle; do
+    [ -d "$resource_bundle" ] || continue
+    cp -R "$resource_bundle" "$APP_PATH/Contents/Resources/"
+done
+mkdir -p "$APP_PATH/Contents/Frameworks"
+for framework in "$FRAMEWORKS_SRC"/*.framework; do
+    [ -d "$framework" ] || continue
+    cp -R "$framework" "$APP_PATH/Contents/Frameworks/"
+done
+if [ -z "$BINARY_SRC" ]; then
+    for arm_framework in "$FRAMEWORKS_SRC"/*.framework; do
+        [ -d "$arm_framework" ] || continue
+        framework_name="$(basename "$arm_framework")"
+        x86_framework=".build/x86_64-apple-macosx/release/$framework_name"
+        [ -d "$x86_framework" ] || continue
+        executable=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$arm_framework/Info.plist")
+        arm_binary="$arm_framework/Versions/Current/$executable"
+        x86_binary="$x86_framework/Versions/Current/$executable"
+        destination="$APP_PATH/Contents/Frameworks/$framework_name/Versions/Current/$executable"
+        [ -f "$arm_binary" ] && [ -f "$x86_binary" ] && lipo -create "$arm_binary" "$x86_binary" -output "$destination"
+    done
+fi
+if [ -n "$(find "$APP_PATH/Contents/Frameworks" -maxdepth 1 -name '*.framework' -print -quit)" ]; then
+    install_name_tool -add_rpath "@executable_path/../Frameworks" "$APP_PATH/Contents/MacOS/$APP_INTERNAL_NAME" 2>/dev/null || true
 fi
 cp "icon.png" "$APP_PATH/Contents/Resources/icon.png" 2>/dev/null || echo "  (icon.png absent, ignoré)"
 cp "src/macos/Resources/powerline_black.png" "$APP_PATH/Contents/Resources/powerline_black.png" 2>/dev/null || echo "  (powerline_black.png absent, ignoré)"
@@ -100,4 +143,6 @@ if [ -f "$APP_PATH/Contents/Resources/AppIcon.icns" ]; then
 fi
 
 echo "✓ App créée : $APP_PATH"
+codesign --force --sign - --timestamp=none "$APP_PATH"
+codesign --verify --deep --strict "$APP_PATH"
 file "$APP_PATH/Contents/MacOS/$APP_INTERNAL_NAME"
