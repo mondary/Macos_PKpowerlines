@@ -16,6 +16,13 @@ enum AppIcon {
         }
         return NSImage(named: "icon")
     }
+
+    static var kofiLogo: NSImage? {
+        Bundle.main.url(forResource: "kofi-logo", withExtension: "png")
+            .flatMap(NSImage.init(contentsOf:))
+            ?? Bundle.module.url(forResource: "kofi-logo", withExtension: "png")
+                .flatMap(NSImage.init(contentsOf:))
+    }
 }
 
 final class AppDelegate: NSObject, NSApplicationDelegate {

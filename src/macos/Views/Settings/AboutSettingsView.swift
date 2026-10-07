@@ -35,13 +35,16 @@ struct AboutSettingsView: View {
                     aboutText
                         .frame(maxWidth: 480)
                         .padding(.bottom, 32)
-
-                    updateSection
-                        .frame(maxWidth: 480)
-                        .padding(.bottom, 32)
                 }
                 .frame(maxWidth: .infinity)
             }
+
+            Divider()
+
+            updateSection
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 24)
+                .padding(.vertical, 12)
 
             Divider()
 
@@ -84,6 +87,7 @@ struct AboutSettingsView: View {
             .disabled(!updater.canCheckForUpdates)
         }
         .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .background(RoundedRectangle(cornerRadius: 14).fill(Color.primary.opacity(0.025)))
         .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.primary.opacity(0.08), lineWidth: 1))
     }
@@ -167,9 +171,14 @@ struct AboutSettingsView: View {
                     .foregroundStyle(.secondary)
             }
             Link(destination: ProjectLinks.koFi) {
-                Label("Offrez-moi un café", systemImage: "cup.and.saucer")
-                    .font(.caption)
-                    .foregroundStyle(.orange)
+                HStack(spacing: 4) {
+                    if let logo = AppIcon.kofiLogo {
+                        Image(nsImage: logo).resizable().frame(width: 12, height: 12)
+                    }
+                    Text("Soutenir sur Ko-fi")
+                }
+                .font(.caption)
+                .foregroundStyle(Color(red: 1, green: 0.37, blue: 0.36))
             }
             Spacer()
             Text("MIT License")

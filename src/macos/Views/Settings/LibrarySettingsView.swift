@@ -38,7 +38,7 @@ struct LibrarySettingsView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
-                SettingsHeader(title: "Bibliothèque", subtitle: "Découvre les autres outils et projets PK.", icon: "square.grid.2x2")
+                SettingsHeader(title: "Bibliothèque de projets", subtitle: "Découvre les autres outils et projets PK.", icon: "square.grid.2x2")
                 featuredCard(featured)
                 Text("Plus de projets").font(.system(size: 18, weight: .bold, design: .rounded))
                 LazyVGrid(columns: [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)], spacing: 14) {

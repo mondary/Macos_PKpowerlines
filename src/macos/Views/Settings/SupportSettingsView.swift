@@ -1,6 +1,10 @@
 import SwiftUI
 
 struct SupportSettingsView: View {
+    private var kofiLogo: NSImage? {
+        AppIcon.kofiLogo
+    }
+
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
@@ -37,10 +41,16 @@ struct SupportSettingsView: View {
 
     private var coffeeCard: some View {
         HStack(spacing: 12) {
-            Image(systemName: "cup.and.saucer.fill")
-                .font(.system(size: 22))
-                .foregroundStyle(.orange)
-                .frame(width: 36)
+            Group {
+                if let kofiLogo {
+                    Image(nsImage: kofiLogo).resizable().scaledToFit()
+                } else {
+                    Image(systemName: "cup.and.saucer.fill")
+                        .font(.system(size: 22))
+                        .foregroundStyle(Color(red: 1, green: 0.37, blue: 0.36))
+                }
+            }
+            .frame(width: 36, height: 36)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text("Offrez-moi un café")
@@ -53,12 +63,12 @@ struct SupportSettingsView: View {
             Spacer()
 
             Link(destination: ProjectLinks.koFi) {
-                Text("Faire un don")
+                Text("Soutenir sur Ko-fi")
                     .font(.system(size: 13, weight: .medium))
                     .foregroundStyle(.white)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 6)
-                    .background(Color.orange)
+                    .background(Color(red: 1, green: 0.37, blue: 0.36))
                     .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
             }
             .buttonStyle(.plain)

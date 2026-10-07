@@ -1,5 +1,10 @@
 # Changelog
 
+## [2026.10.6] - 2026-10-07
+### Changed
+- À propos conserve le panneau Stable/Dev et les mises à jour en bas de fenêtre ; crédits dédiés à l’inspiration PowerLine Android, icônes Support/À propos colorées et libellés français harmonisés.
+- Les builds du canal Dev sont désormais produits depuis la branche `dev`.
+
 ## [2026.10.5] - 2026-10-07
 ### Fixed
 - Clé publique Sparkle alignée sur la clé de signature EdDSA du trousseau ; aucune build publiée ne vérifiait l'ancienne clé (feeds jamais publiés).

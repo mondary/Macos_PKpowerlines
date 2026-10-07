@@ -30,6 +30,7 @@ struct SettingsView: View {
                 case .colors:     ColorsSettingsView().pageHeader("Couleurs", "La couleur de chaque source, seuil batterie compris.", icon: "paintpalette")
                 case .position:   PositionSettingsView().pageHeader("Position", "Bord de l'écran, offset au pixel et préréglages.", icon: "rectangle.portrait")
                 case .menuBar:    MenuBarSettingsView().pageHeader("Menu Bar", "Aère la menu bar de macOS en ajustant son espacement caché.", icon: "menubar.rectangle")
+                case .credits:    CreditsSettingsView()
                 case .library:    LibrarySettingsView()
                 case .support:    SupportSettingsView()
                 case .about:      AboutSettingsView()
@@ -96,6 +97,7 @@ struct SettingsView: View {
                                 Image(systemName: section.icon)
                                     .font(.system(size: 14, weight: .medium))
                                     .frame(width: 20)
+                                    .foregroundStyle(section.iconTint ?? (selection == section ? Color.primary : Color.secondary))
                                 Text(section.title)
                                     .font(.system(size: 13, weight: selection == section ? .semibold : .regular))
                                 Spacer()
@@ -140,6 +142,7 @@ enum SettingsSection: String, CaseIterable, Identifiable {
     case colors
     case position
     case menuBar
+    case credits
     case library
     case support
     case about
@@ -153,8 +156,9 @@ enum SettingsSection: String, CaseIterable, Identifiable {
         case .colors:     return "Couleurs"
         case .position:   return "Position"
         case .menuBar:    return "Menu Bar"
-        case .library:    return "Bibliothèque"
-        case .support:    return "Aide & don"
+        case .credits:    return "Crédits"
+        case .library:    return "Bibliothèque de projets"
+        case .support:    return "Soutenir"
         case .about:      return "À propos"
         }
     }
@@ -166,15 +170,24 @@ enum SettingsSection: String, CaseIterable, Identifiable {
         case .colors:     return "paintpalette"
         case .position:   return "rectangle.portrait"
         case .menuBar:    return "menubar.rectangle"
+        case .credits:    return "text.book.closed"
         case .library:    return "square.grid.2x2"
-        case .support:    return "heart"
+        case .support:    return "heart.fill"
         case .about:      return "info.circle"
+        }
+    }
+
+    var iconTint: Color? {
+        switch self {
+        case .support: Color(red: 1, green: 0.37, blue: 0.36)
+        case .about: .accentColor
+        default: nil
         }
     }
 
     var category: String {
         switch self {
-        case .library, .support, .about: return "PK PROJECTS"
+        case .credits, .library, .support, .about: return "PK PROJECTS"
         default:                         return "POWERLINE"
         }
     }
