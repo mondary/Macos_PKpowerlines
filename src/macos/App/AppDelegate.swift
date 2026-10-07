@@ -102,12 +102,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         menu.addItem(NSMenuItem.separator())
 
-        let updateItem = NSMenuItem(title: "Rechercher les mises à jour…", action: #selector(checkForUpdates), keyEquivalent: "")
-        updateItem.target = self
-        menu.addItem(updateItem)
-
-        menu.addItem(NSMenuItem.separator())
-
         let reloadItem = NSMenuItem(title: "Repositionner", action: #selector(forceReposition), keyEquivalent: "r")
         reloadItem.target = self
         menu.addItem(reloadItem)
@@ -122,9 +116,46 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         menu.addItem(NSMenuItem.separator())
 
+        let supportItem = NSMenuItem(title: "Soutenir sur Ko-fi", action: #selector(openKoFi), keyEquivalent: "")
+        supportItem.target = self
+        supportItem.attributedTitle = NSAttributedString(string: supportItem.title, attributes: [
+            .foregroundColor: NSColor(srgbRed: 1, green: 0.37, blue: 0.36, alpha: 1)
+        ])
+        if let logo = AppIcon.kofiLogo {
+            logo.size = NSSize(width: 16, height: 16)
+            logo.isTemplate = false
+            supportItem.image = logo
+        }
+        menu.addItem(supportItem)
+
+        let updateItem = NSMenuItem(title: "Rechercher les mises à jour…", action: #selector(checkForUpdates), keyEquivalent: "")
+        updateItem.target = self
+        menu.addItem(updateItem)
+
+        let aboutItem = NSMenuItem(title: "À propos de PKpowerlines", action: #selector(openAbout), keyEquivalent: "")
+        aboutItem.target = self
+        menu.addItem(aboutItem)
+
+        menu.addItem(NSMenuItem.separator())
+
         let quitItem = NSMenuItem(title: "Quitter PKpowerlines", action: #selector(quitApp), keyEquivalent: "q")
         quitItem.target = self
         menu.addItem(quitItem)
+
+        for item in menu.items where !item.isSeparatorItem && item.action != nil && item.image == nil {
+            let symbol: String
+            switch item.action {
+            case #selector(openSettings): symbol = "gearshape"
+            case #selector(forceReposition): symbol = "arrow.up.and.down.and.arrow.left.and.right"
+            case #selector(setPresetHeight): symbol = "line.3.horizontal"
+            case #selector(openKoFi): symbol = "heart.fill"
+            case #selector(checkForUpdates): symbol = "arrow.triangle.2.circlepath"
+            case #selector(openAbout): symbol = "info.circle"
+            default: symbol = "rectangle.portrait.and.arrow.right"
+            }
+            item.image = NSImage(systemSymbolName: symbol, accessibilityDescription: item.title)
+            item.image?.size = NSSize(width: 16, height: 16)
+        }
 
         statusItem?.menu = menu
         refreshMenuStates()
@@ -183,6 +214,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @MainActor
     @objc private func checkForUpdates() {
         UpdaterManager.shared.checkForUpdates()
+    }
+
+    @objc private func openKoFi() {
+        NSWorkspace.shared.open(ProjectLinks.koFi)
+    }
+
+    @objc private func openAbout() {
+        openSettings()
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: SettingsView.showAboutNotification, object: nil)
+        }
     }
 
     @objc private func quitApp() {

@@ -1,5 +1,11 @@
 # Changelog
 
+## [2026.10.7] - 2026-10-07
+### Fixed
+- Menu de la barre des menus : ajout de « Soutenir sur Ko-fi » avec son logo, et accès direct à « À propos » juste sous la recherche de mises à jour.
+- À propos : bouton de recherche de mises à jour placé au-dessus du choix de canal Stable/Dev.
+- Flux animé : amplitude réduite de 24/36 px à 2/3 px ; niveau exact restauré à la désactivation, sans saut lors des rafraîchissements, et remplissage stable à 0/100 %.
+
 ## [2026.10.6] - 2026-10-07
 ### Changed
 - À propos conserve le panneau Stable/Dev et les mises à jour en bas de fenêtre ; crédits dédiés à l’inspiration PowerLine Android, icônes Support/À propos colorées et libellés français harmonisés.

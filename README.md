@@ -6,7 +6,7 @@
 
 ✨ Application macOS native (menu-bar) qui affiche une barre en temps réel en haut de chaque écran : RAM ou batterie. Binaire universel Intel + Apple Silicon.
 
-Version **2026.10.6**
+Version **2026.10.7**
 
 ![PKpowerlines — fenêtre de réglages](store/v1/screenshots/02-reglages.png)
 
@@ -21,12 +21,12 @@ Version **2026.10.6**
 - 🔤 **Police custom** — 7 polices au choix, taille auto-adaptative, % centré verticalement
 - 🎚️ **Hauteur custom** — slider 4–40px + 4 presets (⌘4/⌘1/⌘2/⌘3)
 - 💧 **Opacité** — de 20% à 100%
-- 🌊 **Flux animé** — reflet fluide permanent ; pulsation renforcée en charge
+- 🌊 **Flux animé** — oscillation discrète du remplissage, limitée à 2 px (3 px en charge), désactivable
 - ↕️ **Offset** — pixel par pixel (peut chevaucher la menu bar, ou décaler sur les côtés)
 - ⏱️ **Fréquence** — mise à jour toutes les 1–10s
 - 🧩 **Binaire universel** — `arm64` + `x86_64`
 - 🪟 **Réglages SwiftUI** — sidebar avec recherche (groupes POWERLINE / PK PROJECTS), **Crédits**, **Bibliothèque de projets** et **Soutenir** (Ko-fi)
-- 🔄 **Mises à jour Sparkle** — À propos conserve le panneau Stable/Dev en bas de la fenêtre ; la sidebar signale les mises à jour disponibles et le contrôle manuel rafraîchit le flux
+- 🔄 **Mises à jour Sparkle** — À propos conserve le panneau Stable/Dev en bas de la fenêtre, avec le bouton de vérification au-dessus du choix de canal ; la sidebar signale les mises à jour disponibles et le contrôle manuel rafraîchit le flux
 - 💚 **Inspiration créditée** — PKpowerlines cite PowerLine: Status bar meters, l’application Android qui a inspiré ses indicateurs fins
 
 ## 🎨 États de la batterie
@@ -45,6 +45,8 @@ Version **2026.10.6**
     - **Réglages…** (⌘,) — change le mode, la couleur, la position, la police
     - **Repositionner** (⌘R) — force le repositionnement de la powerline (utile après changement de résolution)
     - Presets hauteur (⌘4 / ⌘1 / ⌘2 / ⌘3)
+    - **Soutenir sur Ko-fi** — ouvre la page de soutien
+    - **Rechercher les mises à jour…** et **À propos de PKpowerlines** — accès direct aux mises à jour et à la page À propos
     - **Quitter** (⌘Q)
 
 ## ⚙️ Réglages

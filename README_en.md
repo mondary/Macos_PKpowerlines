@@ -6,7 +6,7 @@
 
 ✨ Native macOS menu-bar app that displays a real-time bar at the top of every screen: RAM or battery. Universal Intel + Apple Silicon binary.
 
-Version **2026.10.6**
+Version **2026.10.7**
 
 ![PKpowerlines — settings window](store/v1/screenshots/02-reglages.png)
 
@@ -21,12 +21,12 @@ Version **2026.10.6**
 - 🔤 **Custom font** — 7 fonts, auto-adaptive size, vertically centered percentage
 - 🎚️ **Custom height** — slider 4–40px + 4 presets (⌘4/⌘1/⌘2/⌘3)
 - 💧 **Opacity** — 20% to 100%
-- 🌊 **Animated flow** — continuous fluid highlight, with a stronger pulse while charging
+- 🌊 **Animated flow** — subtle fill oscillation, capped at 2 px (3 px while charging), with an off switch
 - ↕️ **Offset** — pixel by pixel (can overlap the menu bar, or shift on the sides)
 - ⏱️ **Frequency** — refresh every 1–10s
 - 🧩 **Universal binary** — `arm64` + `x86_64`
 - 🪟 **SwiftUI settings** — searchable sidebar with dedicated **Credits**, **Project Library** and **Support** (Ko-fi) pages
-- 🔄 **Sparkle updates** — About keeps the Stable/Dev update panel pinned at the bottom; the sidebar flags available updates and manual checks refresh the feed
+- 🔄 **Sparkle updates** — About keeps the Stable/Dev update panel pinned at the bottom, with the check button above the channel selector; the sidebar flags available updates and manual checks refresh the feed
 - 💚 **Credited inspiration** — PKpowerlines credits PowerLine: Status bar meters, the Android app that inspired its slim indicators
 
 ## 🎨 Battery states
@@ -45,6 +45,8 @@ Version **2026.10.6**
     - **Settings…** (⌘,) — change mode, color, position, font
     - **Reposition** (⌘R) — force powerline repositioning (useful after resolution change)
     - Height presets (⌘4 / ⌘1 / ⌘2 / ⌘3)
+    - **Support on Ko-fi** — opens the support page
+    - **Check for Updates…** and **About PKpowerlines** — direct access to updates and the About page
     - **Quit** (⌘Q)
 
 ## ⚙️ Settings

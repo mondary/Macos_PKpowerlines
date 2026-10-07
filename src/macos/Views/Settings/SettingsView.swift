@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct SettingsView: View {
+    static let showAboutNotification = Notification.Name("PKpowerlines.showAboutSettings")
     @State private var selection: SettingsSection? = .source
     @State private var searchText = ""
     @ObservedObject private var updater = UpdaterManager.shared
@@ -41,6 +42,10 @@ struct SettingsView: View {
         .background(Color(nsColor: .windowBackgroundColor))
         .frame(minWidth: 980, minHeight: 640)
         .onAppear { updater.refreshAvailableVersions() }
+        .onReceive(NotificationCenter.default.publisher(for: Self.showAboutNotification)) { _ in
+            searchText = ""
+            selection = .about
+        }
     }
 
     private var version: String {
