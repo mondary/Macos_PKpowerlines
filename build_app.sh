@@ -28,7 +28,19 @@ if [ -d "$STABLE_SDK" ] && [ ! -e "$STABLE_SDK/usr/lib/swift/host/plugins/libSwi
 fi
 echo "→ Build release universel (arm64 + x86_64)…"
 if swift build -c release --arch arm64 --arch x86_64 2>/dev/null; then
-    BINARY_SRC=".build/apple/Products/Release/$APP_INTERNAL_NAME"
+    # SwiftPM/XCBuild versions place products in different directories.
+    for candidate in \
+        ".build/out/Products/Release/$APP_INTERNAL_NAME" \
+        ".build/apple/Products/Release/$APP_INTERNAL_NAME"; do
+        if [ -x "$candidate" ]; then
+            BINARY_SRC="$candidate"
+            break
+        fi
+    done
+    if [ -z "$BINARY_SRC" ]; then
+        echo "✗ Exécutable compilé introuvable dans .build/out ou .build/apple" >&2
+        exit 1
+    fi
 else
     # Pas de Xcode (CLT seul) : --arch multi passe par XCBuild, absent → build par triple + lipo
     echo "  (xcbuild indisponible — build par triple + lipo)"
@@ -110,6 +122,7 @@ if [ -n "$(find "$APP_PATH/Contents/Frameworks" -maxdepth 1 -name '*.framework' 
     install_name_tool -add_rpath "@executable_path/../Frameworks" "$APP_PATH/Contents/MacOS/$APP_INTERNAL_NAME" 2>/dev/null || true
 fi
 cp "icon.png" "$APP_PATH/Contents/Resources/icon.png" 2>/dev/null || echo "  (icon.png absent, ignoré)"
+cp "src/macos/Resources/kofi-logo.png" "$APP_PATH/Contents/Resources/kofi-logo.png"
 cp "src/macos/Resources/powerline_black.png" "$APP_PATH/Contents/Resources/powerline_black.png" 2>/dev/null || echo "  (powerline_black.png absent, ignoré)"
 cp "src/macos/Resources/powerline_white.png" "$APP_PATH/Contents/Resources/powerline_white.png" 2>/dev/null || echo "  (powerline_white.png absent, ignoré)"
 

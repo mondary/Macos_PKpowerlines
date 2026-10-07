@@ -1,5 +1,24 @@
 # Changelog
 
+## [2026.10.10] - 2026-10-07
+### Added
+- Le menu de la barre des menus donne un accès direct à Ko-fi, à la Bibliothèque de projets et aux Crédits ; clic droit et clic gauche ouvrent le menu.
+
+### Changed
+- La recherche de mises à jour est placée au-dessus du choix de canal Stable/Dev dans À propos.
+
+### Fixed
+- Le flux animé reste discret (2 px, 3 px en charge) et retrouve le niveau exact quand il est désactivé.
+- Le build universel récupère le produit SwiftPM fraîchement compilé, y compris avec les chemins `.build/out` actuels.
+
+## [2026.10.9] - 2026-10-07
+### Changed
+- Le menu de l’icône donne un accès direct à la Bibliothèque de projets et aux Crédits ; chaque entrée ouvre sa page dans les Réglages.
+
+## [2026.10.8] - 2026-10-07
+### Fixed
+- Le clic gauche et le clic droit sur l’icône de la barre des menus ouvrent maintenant le menu PKpowerlines, dont le lien Ko-fi.
+
 ## [2026.10.7] - 2026-10-07
 ### Fixed
 - Menu de la barre des menus : ajout de « Soutenir sur Ko-fi » avec son logo, et accès direct à « À propos » juste sous la recherche de mises à jour.

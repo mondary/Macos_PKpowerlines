@@ -41,6 +41,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var currentOrientationVertical: Bool = false
     private var needsScreenRebuild = false
     private var isLowBatteryText = false
+    private var statusMenu: NSMenu?
 
     /// Épaisseur minimale de la barre quand le % est forcé (zone rouge) :
     /// en dessous, le texte ne tiendrait pas et serait coupé par la fenêtre.
@@ -116,6 +117,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         menu.addItem(NSMenuItem.separator())
 
+        let libraryItem = NSMenuItem(title: "Bibliothèque de projets…", action: #selector(openSettingsSection(_:)), keyEquivalent: "")
+        libraryItem.target = self
+        libraryItem.representedObject = SettingsSection.library.rawValue
+        menu.addItem(libraryItem)
+
+        let creditsItem = NSMenuItem(title: "Crédits…", action: #selector(openSettingsSection(_:)), keyEquivalent: "")
+        creditsItem.target = self
+        creditsItem.representedObject = SettingsSection.credits.rawValue
+        menu.addItem(creditsItem)
+
+        menu.addItem(NSMenuItem.separator())
+
         let supportItem = NSMenuItem(title: "Soutenir sur Ko-fi", action: #selector(openKoFi), keyEquivalent: "")
         supportItem.target = self
         supportItem.attributedTitle = NSAttributedString(string: supportItem.title, attributes: [
@@ -148,6 +161,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             case #selector(openSettings): symbol = "gearshape"
             case #selector(forceReposition): symbol = "arrow.up.and.down.and.arrow.left.and.right"
             case #selector(setPresetHeight): symbol = "line.3.horizontal"
+            case #selector(openSettingsSection(_:)):
+                symbol = item.representedObject as? String == SettingsSection.library.rawValue ? "square.grid.2x2" : "text.book.closed"
             case #selector(openKoFi): symbol = "heart.fill"
             case #selector(checkForUpdates): symbol = "arrow.triangle.2.circlepath"
             case #selector(openAbout): symbol = "info.circle"
@@ -157,8 +172,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             item.image?.size = NSSize(width: 16, height: 16)
         }
 
+        statusMenu = menu
         statusItem?.menu = menu
+        if let button = statusItem?.button {
+            let rightClick = NSClickGestureRecognizer(target: self, action: #selector(statusItemRightClicked(_:)))
+            rightClick.buttonMask = 0x2
+            button.addGestureRecognizer(rightClick)
+        }
         refreshMenuStates()
+    }
+
+    @objc private func statusItemRightClicked(_ recognizer: NSClickGestureRecognizer) {
+        guard let button = recognizer.view, let menu = statusMenu else { return }
+        menu.popUp(positioning: nil, at: NSPoint(x: button.bounds.minX, y: button.bounds.minY), in: button)
     }
 
     private func updateStatusBarIcon() {
@@ -189,8 +215,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func openSettings() {
+        presentSettings(section: .source)
+    }
+
+    @objc private func openSettingsSection(_ sender: NSMenuItem) {
+        guard let rawValue = sender.representedObject as? String,
+              let section = SettingsSection(rawValue: rawValue) else { return }
+        presentSettings(section: section)
+    }
+
+    private func presentSettings(section: SettingsSection) {
         if settingsWindow == nil {
-            let rootView = SettingsView().environmentObject(settings)
+            let rootView = SettingsView(initialSelection: section).environmentObject(settings)
             let hosting = NSHostingController(rootView: rootView)
             let window = NSWindow(contentViewController: hosting)
             window.title = "PKpowerlines — Réglages"
@@ -209,6 +245,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.activate(ignoringOtherApps: true)
         settingsWindow?.center()
         settingsWindow?.makeKeyAndOrderFront(nil)
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: SettingsView.selectSectionNotification, object: section.rawValue)
+        }
     }
 
     @MainActor
@@ -221,10 +260,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func openAbout() {
-        openSettings()
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: SettingsView.showAboutNotification, object: nil)
-        }
+        presentSettings(section: .about)
     }
 
     @objc private func quitApp() {
@@ -246,7 +282,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func refreshMenuStates() {
-        guard let menu = statusItem?.menu else { return }
+        guard let menu = statusMenu else { return }
         let current = settings.barHeight
         for item in menu.items {
             switch item.title {

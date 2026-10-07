@@ -6,7 +6,7 @@
 
 ✨ Application macOS native (menu-bar) qui affiche une barre en temps réel en haut de chaque écran : RAM ou batterie. Binaire universel Intel + Apple Silicon.
 
-Version **2026.10.7**
+Version **2026.10.10**
 
 ![PKpowerlines — fenêtre de réglages](store/v1/screenshots/02-reglages.png)
 
@@ -25,7 +25,7 @@ Version **2026.10.7**
 - ↕️ **Offset** — pixel par pixel (peut chevaucher la menu bar, ou décaler sur les côtés)
 - ⏱️ **Fréquence** — mise à jour toutes les 1–10s
 - 🧩 **Binaire universel** — `arm64` + `x86_64`
-- 🪟 **Réglages SwiftUI** — sidebar avec recherche (groupes POWERLINE / PK PROJECTS), **Crédits**, **Bibliothèque de projets** et **Soutenir** (Ko-fi)
+- 🪟 **Réglages SwiftUI** — sidebar avec recherche (groupes POWERLINE / PK PROJECTS), **Crédits**, **Bibliothèque de projets** et **Soutenir** (Ko-fi) ; Bibliothèque et Crédits sont aussi accessibles directement depuis le menu de l’icône
 - 🔄 **Mises à jour Sparkle** — À propos conserve le panneau Stable/Dev en bas de la fenêtre, avec le bouton de vérification au-dessus du choix de canal ; la sidebar signale les mises à jour disponibles et le contrôle manuel rafraîchit le flux
 - 💚 **Inspiration créditée** — PKpowerlines cite PowerLine: Status bar meters, l’application Android qui a inspiré ses indicateurs fins
 
