@@ -22,6 +22,11 @@ Version **2026.10.10**
 - 🎚️ **Custom height** — slider 4–40px + 4 presets (⌘4/⌘1/⌘2/⌘3)
 - 💧 **Opacity** — 20% to 100%
 - 🌊 **Animated flow** — subtle fill oscillation, capped at 2 px (3 px while charging), with an off switch
+- ⚡ **Charging spark** — an electric light sweep runs along the bar while charging
+- 🚨 **Critical battery alert** — below an adjustable critical threshold (15% by default, not charging), the bar pulses like an alert heartbeat
+- 🅰️ **Overflowing text** — the powerline stays at 7 px and flush with the screen edge: the % is drawn at 11 pt **on the line**, lifted above the edge (its top leaves the screen) and overflowing below
+- 💨 **Consumption** — while discharging, the bar's edge erodes and a thin wisp of smoke drifts away
+- 🎛️ **Adjustable animations** — a dedicated page with one switch per effect (flow, spark, pulse, consumption)
 - ↕️ **Offset** — pixel by pixel (can overlap the menu bar, or shift on the sides)
 - ⏱️ **Frequency** — refresh every 1–10s
 - 🧩 **Universal binary** — `arm64` + `x86_64`
@@ -35,8 +40,9 @@ Version **2026.10.10**
 
 - **Normal** — the bar fills proportionally to the percentage, using the Battery color (green by default)
 - **Low** — below the threshold (25% by default, adjustable): Low-battery color (red) and the percentage is forced on, even under 8 px
-- **Charging** — charging color (blue), ⚡ prefix, and an animated bar pulse
-- Under 8 px in height, the percentage is hidden automatically (except low battery)
+- **Critical** — below the critical threshold (15% by default, adjustable): the bar pulses like an alert heartbeat, percentage always shown
+- **Charging** — charging color (blue), ⚡ prefix, and an electric sweep running along the bar
+- Under 16 px, the line stays flush with the edge and the % (11 pt) is drawn on it, lifted above the edge and overflowing below; from 16 px, the text fits inside the bar
 
 ## 🧠 Usage
 
@@ -67,6 +73,7 @@ Version **2026.10.10**
 | Network ceiling | 1–1000 MB/s | Settings → Powerline |
 | Battery color | ColorPicker | Settings → Powerline |
 | Low-battery color | ColorPicker + threshold | Settings → Powerline |
+| Critical threshold | 3–20% (default: 15%) | Settings → Powerline |
 | Position | Top / Bottom / Left / Right | Settings → Powerline |
 | Offset | -40 to +400px (1px steps) | Settings → Powerline |
 | Quit | — | ⌘Q |

@@ -32,6 +32,7 @@ struct SettingsView: View {
                 switch selection ?? .source {
                 case .source:     SourceSettingsView().pageHeader("Source", "Choisis ce que la barre mesure et à quelle fréquence.", icon: "dot.radiowaves.left.and.right")
                 case .appearance: AppearanceSettingsView().pageHeader("Apparence", "Hauteur, opacité et police du pourcentage.", icon: "paintbrush")
+                case .animations: AnimationsSettingsView().pageHeader("Animations", "Active ou coupe chaque effet de la barre, indépendamment.", icon: "sparkles")
                 case .colors:     ColorsSettingsView().pageHeader("Couleurs", "La couleur de chaque source, seuil batterie compris.", icon: "paintpalette")
                 case .position:   PositionSettingsView().pageHeader("Position", "Bord de l'écran, offset au pixel et préréglages.", icon: "rectangle.portrait")
                 case .menuBar:    MenuBarSettingsView().pageHeader("Menu Bar", "Aère la menu bar de macOS en ajustant son espacement caché.", icon: "menubar.rectangle")
@@ -150,6 +151,7 @@ struct SettingsView: View {
 enum SettingsSection: String, CaseIterable, Identifiable {
     case source
     case appearance
+    case animations
     case colors
     case position
     case menuBar
@@ -164,6 +166,7 @@ enum SettingsSection: String, CaseIterable, Identifiable {
         switch self {
         case .source:     return "Source"
         case .appearance: return "Apparence"
+        case .animations: return "Animations"
         case .colors:     return "Couleurs"
         case .position:   return "Position"
         case .menuBar:    return "Menu Bar"
@@ -178,6 +181,7 @@ enum SettingsSection: String, CaseIterable, Identifiable {
         switch self {
         case .source:     return "dot.radiowaves.left.and.right"
         case .appearance: return "paintbrush"
+        case .animations: return "sparkles"
         case .colors:     return "paintpalette"
         case .position:   return "rectangle.portrait"
         case .menuBar:    return "menubar.rectangle"
@@ -204,6 +208,6 @@ enum SettingsSection: String, CaseIterable, Identifiable {
     }
 
     var keywords: String {
-        "\(rawValue) \(title) \(category) batterie ram cpu réseau position hauteur police don café projets".lowercased()
+        "\(rawValue) \(title) \(category) batterie ram cpu réseau position hauteur police don café projets animation animations effet étincelle charge pulsation fumée érosion".lowercased()
     }
 }

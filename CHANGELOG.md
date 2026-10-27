@@ -1,5 +1,51 @@
 # Changelog
 
+## [2026.10.17] - 2026-10-27
+### Changed
+- Police du % réduite à 11 pt (au lieu de 12).
+
+## [2026.10.16] - 2026-10-27
+### Changed
+- Le % est levé de 4 px : son haut dépasse hors de l'écran (coupé par le bord) et son bas déborde encore sous la ligne. La powerline reste collée au bord.
+
+## [2026.10.15] - 2026-10-27
+### Changed
+- Police du % réduite à 12 pt (au lieu de 13) pour rester discrète.
+- La powerline reste **collée au bord de l'écran** : elle n'est plus centrée dans la fenêtre, le texte déborde vers l'intérieur.
+
+## [2026.10.14] - 2026-10-27
+### Added
+- **Page Réglages → Animations** : un interrupteur par effet — flux animé, étincelle de charge, pulsation critique, consommation (érosion + fumée).
+- **Consommation en décharge** : le bord du remplissage s'érode par petites entailles et un fin panache de fumée s'en échappe (particules qui dérivent, grossissent et s'évanouissent).
+- Libellé « Police du % » restauré dans Apparence.
+
+### Changed
+- L'épaisseur de ligne en mode texte passe à 7 px, texte 11 pt posé sur la ligne : elle reste collée au bord de l'écran et le texte déborde vers l'intérieur.
+
+## [2026.10.13] - 2026-10-27
+### Changed
+- **Texte du % agrandi** : sous 16 px d'épaisseur, la powerline reste fine et le % s'écrit **sur la ligne** en la débordant légèrement, aligné au bord du remplissage. À partir de 16 px, le texte reste logé dans la barre.
+- Le % n'est jamais coupé par le bord de l'écran.
+
+## [2026.10.12] - 2026-10-27
+### Added
+- **Texte dans la barre en extra-fin** : la powerline reste à 4 px tant que le % est masqué ; dès qu'il est affiché, la barre est portée à 9 px pour loger le texte dans le remplissage. Fini les bandes flottantes au-dessus de la menu bar, tout reste dans la barre.
+
+### Changed
+- Seuil critique par défaut porté à 15 % (la zone rouge visible commence plus tôt qu'à 10 %).
+- Pulsation critique : plancher d'opacité relevé pour rester visible même avec une opacité utilisateur basse.
+- Le texte du % est aligné sur le bord du remplissage.
+
+## [2026.10.11] - 2026-10-27
+### Added
+- **Alerte batterie critique** : sous un seuil critique réglable (15 % par défaut), la barre pulse en battement d'alerte, toujours avec le % affiché, même si le flux animé est désactivé.
+- **Étincelle de charge** : un balayage lumineux électrique avec scintillement parcourt le remplissage pendant la charge.
+- Réglage « Seuil critique » (3–20 %) dans la section Batterie des couleurs.
+
+### Changed
+- Le toggle « Flux animé » ne pilote plus que la vague discrète ; les effets d'alerte (critique) et de charge restent actifs en permanence.
+- Le seuil critique est automatiquement borné par le seuil « Faible » ; son changement rafraîchit la barre immédiatement.
+
 ## [2026.10.10] - 2026-10-07
 ### Added
 - Le menu de la barre des menus donne un accès direct à Ko-fi, à la Bibliothèque de projets et aux Crédits ; clic droit et clic gauche ouvrent le menu.

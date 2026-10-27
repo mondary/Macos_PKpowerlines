@@ -6,7 +6,7 @@
 
 ✨ Application macOS native (menu-bar) qui affiche une barre en temps réel en haut de chaque écran : RAM ou batterie. Binaire universel Intel + Apple Silicon.
 
-Version **2026.10.10**
+Version **2026.10.17**
 
 ![PKpowerlines — fenêtre de réglages](store/v1/screenshots/02-reglages.png)
 
@@ -22,6 +22,11 @@ Version **2026.10.10**
 - 🎚️ **Hauteur custom** — slider 4–40px + 4 presets (⌘4/⌘1/⌘2/⌘3)
 - 💧 **Opacité** — de 20% à 100%
 - 🌊 **Flux animé** — oscillation discrète du remplissage, limitée à 2 px (3 px en charge), désactivable
+- ⚡ **Étincelle de charge** — un balayage lumineux électrique parcourt la barre pendant la charge
+- 🚨 **Alerte batterie critique** — sous un seuil critique réglable (15 % par défaut, hors charge), la barre pulse comme un battement d'alerte
+- 🅰️ **Texte débordant** — la powerline reste à 7 px et collée au bord de l'écran : le % s'écrit en 11 pt **sur la ligne**, levé au-dessus du bord (le haut sort de l'écran) et débordant sous la ligne
+- 💨 **Consommation** — en décharge, le bord de la barre s'érode et un fin panache de fumée s'en échappe
+- 🎛️ **Animations réglables** — une page dédiée avec un interrupteur par effet (flux, étincelle, pulsation, consommation)
 - ↕️ **Offset** — pixel par pixel (peut chevaucher la menu bar, ou décaler sur les côtés)
 - ⏱️ **Fréquence** — mise à jour toutes les 1–10s
 - 🧩 **Binaire universel** — `arm64` + `x86_64`
@@ -35,8 +40,9 @@ Version **2026.10.10**
 
 - **Normale** — la barre se remplit proportionnellement au pourcentage, avec la couleur Batterie (vert par défaut)
 - **Faible** — sous le seuil (25 % par défaut, réglable) : couleur Batterie faible (rouge) et % forcé à l'affichage, même sous 8 px
-- **En charge** — couleur de charge (bleu), préfixe ⚡ et pulsation animée de la barre
-- Sous 8 px de hauteur, le % est masqué automatiquement (sauf batterie faible)
+- **Critique** — sous le seuil critique (15 % par défaut, réglable) : la barre pulse en battement d'alerte, toujours avec le % affiché
+- **En charge** — couleur de charge (bleu), préfixe ⚡ et balayage électrique qui parcourt la barre
+- Sous 16 px, la ligne reste collée au bord et le % (11 pt) s'écrit dessus, levé au-dessus du bord et débordant dessous ; à partir de 16 px, le texte tient dans la barre
 
 ## 🧠 Utilisation
 
@@ -67,6 +73,7 @@ Version **2026.10.10**
 | Plafond réseau | 1–1000 MB/s | Réglages → Powerline |
 | Couleur Batterie | ColorPicker | Réglages → Powerline |
 | Couleur Batterie faible | ColorPicker + seuil | Réglages → Powerline |
+| Seuil critique | 3–20 % (défaut : 15 %) | Réglages → Powerline |
 | Position | Haut / Bas / Gauche / Droite | Réglages → Powerline |
 | Offset | -40 à +400px (1px par 1px) | Réglages → Powerline |
 | Quitter | — | ⌘Q |

@@ -20,7 +20,13 @@ struct ColorsSettingsView: View {
                         Text("\(settings.batteryLowThreshold) %").monospacedDigit().foregroundStyle(.secondary)
                     }
                 }
-                Text("La couleur bleue est utilisée pendant la charge. En dessous du seuil, la couleur « Faible » prend le relais.")
+                Stepper(value: $settings.batteryCriticalThreshold, in: 3...min(20, settings.batteryLowThreshold), step: 1) {
+                    HStack(spacing: 6) {
+                        Text("Seuil critique")
+                        Text("\(min(settings.batteryCriticalThreshold, settings.batteryLowThreshold)) %").monospacedDigit().foregroundStyle(.secondary)
+                    }
+                }
+                Text("La couleur bleue est utilisée pendant la charge, avec un balayage électrique qui parcourt la barre. En dessous du seuil, la couleur « Faible » prend le relais ; sous le seuil critique (hors charge), la barre pulse comme une alerte.")
                     .font(.caption).foregroundStyle(.secondary)
             }
 

@@ -28,21 +28,13 @@ struct AppearanceSettingsView: View {
                 }
             }
 
-            Section("Mouvement") {
-                Toggle("Flux animé", isOn: $settings.animatedFlow)
-                Text("Ajoute un mouvement fluide et discret à la barre de puissance.")
-                    .font(.caption).foregroundStyle(.secondary)
-            }
-
-            Section {
+            Section("Police du %") {
                 Picker("Police", selection: $settings.barFont) {
                     ForEach(BarFont.allCases) { f in Text(f.displayName).tag(f) }
                 }
-                Text("La taille s'adapte automatiquement à la hauteur de la barre (de 6 à 22 pt). Masqué automatiquement sous 8 px.")
+                Text("La taille s'adapte automatiquement à la hauteur de la barre (de 6 à 22 pt). Sous 16 px, la ligne reste collée au bord et le % (11 pt) s'écrit dessus, levé au-dessus du bord et débordant dessous.")
                     .font(.caption).foregroundStyle(.secondary)
                 fontPreview
-            } header: {
-                Text("Police du %")
             }
         }
         .formStyle(.grouped)

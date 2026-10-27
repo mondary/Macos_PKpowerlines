@@ -43,12 +43,25 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var isLowBatteryText = false
     private var statusMenu: NSMenu?
 
-    /// Épaisseur minimale de la barre quand le % est forcé (zone rouge) :
-    /// en dessous, le texte ne tiendrait pas et serait coupé par la fenêtre.
-    private static let forcedTextThickness: CGFloat = 12
+    /// Épaisseur minimale de la ligne quand le % est affiché.
+    private static let minTextBarThickness: CGFloat = 7
 
+    /// Hauteur de fenêtre quand le texte est affiché : la ligne est centrée
+    /// dedans et le % déborde un peu au-dessus et en dessous.
+    private static let textWindowThickness: CGFloat = 16
+
+    /// Hauteur de fenêtre : la ligne plus fine est centrée, le texte déborde.
     private var effectiveBarHeight: CGFloat {
-        isLowBatteryText ? max(settings.barHeight, Self.forcedTextThickness) : settings.barHeight
+        let barHeight = settings.barHeight
+        let needsText = isLowBatteryText || settings.showPercentage
+        return needsText ? max(barHeight, Self.textWindowThickness) : barHeight
+    }
+
+    /// Épaisseur visuelle de la powerline.
+    private var effectiveBarThickness: CGFloat {
+        let barHeight = settings.barHeight
+        let needsText = isLowBatteryText || settings.showPercentage
+        return needsText ? max(barHeight, Self.minTextBarThickness) : barHeight
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -302,7 +315,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .removeDuplicates()
             .dropFirst()
             .receive(on: RunLoop.main)
-            .sink { [weak self] _ in self?.refreshMenuStates(); self?.resizeAndReposition() }
+            .sink { [weak self] height in
+                guard let self else { return }
+                self.barViews.forEach { $0.updateBarThickness(self.effectiveBarThickness) }
+                self.refreshMenuStates()
+                self.resizeAndReposition()
+            }
             .store(in: &cancellables)
 
         settings.$barPosition
@@ -315,6 +333,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                     self.currentOrientationVertical = newPos.isVertical
                     self.rebuildBarWindows()
                 } else {
+                    self.barViews.forEach { $0.updateBarPosition(newPos) }
                     self.resizeAndReposition()
                 }
             }
@@ -345,7 +364,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .removeDuplicates()
             .dropFirst()
             .receive(on: RunLoop.main)
-            .sink { [weak self] show in self?.barViews.forEach { $0.updateShowPercentage(show) } }
+            .sink { [weak self] show in
+                guard let self else { return }
+                self.barViews.forEach { $0.updateShowPercentage(show) }
+                self.syncBarThickness()
+                self.resizeAndReposition()
+            }
             .store(in: &cancellables)
 
         settings.$animatedFlow
@@ -355,7 +379,35 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .sink { [weak self] animated in self?.barViews.forEach { $0.updateAnimatedFlow(animated) } }
             .store(in: &cancellables)
 
+        settings.$sparkOnCharge
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] enabled in self?.barViews.forEach { $0.updateSparkEnabled(enabled) } }
+            .store(in: &cancellables)
+
+        settings.$criticalPulse
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] enabled in self?.barViews.forEach { $0.updateCriticalPulseEnabled(enabled) } }
+            .store(in: &cancellables)
+
+        settings.$consumptionEffect
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] enabled in self?.barViews.forEach { $0.updateConsumptionEnabled(enabled) } }
+            .store(in: &cancellables)
+
         settings.$monitorType
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in self?.updateUsage() }
+            .store(in: &cancellables)
+
+        settings.$forcePercentageWhenLow
             .removeDuplicates()
             .dropFirst()
             .receive(on: RunLoop.main)
@@ -377,11 +429,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .store(in: &cancellables)
 
         Publishers.MergeMany(
-            settings.$ramColorHex.map { _ in () },
-            settings.$batteryColorHex.map { _ in () },
-            settings.$batteryLowColorHex.map { _ in () },
-            settings.$cpuColorHex.map { _ in () },
-            settings.$networkColorHex.map { _ in () }
+            settings.$ramColorHex.map { _ in () }.eraseToAnyPublisher(),
+            settings.$batteryColorHex.map { _ in () }.eraseToAnyPublisher(),
+            settings.$batteryLowColorHex.map { _ in () }.eraseToAnyPublisher(),
+            settings.$batteryLowThreshold.map { _ in () }.eraseToAnyPublisher(),
+            settings.$batteryCriticalThreshold.map { _ in () }.eraseToAnyPublisher(),
+            settings.$cpuColorHex.map { _ in () }.eraseToAnyPublisher(),
+            settings.$networkColorHex.map { _ in () }.eraseToAnyPublisher()
         )
         .dropFirst()
         .receive(on: RunLoop.main)
@@ -414,12 +468,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let frame = barFrame(on: screen)
         let view = PowerBarView()
         view.updateOrientation(settings.barPosition.isVertical)
+        view.updateBarPosition(settings.barPosition)
+        view.updateBarThickness(effectiveBarThickness)
         view.updateShowPercentage(settings.showPercentage)
         view.updateForceShowText(isLowBatteryText)
         view.updateOpacity(settings.barOpacity)
         view.updateFont(settings.barFont)
         view.updateAnimatedFlow(settings.animatedFlow)
+        view.updateSparkEnabled(settings.sparkOnCharge)
+        view.updateCriticalPulseEnabled(settings.criticalPulse)
+        view.updateConsumptionEnabled(settings.consumptionEffect)
         view.updateCharging(false)
+        view.updateDischarging(false)
+        view.updateCriticalLow(false)
         barViews.append(view)
 
         let window = NSWindow(
@@ -492,8 +553,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func setLowBatteryText(_ active: Bool) {
         guard isLowBatteryText != active else { return }
         isLowBatteryText = active
+        syncBarThickness()
         barViews.forEach { $0.updateForceShowText(active) }
         resizeAndReposition()
+    }
+
+    /// Propage l'épaisseur effective de la ligne (celle qui contient le texte).
+    private func syncBarThickness() {
+        let thickness = effectiveBarThickness
+        barViews.forEach { $0.updateBarThickness(thickness) }
     }
 
     private func updateUsage() {
@@ -506,12 +574,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             DispatchQueue.main.async { [weak self] in
                 self?.barViews.forEach {
                     $0.updateCharging(false)
+                    $0.updateDischarging(false)
+                    $0.updateCriticalLow(false)
                     $0.updateUsage(percentage: usage.usedPercentage, color: color, label: label)
                 }
             }
         case .battery:
             let battery = batteryMonitor.getBatteryUsage()
             let threshold = settings.batteryLowThreshold
+            // Le seuil critique ne peut jamais dépasser le seuil « Faible ».
+            let criticalThreshold = min(settings.batteryCriticalThreshold, threshold)
             let forceText = settings.forcePercentageWhenLow
             let chargingColor = NSColor(settings.chargingColor)
             let lowColor = NSColor(settings.batteryLowColor)
@@ -526,6 +598,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 guard battery.percentage >= 0 else {
                     self?.barViews.forEach {
                         $0.updateCharging(false)
+                        $0.updateDischarging(false)
+                        $0.updateCriticalLow(false)
                         $0.updateUsage(percentage: 0, color: .gray, label: "Pas de batterie")
                     }
                     return
@@ -538,10 +612,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 } else {
                     color = normalColor
                 }
+                let isCritical = !battery.isCharging && battery.percentage < Double(criticalThreshold)
                 let prefix = battery.isCharging ? "⚡ " : ""
                 let label = "\(prefix)\(Int(battery.percentage))%"
                 self?.barViews.forEach {
                     $0.updateCharging(battery.isCharging)
+                    $0.updateDischarging(!battery.isCharging)
+                    $0.updateCriticalLow(isCritical)
                     $0.updateUsage(percentage: battery.percentage, color: color, label: label)
                 }
             }
@@ -553,6 +630,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             DispatchQueue.main.async { [weak self] in
                 self?.barViews.forEach {
                     $0.updateCharging(false)
+                    $0.updateDischarging(false)
+                    $0.updateCriticalLow(false)
                     $0.updateUsage(percentage: usage.percentage, color: color, label: label)
                 }
             }
@@ -564,6 +643,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             DispatchQueue.main.async { [weak self] in
                 self?.barViews.forEach {
                     $0.updateCharging(false)
+                    $0.updateDischarging(false)
+                    $0.updateCriticalLow(false)
                     $0.updateUsage(percentage: usage.percentage, color: color, label: label)
                 }
             }
