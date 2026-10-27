@@ -395,6 +395,27 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .sink { [weak self] enabled in self?.barViews.forEach { $0.updateConsumptionEnabled(enabled) } }
             .store(in: &cancellables)
 
+        settings.$fillWaves
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] enabled in self?.barViews.forEach { $0.updateWavesEnabled(enabled) } }
+            .store(in: &cancellables)
+
+        settings.$twinkles
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] enabled in self?.barViews.forEach { $0.updateTwinklesEnabled(enabled) } }
+            .store(in: &cancellables)
+
+        settings.$breathing
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] enabled in self?.barViews.forEach { $0.updateBreathingEnabled(enabled) } }
+            .store(in: &cancellables)
+
         settings.$monitorType
             .removeDuplicates()
             .dropFirst()
@@ -473,6 +494,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         view.updateSparkEnabled(settings.sparkOnCharge)
         view.updateCriticalPulseEnabled(settings.criticalPulse)
         view.updateConsumptionEnabled(settings.consumptionEffect)
+        view.updateWavesEnabled(settings.fillWaves)
+        view.updateTwinklesEnabled(settings.twinkles)
+        view.updateBreathingEnabled(settings.breathing)
         view.updateCharging(false)
         view.updateDischarging(false)
         view.updateCriticalLow(false)

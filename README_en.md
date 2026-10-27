@@ -26,8 +26,8 @@ Version **2026.10.10**
 - 🚨 **Critical battery alert** — below an adjustable critical threshold (15% by default, not charging), the bar pulses like an alert heartbeat
 - 🅰️ **Overflowing text** — the powerline stays at 7 px and flush with the screen edge: the % is drawn at 11 pt **on the line**, lifted above the edge (its top leaves the screen) and overflowing below
 - 💨 **Consumption** — while discharging, the bar's edge erodes and a thin wisp of smoke drifts away
-- 🎛️ **Adjustable animations** — a dedicated page with one switch per effect (flow, spark, pulse, consumption), each with a live preview
-- 🖥️ **Desktop preview** — the real bar previewed in Settings → Appearance with current settings
+- 🎛️ **Adjustable animations** — a dedicated page with one switch and live preview per effect: flow, charging spark, critical pulse, consumption (erosion + smoke), waves, twinkles, slow breathing
+- 🖥️ **Previews everywhere** — the real bar previewed in Appearance (mock desktop), Colors (the 4 battery states) and Position (mock screen with the chosen edge and offset)
 - ↕️ **Offset** — pixel by pixel (can overlap the menu bar, or shift on the sides)
 - ⏱️ **Frequency** — refresh every 1–10s
 - 🧩 **Universal binary** — `arm64` + `x86_64`

@@ -25,6 +25,21 @@ struct AnimationsSettingsView: View {
                 Text("En décharge, le bord de la barre s'érode et un fin panache de fumée s'en échappe.")
                     .font(.caption).foregroundStyle(.secondary)
                 EffectPreviewBox(discharging: true, percentage: 91)
+
+                Toggle("Ondes", isOn: $settings.fillWaves)
+                Text("Deux bandes lumineuses très douces traversent le remplissage au repos (l'étincelle prend le relais en charge).")
+                    .font(.caption).foregroundStyle(.secondary)
+                EffectPreviewBox(percentage: 38)
+
+                Toggle("Scintillement", isOn: $settings.twinkles)
+                Text("De petits éclats apparaissent et disparaissent dans le remplissage, chacun à son rythme.")
+                    .font(.caption).foregroundStyle(.secondary)
+                EffectPreviewBox(percentage: 55)
+
+                Toggle("Respiration lente", isOn: $settings.breathing)
+                Text("L'opacité de la barre respire doucement (± 7 %), comme en veille.")
+                    .font(.caption).foregroundStyle(.secondary)
+                EffectPreviewBox(percentage: 72)
             }
 
             Section {

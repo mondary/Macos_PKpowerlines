@@ -6,6 +6,7 @@ struct PositionSettingsView: View {
     var body: some View {
         Form {
             Section("Côté de l'écran") {
+                PositionPreview()
                 Picker("Position", selection: $settings.barPosition) {
                     ForEach(BarPosition.allCases) { p in
                         Label(p.displayName, systemImage: p.icon).tag(p)

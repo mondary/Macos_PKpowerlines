@@ -1,5 +1,11 @@
 # Changelog
 
+## [2026.10.19] - 2026-10-27
+### Added
+- **Trois nouvelles animations** : Ondes (deux bandes lumineuses traversant le remplissage au repos), Scintillement (petits éclats à rythmes décalés), Respiration lente (opacité ± 7 %) — chacune avec son interrupteur et son aperçu en direct dans Réglages → Animations.
+- **Aperçu des états batterie** dans Réglages → Couleurs : chargée, faible, critique (pulsation) et en charge (étincelle), avec les couleurs choisies.
+- **Aperçu écran** dans Réglages → Position : faux écran montrant le bord sélectionné, l'offset (plafonné à 44 px dans l'aperçu) et le sens de remplissage.
+
 ## [2026.10.18] - 2026-10-27
 ### Added
 - **Aperçus en direct dans les réglages** : la vraie barre illustre chaque effet dans Réglages → Animations, et un aperçu bureau global (faux écran + menu bar) prévisualise hauteur, opacité, police et % dans Réglages → Apparence.

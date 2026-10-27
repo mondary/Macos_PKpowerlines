@@ -44,9 +44,14 @@ final class PowerBarView: NSView {
     private var sparkEnabled = true
     private var criticalPulseEnabled = true
     private var consumptionEnabled = true
+    private var wavesEnabled = true
+    private var twinklesEnabled = false
+    private var breathingEnabled = false
     private var flowPhase: CGFloat = 0
     private var flowTimer: DispatchSourceTimer?
     private var sparkLayer: CAGradientLayer?
+    private var waveBands: [CAGradientLayer] = []
+    private var twinkleLayers: [CALayer] = []
     private var puffLayers: [CALayer] = []
     private var puffs: [SmokePuff] = []
     private var smokeTick = 0
@@ -276,6 +281,27 @@ final class PowerBarView: NSView {
         restartFlowTimer()
     }
 
+    func updateWavesEnabled(_ enabled: Bool) {
+        guard wavesEnabled != enabled else { return }
+        wavesEnabled = enabled
+        if !enabled { waveBands.forEach { $0.isHidden = true } }
+        restartFlowTimer()
+    }
+
+    func updateTwinklesEnabled(_ enabled: Bool) {
+        guard twinklesEnabled != enabled else { return }
+        twinklesEnabled = enabled
+        if !enabled { twinkleLayers.forEach { $0.isHidden = true } }
+        restartFlowTimer()
+    }
+
+    func updateBreathingEnabled(_ enabled: Bool) {
+        guard breathingEnabled != enabled else { return }
+        breathingEnabled = enabled
+        if !enabled { barFill?.fillOpacity = opacity }
+        restartFlowTimer()
+    }
+
     func updateCriticalLow(_ critical: Bool) {
         guard isCriticalLow != critical else { return }
         isCriticalLow = critical
@@ -291,12 +317,15 @@ final class PowerBarView: NSView {
         // effets d'état (pulsation critique, étincelle de charge), toujours actifs.
         let needsAnimation = flowEnabled || isCharging || isCriticalLow
             || (isDischarging && consumptionEnabled)
+            || wavesEnabled || twinklesEnabled || breathingEnabled
         guard needsAnimation, window != nil else {
             flowTimer?.cancel()
             flowTimer = nil
             flowPhase = 0
             applyAnimatedFillFrame(wave: 0)
             sparkLayer?.isHidden = true
+            waveBands.forEach { $0.isHidden = true }
+            twinkleLayers.forEach { $0.isHidden = true }
             clearSmoke()
             barFill?.fillOpacity = opacity
             percentageLabel?.alphaValue = 1
@@ -341,11 +370,100 @@ final class PowerBarView: NSView {
             barFill?.fillOpacity = alertBase * (0.5 + 0.5 * pulse)
             percentageLabel?.alphaValue = CGFloat(0.55 + 0.45 * pulse)
         } else {
-            barFill?.fillOpacity = opacity
+            // Respiration lente : légère modulation de l'opacité au repos.
+            let breathe = breathingEnabled && window != nil
+                ? 0.86 + 0.14 * sin(t * 1.4)
+                : 1
+            barFill?.fillOpacity = opacity * breathe
             percentageLabel?.alphaValue = 1
         }
         updateSpark(t: t)
+        updateWaveBands(t: t)
+        updateTwinkles(t: t)
         updateSmoke()
+    }
+
+    /// Ondes : deux bandes lumineuses très douces qui traversent le remplissage
+    /// au repos (l'étincelle prend le relais pendant la charge).
+    private func updateWaveBands(t: TimeInterval) {
+        let active = wavesEnabled && !isCharging && window != nil && currentPercentage > 0.05
+        guard active, let fill = barFill, let fillLayer = fill.layer else {
+            waveBands.forEach { $0.isHidden = true }
+            return
+        }
+        let length = isVertical ? fill.bounds.height : fill.bounds.width
+        guard length > 16 else {
+            waveBands.forEach { $0.isHidden = true }
+            return
+        }
+        while waveBands.count < 2 {
+            let band = CAGradientLayer()
+            band.colors = [
+                NSColor.white.withAlphaComponent(0).cgColor,
+                NSColor.white.withAlphaComponent(0.28).cgColor,
+                NSColor.white.withAlphaComponent(0).cgColor
+            ]
+            band.locations = [0, 0.5, 1]
+            band.cornerRadius = 2
+            fillLayer.addSublayer(band)
+            waveBands.append(band)
+        }
+        let bandLength = min(max(14, length * 0.25), 80)
+        let period: Double = 3.2
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        for (i, band) in waveBands.enumerated() {
+            let p = CGFloat((t / period + Double(i) * 0.5).truncatingRemainder(dividingBy: 1))
+            band.isHidden = false
+            if isVertical {
+                band.startPoint = CGPoint(x: 0.5, y: 0)
+                band.endPoint = CGPoint(x: 0.5, y: 1)
+                band.frame = CGRect(x: 0, y: (length - bandLength) * (1 - p), width: fill.bounds.width, height: bandLength)
+            } else {
+                band.startPoint = CGPoint(x: 0, y: 0.5)
+                band.endPoint = CGPoint(x: 1, y: 0.5)
+                band.frame = CGRect(x: (length - bandLength) * p, y: 0, width: bandLength, height: fill.bounds.height)
+            }
+        }
+        CATransaction.commit()
+    }
+
+    /// Scintillement : petits éclats qui apparaissent et disparaissent dans le
+    /// remplissage, chacun à son propre rythme.
+    private func updateTwinkles(t: TimeInterval) {
+        let active = twinklesEnabled && window != nil && currentPercentage > 0.05
+        guard active, let fill = barFill, let fillLayer = fill.layer else {
+            twinkleLayers.forEach { $0.isHidden = true }
+            return
+        }
+        let length = isVertical ? fill.bounds.height : fill.bounds.width
+        let thickness = isVertical ? fill.bounds.width : fill.bounds.height
+        while twinkleLayers.count < 5 {
+            let twinkle = CALayer()
+            twinkle.contents = Self.smokeParticleImage()
+            twinkle.isHidden = true
+            fillLayer.addSublayer(twinkle)
+            twinkleLayers.append(twinkle)
+        }
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        for (i, twinkle) in twinkleLayers.enumerated() {
+            let seed = Double(i + 1) * 0.6180339887
+            let frac = seed.truncatingRemainder(dividingBy: 1)
+            let position = CGFloat(frac) * length * 0.92
+            let flash = pow(max(0, sin(t * (2.1 + frac * 2.4) + seed * 7)), 6)
+            let size = 1.6 + CGFloat(frac) * 1.6
+            twinkle.isHidden = false
+            twinkle.opacity = Float(flash * 0.9)
+            if isVertical {
+                twinkle.bounds = CGRect(x: 0, y: 0, width: thickness, height: size)
+                twinkle.position = CGPoint(x: thickness / 2, y: position)
+            } else {
+                twinkle.bounds = CGRect(x: 0, y: 0, width: size, height: thickness)
+                twinkle.position = CGPoint(x: position, y: thickness / 2)
+            }
+        }
+        CATransaction.commit()
     }
 
     /// Bande lumineuse qui balaie le remplissage avec un scintillement électrique pendant la charge.

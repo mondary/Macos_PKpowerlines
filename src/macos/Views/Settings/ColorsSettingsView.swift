@@ -5,6 +5,21 @@ struct ColorsSettingsView: View {
 
     var body: some View {
         Form {
+            Section("États de la batterie") {
+                EffectPreviewBox(percentage: 62, color: settings.batteryColor)
+                Text("Chargée — couleur « Chargée », avec les animations actives.")
+                    .font(.caption).foregroundStyle(.secondary)
+                EffectPreviewBox(percentage: 15, color: settings.batteryLowColor)
+                Text("Faible — couleur « Faible » sous le seuil.")
+                    .font(.caption).foregroundStyle(.secondary)
+                EffectPreviewBox(critical: true, percentage: 8, color: settings.batteryLowColor)
+                Text("Critique — pulsation d'alerte sous le seuil critique.")
+                    .font(.caption).foregroundStyle(.secondary)
+                EffectPreviewBox(charging: true, percentage: 62, color: settings.chargingColor)
+                Text("En charge — couleur de charge + étincelle.")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+
             Section("RAM") {
                 ColorPicker("Couleur", selection: ramColorBinding, supportsOpacity: false)
                 Text("Couleur affichée quand la source est RAM.")

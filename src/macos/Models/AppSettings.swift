@@ -16,6 +16,9 @@ final class AppSettings: ObservableObject {
         static let sparkOnCharge = "sparkOnCharge"
         static let criticalPulse = "criticalPulse"
         static let consumptionEffect = "consumptionEffect"
+        static let fillWaves = "fillWaves"
+        static let twinkles = "twinkles"
+        static let breathing = "breathing"
         static let showPercentage = "showPercentage"
         static let forcePercentageWhenLow = "forcePercentageWhenLow"
         static let ramColor = "ramColor"
@@ -39,6 +42,9 @@ final class AppSettings: ObservableObject {
     @Published var sparkOnCharge: Bool { didSet { defaults.set(sparkOnCharge, forKey: Keys.sparkOnCharge) } }
     @Published var criticalPulse: Bool { didSet { defaults.set(criticalPulse, forKey: Keys.criticalPulse) } }
     @Published var consumptionEffect: Bool { didSet { defaults.set(consumptionEffect, forKey: Keys.consumptionEffect) } }
+    @Published var fillWaves: Bool { didSet { defaults.set(fillWaves, forKey: Keys.fillWaves) } }
+    @Published var twinkles: Bool { didSet { defaults.set(twinkles, forKey: Keys.twinkles) } }
+    @Published var breathing: Bool { didSet { defaults.set(breathing, forKey: Keys.breathing) } }
     @Published var showPercentage: Bool { didSet { defaults.set(showPercentage, forKey: Keys.showPercentage) } }
     @Published var forcePercentageWhenLow: Bool { didSet { defaults.set(forcePercentageWhenLow, forKey: Keys.forcePercentageWhenLow) } }
     @Published var ramColorHex: String { didSet { defaults.set(ramColorHex, forKey: Keys.ramColor) } }
@@ -83,6 +89,9 @@ final class AppSettings: ObservableObject {
         self.sparkOnCharge = (defaults.object(forKey: Keys.sparkOnCharge) as? Bool) ?? true
         self.criticalPulse = (defaults.object(forKey: Keys.criticalPulse) as? Bool) ?? true
         self.consumptionEffect = (defaults.object(forKey: Keys.consumptionEffect) as? Bool) ?? true
+        self.fillWaves = (defaults.object(forKey: Keys.fillWaves) as? Bool) ?? true
+        self.twinkles = (defaults.object(forKey: Keys.twinkles) as? Bool) ?? false
+        self.breathing = (defaults.object(forKey: Keys.breathing) as? Bool) ?? false
         self.showPercentage = (defaults.object(forKey: Keys.showPercentage) as? Bool) ?? true
         self.forcePercentageWhenLow = (defaults.object(forKey: Keys.forcePercentageWhenLow) as? Bool) ?? true
         self.ramColorHex = defaults.string(forKey: Keys.ramColor) ?? "#FF3B30"

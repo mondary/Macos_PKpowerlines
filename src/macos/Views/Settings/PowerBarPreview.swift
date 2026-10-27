@@ -10,14 +10,18 @@ struct PowerBarPreview: NSViewRepresentable {
     var discharging = false
     var critical = false
     var percentage: Double = 62
+    /// Position simulée (l'aperçu Position s'en sert pour ancrer la barre).
+    var position: BarPosition = .top
+    /// Couleur imposée (aperçu des états batterie).
+    var colorOverride: Color? = nil
 
     func makeNSView(context: Context) -> PowerBarView {
         PowerBarView(frame: .zero)
     }
 
     func updateNSView(_ view: PowerBarView, context: Context) {
-        view.updateOrientation(false)
-        view.updateBarPosition(.top)
+        view.updateOrientation(position.isVertical)
+        view.updateBarPosition(position)
         view.updateBarThickness(settings.barHeight)
         view.updateShowPercentage(true)
         view.updateOpacity(settings.barOpacity)
@@ -26,13 +30,16 @@ struct PowerBarPreview: NSViewRepresentable {
         view.updateSparkEnabled(settings.sparkOnCharge)
         view.updateCriticalPulseEnabled(settings.criticalPulse)
         view.updateConsumptionEnabled(settings.consumptionEffect)
+        view.updateWavesEnabled(settings.fillWaves)
+        view.updateTwinklesEnabled(settings.twinkles)
+        view.updateBreathingEnabled(settings.breathing)
         view.updateCharging(charging)
         view.updateDischarging(discharging)
         view.updateCriticalLow(critical)
         let prefix = charging ? "⚡ " : ""
         view.updateUsage(
             percentage: percentage,
-            color: NSColor(previewColor),
+            color: NSColor(colorOverride ?? previewColor),
             label: "\(prefix)\(Int(percentage))%"
         )
     }
@@ -61,6 +68,7 @@ struct EffectPreviewBox: View {
     var discharging = false
     var critical = false
     var percentage: Double = 62
+    var color: Color? = nil
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -72,7 +80,8 @@ struct EffectPreviewBox: View {
                 charging: charging,
                 discharging: discharging,
                 critical: critical,
-                percentage: percentage
+                percentage: percentage,
+                colorOverride: color
             )
             .frame(height: max(16, settings.barHeight))
         }
@@ -115,5 +124,62 @@ struct DesktopPreview: View {
         .frame(height: 96)
         .frame(maxWidth: .infinity)
         .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+    }
+}
+
+/// Faux écran pour la page Position : montre le bord choisi, l'offset réel
+/// (plafonné pour rester lisible) et le sens de remplissage.
+struct PositionPreview: View {
+    @EnvironmentObject var settings: AppSettings
+
+    private var offset: CGFloat {
+        min(max(settings.barOffset, 0), 44)
+    }
+
+    var body: some View {
+        GeometryReader { geo in
+            ZStack(alignment: alignment) {
+                LinearGradient(
+                    colors: [
+                        Color(hue: 0.6, saturation: 0.45, brightness: 0.38),
+                        Color(hue: 0.66, saturation: 0.5, brightness: 0.2)
+                    ],
+                    startPoint: .top, endPoint: .bottom
+                )
+                Group {
+                    if settings.barPosition.isVertical {
+                        PowerBarPreview(percentage: 62, position: settings.barPosition)
+                            .frame(width: max(16, settings.barHeight))
+                            .frame(maxHeight: .infinity)
+                    } else {
+                        PowerBarPreview(percentage: 62, position: settings.barPosition)
+                            .frame(height: max(16, settings.barHeight))
+                            .frame(maxWidth: .infinity)
+                    }
+                }
+                .padding(edge, offset)
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+        }
+        .frame(height: 110)
+        .frame(maxWidth: .infinity)
+    }
+
+    private var alignment: Alignment {
+        switch settings.barPosition {
+        case .top: .top
+        case .bottom: .bottom
+        case .left: .leading
+        case .right: .trailing
+        }
+    }
+
+    private var edge: Edge.Set {
+        switch settings.barPosition {
+        case .top: .top
+        case .bottom: .bottom
+        case .left: .leading
+        case .right: .trailing
+        }
     }
 }
