@@ -6,7 +6,7 @@
 
 ✨ Application macOS native (menu-bar) qui affiche une barre en temps réel en haut de chaque écran : RAM ou batterie. Binaire universel Intel + Apple Silicon.
 
-Version **2026.10.17**
+Version **2026.10.18**
 
 ![PKpowerlines — fenêtre de réglages](store/v1/screenshots/02-reglages.png)
 
@@ -26,7 +26,8 @@ Version **2026.10.17**
 - 🚨 **Alerte batterie critique** — sous un seuil critique réglable (15 % par défaut, hors charge), la barre pulse comme un battement d'alerte
 - 🅰️ **Texte débordant** — la powerline reste à 7 px et collée au bord de l'écran : le % s'écrit en 11 pt **sur la ligne**, levé au-dessus du bord (le haut sort de l'écran) et débordant sous la ligne
 - 💨 **Consommation** — en décharge, le bord de la barre s'érode et un fin panache de fumée s'en échappe
-- 🎛️ **Animations réglables** — une page dédiée avec un interrupteur par effet (flux, étincelle, pulsation, consommation)
+- 🎛️ **Animations réglables** — une page dédiée avec un interrupteur par effet (flux, étincelle, pulsation, consommation) et un aperçu en direct pour chacun
+- 🖥️ **Aperçu bureau** — la vraie barre prévisualisée dans Réglages → Apparence avec les réglages en cours
 - ↕️ **Offset** — pixel par pixel (peut chevaucher la menu bar, ou décaler sur les côtés)
 - ⏱️ **Fréquence** — mise à jour toutes les 1–10s
 - 🧩 **Binaire universel** — `arm64` + `x86_64`
@@ -62,7 +63,7 @@ Version **2026.10.17**
 | Source | RAM / Batterie / CPU / Réseau | Réglages → Powerline |
 | Afficher le % | On / Off | Réglages → Powerline |
 | Forcer le % en batterie faible | On / Off (défaut : On) | Réglages → Powerline |
-| Fréquence | 1–10s | Réglages → Powerline |
+| Fréquence | 1–10s (défaut : 10 s) | Réglages → Powerline |
 | Hauteur | 4–40px | Réglages → Powerline (slider) |
 | Presets hauteur | 4 / 8 / 12 / 20px | Réglages → Powerline ou ⌘4/⌘1/⌘2/⌘3 |
 | Opacité | 20–100% | Réglages → Powerline |

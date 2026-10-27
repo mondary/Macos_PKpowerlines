@@ -68,7 +68,7 @@ final class AppSettings: ObservableObject {
         self.defaults = defaults
         let monitorRaw = defaults.string(forKey: Keys.monitorType) ?? MonitorType.battery.rawValue
         self.monitorType = MonitorType(rawValue: monitorRaw) ?? .battery
-        self.updateInterval = defaults.object(forKey: Keys.updateInterval) as? Double ?? 2.0
+        self.updateInterval = defaults.object(forKey: Keys.updateInterval) as? Double ?? 10.0
         let storedHeight = defaults.object(forKey: Keys.barHeight) as? Double
         self.barHeight = CGFloat(storedHeight ?? Self.defaultHeight)
         let storedOpacity = defaults.object(forKey: Keys.barOpacity) as? Double

@@ -1,5 +1,13 @@
 # Changelog
 
+## [2026.10.18] - 2026-10-27
+### Added
+- **Aperçus en direct dans les réglages** : la vraie barre illustre chaque effet dans Réglages → Animations, et un aperçu bureau global (faux écran + menu bar) prévisualise hauteur, opacité, police et % dans Réglages → Apparence.
+### Fixed
+- « Extra fin » n'était plus extra fin : l'épaisseur de la ligne n'a plus de minimum ; chaque préréglage (4 / 8 / 12 / 20 px) affiche sa vraie hauteur.
+### Changed
+- Fréquence de mise à jour par défaut portée à 10 s (la batterie évolue lentement) ; les légendes des réglages sont à jour avec le nouveau comportement du texte.
+
 ## [2026.10.17] - 2026-10-27
 ### Changed
 - Police du % réduite à 11 pt (au lieu de 12).

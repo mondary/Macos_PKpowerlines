@@ -5,6 +5,12 @@ struct AppearanceSettingsView: View {
 
     var body: some View {
         Form {
+            Section("Aperçu du bureau") {
+                DesktopPreview()
+                Text("La vraie barre avec tes réglages : hauteur, opacité, police, texte et effet de la source active.")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+
             Section("Hauteur de la barre") {
                 HStack(spacing: 12) {
                     Slider(value: $settings.barHeight, in: AppSettings.minHeight...AppSettings.maxHeight)

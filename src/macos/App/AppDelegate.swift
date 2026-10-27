@@ -43,25 +43,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var isLowBatteryText = false
     private var statusMenu: NSMenu?
 
-    /// Épaisseur minimale de la ligne quand le % est affiché.
-    private static let minTextBarThickness: CGFloat = 7
-
-    /// Hauteur de fenêtre quand le texte est affiché : la ligne est centrée
-    /// dedans et le % déborde un peu au-dessus et en dessous.
+    /// Hauteur de fenêtre quand le texte est affiché : le texte déborde de la
+    /// ligne vers le haut (hors écran) et vers le bas, la ligne garde son épaisseur.
     private static let textWindowThickness: CGFloat = 16
 
-    /// Hauteur de fenêtre : la ligne plus fine est centrée, le texte déborde.
+    /// Hauteur de fenêtre : la ligne peut être plus fine, le texte déborde.
     private var effectiveBarHeight: CGFloat {
         let barHeight = settings.barHeight
         let needsText = isLowBatteryText || settings.showPercentage
         return needsText ? max(barHeight, Self.textWindowThickness) : barHeight
     }
 
-    /// Épaisseur visuelle de la powerline.
+    /// Épaisseur visuelle de la powerline (aucun minimum : Extra fin reste 4 px).
     private var effectiveBarThickness: CGFloat {
-        let barHeight = settings.barHeight
-        let needsText = isLowBatteryText || settings.showPercentage
-        return needsText ? max(barHeight, Self.minTextBarThickness) : barHeight
+        settings.barHeight
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
