@@ -388,11 +388,29 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .sink { [weak self] _ in self?.syncAnimations() }
             .store(in: &cancellables)
 
+        settings.$levelAnimation
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in self?.syncAnimations() }
+            .store(in: &cancellables)
+
+        settings.$networkAnimation
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in self?.syncAnimations() }
+            .store(in: &cancellables)
+
         settings.$monitorType
             .removeDuplicates()
             .dropFirst()
             .receive(on: RunLoop.main)
-            .sink { [weak self] _ in self?.updateUsage() }
+            .sink { [weak self] type in
+                guard let self else { return }
+                self.barViews.forEach { $0.updateSource(type) }
+                self.updateUsage()
+            }
             .store(in: &cancellables)
 
         settings.$forcePercentageWhenLow
@@ -558,8 +576,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         view.updateAnimations(
             charging: settings.chargingAnimation,
             discharging: settings.dischargingAnimation,
-            critical: settings.criticalAnimation
+            critical: settings.criticalAnimation,
+            level: settings.levelAnimation,
+            network: settings.networkAnimation
         )
+        view.updateSource(settings.monitorType)
     }
 
     private func updateUsage() {

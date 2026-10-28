@@ -23,6 +23,8 @@ final class AppSettings: ObservableObject {
         static let chargingAnimation = "chargingAnimation"
         static let dischargingAnimation = "dischargingAnimation"
         static let criticalAnimation = "criticalAnimation"
+        static let levelAnimation = "levelAnimation"
+        static let networkAnimation = "networkAnimation"
         static let showPercentage = "showPercentage"
         static let forcePercentageWhenLow = "forcePercentageWhenLow"
         static let ramColor = "ramColor"
@@ -45,6 +47,8 @@ final class AppSettings: ObservableObject {
     @Published var chargingAnimation: BarAnimation { didSet { defaults.set(chargingAnimation.rawValue, forKey: Keys.chargingAnimation) } }
     @Published var dischargingAnimation: BarAnimation { didSet { defaults.set(dischargingAnimation.rawValue, forKey: Keys.dischargingAnimation) } }
     @Published var criticalAnimation: BarAnimation { didSet { defaults.set(criticalAnimation.rawValue, forKey: Keys.criticalAnimation) } }
+    @Published var levelAnimation: BarAnimation { didSet { defaults.set(levelAnimation.rawValue, forKey: Keys.levelAnimation) } }
+    @Published var networkAnimation: BarAnimation { didSet { defaults.set(networkAnimation.rawValue, forKey: Keys.networkAnimation) } }
     @Published var showPercentage: Bool { didSet { defaults.set(showPercentage, forKey: Keys.showPercentage) } }
     @Published var forcePercentageWhenLow: Bool { didSet { defaults.set(forcePercentageWhenLow, forKey: Keys.forcePercentageWhenLow) } }
     @Published var ramColorHex: String { didSet { defaults.set(ramColorHex, forKey: Keys.ramColor) } }
@@ -97,6 +101,8 @@ final class AppSettings: ObservableObject {
         let migratedDischarging: BarAnimation = oldBreathing ? .breathing : oldTwinkles ? .twinkle : oldConsumption ? .consumption : oldWaves ? .waves : oldFlow ? .flow : .none
         self.dischargingAnimation = BarAnimation(rawValue: defaults.string(forKey: Keys.dischargingAnimation) ?? "") ?? migratedDischarging
         self.criticalAnimation = BarAnimation(rawValue: defaults.string(forKey: Keys.criticalAnimation) ?? "") ?? (oldPulse ? .pulse : .none)
+        self.levelAnimation = BarAnimation(rawValue: defaults.string(forKey: Keys.levelAnimation) ?? "") ?? .waves
+        self.networkAnimation = BarAnimation(rawValue: defaults.string(forKey: Keys.networkAnimation) ?? "") ?? .stream
         self.showPercentage = (defaults.object(forKey: Keys.showPercentage) as? Bool) ?? true
         self.forcePercentageWhenLow = (defaults.object(forKey: Keys.forcePercentageWhenLow) as? Bool) ?? true
         self.ramColorHex = defaults.string(forKey: Keys.ramColor) ?? "#FF3B30"

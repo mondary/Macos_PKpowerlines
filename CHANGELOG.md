@@ -1,5 +1,10 @@
 # Changelog
 
+## [2026.10.25] - 2026-10-28
+### Added
+- **Animations par source** : deux effets dédiés au réseau — Flux de données (paquets lumineux dont la vitesse et la taille suivent le débit) et Impulsions (bande lumineuse dont la cadence accélère avec la vitesse).
+- Choix d'animation dédié au **niveau (RAM & CPU)** et au **réseau**, en plus des trois états batterie ; les réglages sont appliqués selon la source active.
+
 ## [2026.10.24] - 2026-10-28
 ### Fixed
 - Aperçus : quand la source est Réseau, la barre simule des débits (« ↓ 2,4 MB/s ↑ 128 KB/s ») au lieu d'un « 62 % » sans signification ; les autres sources gardent leur pourcentage.

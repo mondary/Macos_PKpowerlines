@@ -10,6 +10,8 @@ enum BarAnimation: String, CaseIterable, Identifiable {
     case spark
     case consumption
     case pulse
+    case stream
+    case pulses
 
     var id: String { rawValue }
 
@@ -23,6 +25,8 @@ enum BarAnimation: String, CaseIterable, Identifiable {
         case .spark: return "Étincelle"
         case .consumption: return "Consommation"
         case .pulse: return "Pulsation d'alerte"
+        case .stream: return "Flux de données"
+        case .pulses: return "Impulsions"
         }
     }
 
@@ -36,6 +40,8 @@ enum BarAnimation: String, CaseIterable, Identifiable {
         case .spark: return "Balayage lumineux électrique pendant la charge."
         case .consumption: return "Le bord s'érode et fume, comme consommé."
         case .pulse: return "Battement d'alerte de l'opacité."
+        case .stream: return "Petits paquets lumineux qui filent avec le débit."
+        case .pulses: return "Ondes cadencées : plus le débit monte, plus ça pulse vite."
         }
     }
 
@@ -44,4 +50,6 @@ enum BarAnimation: String, CaseIterable, Identifiable {
     static let chargingOptions: [BarAnimation] = [.none, .spark, .flow, .waves]
     static let dischargingOptions: [BarAnimation] = [.none, .consumption, .flow, .waves, .twinkle, .breathing]
     static let criticalOptions: [BarAnimation] = [.none, .pulse, .breathing]
+    static let levelOptions: [BarAnimation] = [.none, .flow, .waves, .twinkle, .breathing]
+    static let networkOptions: [BarAnimation] = [.none, .stream, .pulses, .flow, .waves]
 }

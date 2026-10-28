@@ -26,7 +26,7 @@ Version **2026.10.10**
 - 🚨 **Critical battery alert** — below an adjustable critical threshold (15% by default, not charging), the bar pulses like an alert heartbeat
 - 🅰️ **Overflowing text** — the powerline stays at 7 px and flush with the screen edge: the % is drawn at 11 pt **on the line**, lifted above the edge (its top leaves the screen) and overflowing below
 - 💨 **Consumption** — while discharging, the bar's edge erodes and a thin wisp of smoke drifts away
-- 🎛️ **Per-state animations** — in Bar, one animation chosen for each state (charging, discharging, critical alert — there is no idle state) among options including None; every option with a live preview that plays even when unselected
+- 🎛️ **Per-state and per-source animations** — in Bar: one animation per battery state (charging, discharging, alert), one for level (RAM & CPU) and a dedicated network one — **Data stream** (light packets speeding up with throughput) and **Pulses** (rate proportional to speed). Every option with a live preview that plays even when unselected
 - 🖥️ **Previews everywhere** — the real bar previewed in Bar (mock screen: edge, offset, height) and in Source (battery states)
 - ↕️ **Offset** — pixel by pixel (can overlap the menu bar, or shift on the sides)
 - ⏱️ **Frequency** — refresh every 1–10s

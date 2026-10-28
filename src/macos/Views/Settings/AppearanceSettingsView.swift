@@ -108,6 +108,16 @@ struct AppearanceSettingsView: View {
                 Text("Une animation par état : un portable est toujours en charge ou en décharge, il n'y a pas d'état « repos ». Les aperçus jouent aussi les animations non sélectionnées.")
                     .font(.caption).foregroundStyle(.secondary)
             }
+
+            Section("Animation — niveau (RAM & CPU)") {
+                AnimationGrid(options: BarAnimation.levelOptions, selection: $settings.levelAnimation, state: .discharging, percentage: 62)
+            }
+
+            Section("Animation — réseau") {
+                AnimationGrid(options: BarAnimation.networkOptions, selection: $settings.networkAnimation, state: .discharging, percentage: 42)
+                Text("Le flux de données accélère avec le débit ; les impulsions se resserrent quand la vitesse monte.")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
         }
         .formStyle(.grouped)
     }

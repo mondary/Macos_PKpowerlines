@@ -40,15 +40,20 @@ final class PowerBarView: NSView {
     private var isCharging = false
     private var isDischarging = false
     private var isCriticalLow = false
+    private var source: MonitorType = .battery
     private var chargingStyle: BarAnimation = .spark
     private var dischargingStyle: BarAnimation = .consumption
     private var criticalStyle: BarAnimation = .pulse
+    private var levelStyle: BarAnimation = .waves
+    private var networkStyle: BarAnimation = .stream
     private var flowPhase: CGFloat = 0
     private var flowTimer: DispatchSourceTimer?
     private var sparkLayer: CAGradientLayer?
     private var waveBands: [CAGradientLayer] = []
     private var twinkleLayers: [CALayer] = []
     private var puffLayers: [CALayer] = []
+    private var streamLayers: [CALayer] = []
+    private var speedPulseBand: CAGradientLayer?
     private var puffs: [SmokePuff] = []
     private var smokeTick = 0
 
@@ -248,14 +253,25 @@ final class PowerBarView: NSView {
         restartFlowTimer()
     }
 
-    /// Animation choisie pour chaque état de la batterie.
-    func updateAnimations(charging: BarAnimation, discharging: BarAnimation, critical: BarAnimation) {
+    func updateSource(_ type: MonitorType) {
+        guard source != type else { return }
+        source = type
+        restartFlowTimer()
+    }
+
+    /// Animation choisie pour chaque état / source.
+    func updateAnimations(charging: BarAnimation, discharging: BarAnimation, critical: BarAnimation, level: BarAnimation, network: BarAnimation) {
         let changed = charging != chargingStyle
             || discharging != dischargingStyle || critical != criticalStyle
+            || level != levelStyle || network != networkStyle
         guard changed else { return }
         chargingStyle = charging
         dischargingStyle = discharging
         criticalStyle = critical
+        levelStyle = level
+        networkStyle = network
+        streamLayers.forEach { $0.isHidden = true }
+        speedPulseBand?.isHidden = true
         sparkLayer?.isHidden = true
         waveBands.forEach { $0.isHidden = true }
         twinkleLayers.forEach { $0.isHidden = true }
@@ -277,9 +293,16 @@ final class PowerBarView: NSView {
 
     /// Animation jouée pour l'état courant de la batterie.
     private var activeStyle: BarAnimation {
-        if isCriticalLow { return criticalStyle }
-        if isCharging { return chargingStyle }
-        return dischargingStyle
+        switch source {
+        case .battery:
+            if isCriticalLow { return criticalStyle }
+            if isCharging { return chargingStyle }
+            return dischargingStyle
+        case .network:
+            return networkStyle
+        case .ram, .cpu:
+            return levelStyle
+        }
     }
 
     private func restartFlowTimer() {
@@ -291,6 +314,8 @@ final class PowerBarView: NSView {
             sparkLayer?.isHidden = true
             waveBands.forEach { $0.isHidden = true }
             twinkleLayers.forEach { $0.isHidden = true }
+            streamLayers.forEach { $0.isHidden = true }
+            speedPulseBand?.isHidden = true
             clearSmoke()
             barFill?.fillOpacity = opacity
             percentageLabel?.alphaValue = 1
@@ -349,6 +374,95 @@ final class PowerBarView: NSView {
         if activeStyle == .waves { updateWaveBands(t: t) } else { waveBands.forEach { $0.isHidden = true } }
         if activeStyle == .twinkle { updateTwinkles(t: t) } else { twinkleLayers.forEach { $0.isHidden = true } }
         if activeStyle == .consumption { updateSmoke() } else { clearSmoke() }
+        if activeStyle == .stream { updateStream(t: t) } else { streamLayers.forEach { $0.isHidden = true } }
+        if activeStyle == .pulses { updateSpeedPulses(t: t) } else { speedPulseBand?.isHidden = true }
+    }
+
+    /// Flux de données : petits paquets lumineux qui filent le long du
+    /// remplissage, vitesse et taille proportionnelles au débit.
+    private func updateStream(t: TimeInterval) {
+        guard window != nil, currentPercentage > 0.01,
+              let fill = barFill, let fillLayer = fill.layer else {
+            streamLayers.forEach { $0.isHidden = true }
+            return
+        }
+        let length = isVertical ? fill.bounds.height : fill.bounds.width
+        let thickness = isVertical ? fill.bounds.width : fill.bounds.height
+        guard length > 14 else {
+            streamLayers.forEach { $0.isHidden = true }
+            return
+        }
+        while streamLayers.count < 5 {
+            let dot = CALayer()
+            dot.contents = Self.smokeParticleImage()
+            dot.isHidden = true
+            fillLayer.addSublayer(dot)
+            streamLayers.append(dot)
+        }
+        let speed = 40 + 360 * CGFloat(currentPercentage)
+        let spacing = length / CGFloat(streamLayers.count)
+        let size = 3 + CGFloat(currentPercentage) * 7
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        for (i, dot) in streamLayers.enumerated() {
+            let base = CGFloat(i) * spacing
+            let position = (base + CGFloat(t) * speed).truncatingRemainder(dividingBy: length)
+            dot.isHidden = false
+            dot.opacity = 0.55
+            if isVertical {
+                dot.bounds = CGRect(x: 0, y: 0, width: thickness, height: size)
+                dot.position = CGPoint(x: thickness / 2, y: position)
+            } else {
+                dot.bounds = CGRect(x: 0, y: 0, width: size, height: thickness)
+                dot.position = CGPoint(x: position, y: thickness / 2)
+            }
+        }
+        CATransaction.commit()
+    }
+
+    /// Impulsions : une bande lumineuse dont la cadence suit le débit
+    /// (lente à vide, rapide à plein régime).
+    private func updateSpeedPulses(t: TimeInterval) {
+        guard window != nil, currentPercentage > 0.01,
+              let fill = barFill, let fillLayer = fill.layer else {
+            speedPulseBand?.isHidden = true
+            return
+        }
+        let length = isVertical ? fill.bounds.height : fill.bounds.width
+        let thickness = isVertical ? fill.bounds.width : fill.bounds.height
+        guard length > 14 else {
+            speedPulseBand?.isHidden = true
+            return
+        }
+        if speedPulseBand == nil {
+            let band = CAGradientLayer()
+            band.colors = [
+                NSColor.white.withAlphaComponent(0).cgColor,
+                NSColor.white.withAlphaComponent(0.5).cgColor,
+                NSColor.white.withAlphaComponent(0).cgColor
+            ]
+            band.locations = [0, 0.5, 1]
+            band.cornerRadius = 2
+            fillLayer.addSublayer(band)
+            speedPulseBand = band
+        }
+        guard let band = speedPulseBand else { return }
+        let period = 2.6 - 2.2 * Double(max(0.05, currentPercentage))
+        let progress = CGFloat((t / period).truncatingRemainder(dividingBy: 1))
+        let bandLength = min(max(14, length * 0.22), 70)
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        band.isHidden = false
+        if isVertical {
+            band.startPoint = CGPoint(x: 0.5, y: 0)
+            band.endPoint = CGPoint(x: 0.5, y: 1)
+            band.frame = CGRect(x: 0, y: (length - bandLength) * (1 - progress), width: thickness, height: bandLength)
+        } else {
+            band.startPoint = CGPoint(x: 0, y: 0.5)
+            band.endPoint = CGPoint(x: 1, y: 0.5)
+            band.frame = CGRect(x: (length - bandLength) * progress, y: 0, width: bandLength, height: thickness)
+        }
+        CATransaction.commit()
     }
 
     /// Ondes : deux bandes lumineuses très douces qui traversent le remplissage.

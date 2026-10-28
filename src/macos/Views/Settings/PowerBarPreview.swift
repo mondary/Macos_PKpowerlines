@@ -25,6 +25,7 @@ struct PowerBarPreview: NSViewRepresentable {
     }
 
     func updateNSView(_ view: PowerBarView, context: Context) {
+        view.updateSource(settings.monitorType)
         view.updateOrientation(position.isVertical)
         view.updateBarPosition(position)
         view.updateBarThickness(settings.barHeight)
@@ -39,7 +40,9 @@ struct PowerBarPreview: NSViewRepresentable {
         view.updateAnimations(
             charging: state == .charging ? resolved : .none,
             discharging: state == .discharging ? resolved : .none,
-            critical: state == .critical ? resolved : .none
+            critical: state == .critical ? resolved : .none,
+            level: resolved,
+            network: resolved
         )
         view.updateUsage(
             percentage: effectivePercentage,
@@ -64,10 +67,17 @@ struct PowerBarPreview: NSViewRepresentable {
     }
 
     private var settingsStyle: BarAnimation {
-        switch state {
-        case .charging: return settings.chargingAnimation
-        case .discharging: return settings.dischargingAnimation
-        case .critical: return settings.criticalAnimation
+        switch settings.monitorType {
+        case .network:
+            return settings.networkAnimation
+        case .ram, .cpu:
+            return settings.levelAnimation
+        case .battery:
+            switch state {
+            case .charging: return settings.chargingAnimation
+            case .discharging: return settings.dischargingAnimation
+            case .critical: return settings.criticalAnimation
+            }
         }
     }
 
