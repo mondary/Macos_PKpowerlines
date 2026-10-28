@@ -9,6 +9,8 @@
   const I18N = {
     fr: {
       skip: 'Aller au terrain de jeu',
+      meta_title: 'PKpowerlines — Votre Mac, en un regard.',
+      meta_description: 'Une ligne de couleur pour lire la batterie, la RAM, le CPU ou le réseau de votre Mac. Explorez le jardin interactif de PKpowerlines.',
       nav_playground: 'Terrain de jeu', nav_app: "L'application", nav_source: 'Code source ↗', nav_install: 'Installer sur Mac ↗',
       kofi_button: 'Offrir un café',
       intro_label: 'UN PETIT UTILITAIRE. UN AUTRE REGARD.',
@@ -70,10 +72,17 @@
       day_charge_title: 'Un clic magnétique.<br>Et l\u2019énergie revient.', day_charge_desc: 'La powerline passe au bleu et affiche ⚡. La charge est accélérée pour vous laisser voir la batterie remonter.',
       day_full_title: 'La ligne est pleine.<br>La journée peut continuer.', day_full_desc: 'À 100 %, la charge s\u2019arrête. La barre redevient verte, sans éclair.',
       petals_on: '✦ Pétales : oui', petals_off: '✦ Pétales : non',
-      motion_aria: 'Activer ou désactiver les pétales animés'
+      motion_aria: 'Activer ou désactiver les pétales animés',
+      world_aria: 'Le jardin interactif de PKpowerlines',
+      world_alt: 'Un jardin japonais en pixel art : cerisiers roses, pagode et mont Fuji sous un ciel violet et pêche.',
+      nav_aria: 'Navigation principale', time_aria: 'Choisir le moment de la journée',
+      scenarios_aria: 'Scénarios batterie', screen_sources_aria: 'Source de la simulation',
+      connect_aria: 'Brancher le MagSafe', mock_menu: '◆ &nbsp; Finder &nbsp; Fichier', mac_menu: '◆ &nbsp; <b>Finder</b> &nbsp; Fichier &nbsp; Édition'
     },
     en: {
       skip: 'Go to the playground',
+      meta_title: 'PKpowerlines — Your Mac, at a glance.',
+      meta_description: 'A colored line for your Mac’s battery, RAM, CPU or network. Explore the interactive PKpowerlines garden.',
       nav_playground: 'Playground', nav_app: 'The app', nav_source: 'Source code ↗', nav_install: 'Install on Mac ↗',
       kofi_button: 'Buy me a coffee',
       intro_label: 'A SMALL UTILITY. ANOTHER WAY OF SEEING.',
@@ -135,17 +144,16 @@
       day_charge_title: 'A magnetic click.<br>And the energy returns.', day_charge_desc: 'The powerline turns blue and shows ⚡. Charging is sped up so you can watch the battery climb.',
       day_full_title: 'The line is full.<br>The day can go on.', day_full_desc: 'At 100%, charging stops. The bar turns green again, no lightning bolt.',
       petals_on: '✦ Petals: on', petals_off: '✦ Petals: off',
-      motion_aria: 'Enable or disable animated petals'
+      motion_aria: 'Enable or disable animated petals',
+      world_aria: 'The PKpowerlines interactive garden',
+      world_alt: 'A pixel-art Japanese garden: pink cherry trees, a pagoda and Mount Fuji under a violet and peach sky.',
+      nav_aria: 'Main navigation', time_aria: 'Choose a time of day',
+      scenarios_aria: 'Battery scenarios', screen_sources_aria: 'Simulated source',
+      connect_aria: 'Plug in the MagSafe', mock_menu: '◆ &nbsp; Finder &nbsp; File', mac_menu: '◆ &nbsp; <b>Finder</b> &nbsp; File &nbsp; Edit'
     }
   };
-  let lang;
-  const urlLang = new URLSearchParams(location.search).get('lang');
-  if (urlLang === 'fr' || urlLang === 'en') lang = urlLang;
-  if (lang !== 'fr' && lang !== 'en') { try { lang = localStorage.getItem('pkpl-lang'); } catch (e) { /* stockage indisponible */ } }
-  if (lang !== 'fr' && lang !== 'en') {
-    const nav = (navigator.languages && navigator.languages[0]) || navigator.language || 'fr';
-    lang = String(nav).toLowerCase().indexOf('fr') === 0 ? 'fr' : 'en';
-  }
+  // La langue est déjà résolue par le script inline du <head> (URL, stockage, navigateur, repli FR).
+  let lang = document.documentElement.lang === 'en' ? 'en' : 'fr';
   const t = (key, ...args) => {
     let s = (I18N[lang] && I18N[lang][key]) != null ? I18N[lang][key] : I18N.fr[key];
     if (s == null) return key;
@@ -300,12 +308,18 @@
   const langSwitch = document.querySelector('.lang-switch');
   function applyI18n() {
     document.documentElement.lang = lang;
+    document.title = t('meta_title');
+    const description = document.querySelector('meta[name="description"]');
+    if (description) description.setAttribute('content', t('meta_description'));
     for (const el of document.querySelectorAll('[data-i18n]')) el.textContent = t(el.dataset.i18n);
     for (const el of document.querySelectorAll('[data-i18n-html]')) el.innerHTML = t(el.dataset.i18nHtml);
+    for (const el of document.querySelectorAll('[data-i18n-aria]')) el.setAttribute('aria-label', t(el.dataset.i18nAria));
+    for (const el of document.querySelectorAll('[data-i18n-alt]')) el.setAttribute('alt', t(el.dataset.i18nAlt));
     for (const button of langSwitch.querySelectorAll('[data-lang]')) button.setAttribute('aria-pressed', button.dataset.lang === lang);
     $('motion-toggle').setAttribute('aria-label', t('motion_aria'));
     $('motion-toggle').textContent = petalsLabel();
     for (const button of document.querySelectorAll('.cmd-copy')) button.textContent = t('copy');
+    document.documentElement.classList.remove('i18n-loading');
     render();
   }
   function setLang(next) {

@@ -58,3 +58,6 @@ benchmark/*
 .inspi
 /AGENTS.md
 packaging/probe/
+
+# Bundle FTP de la landing, généré par scripts/website.sh (source : store/index.html)
+store/website/

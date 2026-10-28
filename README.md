@@ -6,7 +6,7 @@
 
 ✨ Application macOS native (menu-bar) qui affiche une barre en temps réel en haut de chaque écran : RAM ou batterie. Binaire universel Intel + Apple Silicon.
 
-Version **2026.10.29**
+Version **2026.10.30**
 
 ![PKpowerlines — fenêtre de réglages](store/v1/screenshots/02-reglages.png)
 
@@ -155,14 +155,18 @@ PKpowerlines/
 │       └── Utils/
 │           └── ColorHex.swift          # Color <-> hex
 ├── store/
+│   ├── index.html                        # Landing bilingue FR/EN (jardin interactif)
+│   ├── styles.css / app.js               # Styles et logique de la landing
+│   ├── assets/                           # Images, police et licence de la landing
+│   ├── website/                          # Bundle FTP généré par scripts/website.sh (gitignoré)
 │   ├── v1/                               # Laius + captures store v1
-│   ├── v2/                               # Landing store v2
-│   └── website/                          # Landing pixel art (jardin interactif)
+│   └── v2/                               # Landing store v2 (archive)
 ├── archives/                             # Anciens visuels de travail
 ├── release/macos/                            # Sortie build (gitignoré)
 ├── secrets/                                  # Credentials (gitignoré)
 ├── Package.swift                             # SwiftPM (macOS 13+, IOKit linké)
 ├── build_app.sh                              # Build universel + bundle
+├── scripts/website.sh                        # Génère le bundle FTP de la landing
 ├── AGENTS.md                                 # Instructions agent
 ├── LICENSE                                   # MIT
 ├── README.md / README_en.md
@@ -182,5 +186,5 @@ Voir [CHANGELOG.md](CHANGELOG.md).
 ## 🔗 Liens
 
 - README anglais : [README_en.md](README_en.md)
-- Landing du projet : [store/website/index.html](store/website/index.html)
+- Landing du projet : [store/index.html](store/index.html)
 - ☕ Soutenir le développement : [Ko-fi](https://ko-fi.com/pouark)

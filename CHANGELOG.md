@@ -1,5 +1,11 @@
 # Changelog
 
+## [2026.10.30] - 2026-10-28
+### Changed
+- **Landing à la racine du store** : la source bilingue vit désormais dans `store/index.html` (+ `styles.css`, `app.js`, `assets/`) ; le bundle FTP `store/website/` est généré par `scripts/website.sh` et ignoré par Git.
+### Fixed
+- **Détection de langue** : la première langue prise en charge est retenue dans l'ordre de `navigator.languages` et un navigateur tiers retombe sur le français (il forçait l'anglais) ; résolution avant le premier rendu, sans clignotement, métadonnées `title`/description, attributs `alt`/`aria-label` et menus simulés traduits — plus aucun texte résiduel d'une langue dans l'autre rendu.
+
 ## [2026.10.29] - 2026-10-28
 ### Fixed
 - **README anglais** : la bannière de version annonçait encore 2026.10.10, désormais alignée sur la version courante (miroir FR/EN).
