@@ -23,6 +23,7 @@ final class AppSettings: ObservableObject {
         static let chargingAnimation = "chargingAnimation"
         static let dischargingAnimation = "dischargingAnimation"
         static let criticalAnimation = "criticalAnimation"
+        static let fullAnimation = "fullAnimation"
         static let levelAnimation = "levelAnimation"
         static let networkAnimation = "networkAnimation"
         static let showPercentage = "showPercentage"
@@ -30,6 +31,7 @@ final class AppSettings: ObservableObject {
         static let ramColor = "ramColor"
         static let batteryColor = "batteryColor"
         static let batteryLowColor = "batteryLowColor"
+        static let batteryFullColor = "batteryFullColor"
         static let batteryLowThreshold = "batteryLowThreshold"
         static let batteryCriticalThreshold = "batteryCriticalThreshold"
         static let cpuColor = "cpuColor"
@@ -47,6 +49,7 @@ final class AppSettings: ObservableObject {
     @Published var chargingAnimation: BarAnimation { didSet { defaults.set(chargingAnimation.rawValue, forKey: Keys.chargingAnimation) } }
     @Published var dischargingAnimation: BarAnimation { didSet { defaults.set(dischargingAnimation.rawValue, forKey: Keys.dischargingAnimation) } }
     @Published var criticalAnimation: BarAnimation { didSet { defaults.set(criticalAnimation.rawValue, forKey: Keys.criticalAnimation) } }
+    @Published var fullAnimation: BarAnimation { didSet { defaults.set(fullAnimation.rawValue, forKey: Keys.fullAnimation) } }
     @Published var levelAnimation: BarAnimation { didSet { defaults.set(levelAnimation.rawValue, forKey: Keys.levelAnimation) } }
     @Published var networkAnimation: BarAnimation { didSet { defaults.set(networkAnimation.rawValue, forKey: Keys.networkAnimation) } }
     @Published var showPercentage: Bool { didSet { defaults.set(showPercentage, forKey: Keys.showPercentage) } }
@@ -54,6 +57,7 @@ final class AppSettings: ObservableObject {
     @Published var ramColorHex: String { didSet { defaults.set(ramColorHex, forKey: Keys.ramColor) } }
     @Published var batteryColorHex: String { didSet { defaults.set(batteryColorHex, forKey: Keys.batteryColor) } }
     @Published var batteryLowColorHex: String { didSet { defaults.set(batteryLowColorHex, forKey: Keys.batteryLowColor) } }
+    @Published var batteryFullColorHex: String { didSet { defaults.set(batteryFullColorHex, forKey: Keys.batteryFullColor) } }
     @Published var batteryLowThreshold: Int { didSet { defaults.set(batteryLowThreshold, forKey: Keys.batteryLowThreshold) } }
     @Published var batteryCriticalThreshold: Int { didSet { defaults.set(batteryCriticalThreshold, forKey: Keys.batteryCriticalThreshold) } }
     @Published var cpuColorHex: String { didSet { defaults.set(cpuColorHex, forKey: Keys.cpuColor) } }
@@ -101,6 +105,7 @@ final class AppSettings: ObservableObject {
         let migratedDischarging: BarAnimation = oldBreathing ? .breathing : oldTwinkles ? .twinkle : oldConsumption ? .consumption : oldWaves ? .waves : oldFlow ? .flow : .none
         self.dischargingAnimation = BarAnimation(rawValue: defaults.string(forKey: Keys.dischargingAnimation) ?? "") ?? migratedDischarging
         self.criticalAnimation = BarAnimation(rawValue: defaults.string(forKey: Keys.criticalAnimation) ?? "") ?? (oldPulse ? .pulse : .none)
+        self.fullAnimation = BarAnimation(rawValue: defaults.string(forKey: Keys.fullAnimation) ?? "") ?? .waves
         self.levelAnimation = BarAnimation(rawValue: defaults.string(forKey: Keys.levelAnimation) ?? "") ?? .waves
         self.networkAnimation = BarAnimation(rawValue: defaults.string(forKey: Keys.networkAnimation) ?? "") ?? .stream
         self.showPercentage = (defaults.object(forKey: Keys.showPercentage) as? Bool) ?? true
@@ -108,6 +113,7 @@ final class AppSettings: ObservableObject {
         self.ramColorHex = defaults.string(forKey: Keys.ramColor) ?? "#FF3B30"
         self.batteryColorHex = defaults.string(forKey: Keys.batteryColor) ?? "#34C759"
         self.batteryLowColorHex = defaults.string(forKey: Keys.batteryLowColor) ?? "#FF3B30"
+        self.batteryFullColorHex = defaults.string(forKey: Keys.batteryFullColor) ?? "#FFD60A"
         self.batteryLowThreshold = (defaults.object(forKey: Keys.batteryLowThreshold) as? Int) ?? 20
         self.batteryCriticalThreshold = (defaults.object(forKey: Keys.batteryCriticalThreshold) as? Int) ?? 15
         self.cpuColorHex = defaults.string(forKey: Keys.cpuColor) ?? "#FF9500"
@@ -118,6 +124,7 @@ final class AppSettings: ObservableObject {
     var ramColor: Color { Color(hex: ramColorHex) }
     var batteryColor: Color { Color(hex: batteryColorHex) }
     var batteryLowColor: Color { Color(hex: batteryLowColorHex) }
+    var batteryFullColor: Color { Color(hex: batteryFullColorHex) }
     var chargingColor: Color { Color(hex: "#007AFF") }
     var cpuColor: Color { Color(hex: cpuColorHex) }
     var networkColor: Color { Color(hex: networkColorHex) }

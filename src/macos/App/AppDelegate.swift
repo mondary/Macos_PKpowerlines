@@ -388,6 +388,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .sink { [weak self] _ in self?.syncAnimations() }
             .store(in: &cancellables)
 
+        settings.$fullAnimation
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in self?.syncAnimations() }
+            .store(in: &cancellables)
+
         settings.$levelAnimation
             .removeDuplicates()
             .dropFirst()
@@ -438,6 +445,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             settings.$ramColorHex.map { _ in () }.eraseToAnyPublisher(),
             settings.$batteryColorHex.map { _ in () }.eraseToAnyPublisher(),
             settings.$batteryLowColorHex.map { _ in () }.eraseToAnyPublisher(),
+            settings.$batteryFullColorHex.map { _ in () }.eraseToAnyPublisher(),
             settings.$batteryLowThreshold.map { _ in () }.eraseToAnyPublisher(),
             settings.$batteryCriticalThreshold.map { _ in () }.eraseToAnyPublisher(),
             settings.$cpuColorHex.map { _ in () }.eraseToAnyPublisher(),
@@ -484,6 +492,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         view.updateCharging(false)
         view.updateDischarging(false)
         view.updateCriticalLow(false)
+        view.updateFull(false)
         barViews.append(view)
 
         let window = NSWindow(
@@ -577,6 +586,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             charging: settings.chargingAnimation,
             discharging: settings.dischargingAnimation,
             critical: settings.criticalAnimation,
+            full: settings.fullAnimation,
             level: settings.levelAnimation,
             network: settings.networkAnimation
         )
@@ -595,6 +605,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                     $0.updateCharging(false)
                     $0.updateDischarging(false)
                     $0.updateCriticalLow(false)
+                    $0.updateFull(false)
                     $0.updateUsage(percentage: usage.usedPercentage, color: color, label: label)
                 }
             }
@@ -607,6 +618,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             let chargingColor = NSColor(settings.chargingColor)
             let lowColor = NSColor(settings.batteryLowColor)
             let normalColor = NSColor(settings.batteryColor)
+            let fullColor = NSColor(settings.batteryFullColor)
             DispatchQueue.main.async { [weak self] in
                 self?.setLowBatteryText(
                     forceText
@@ -619,12 +631,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                         $0.updateCharging(false)
                         $0.updateDischarging(false)
                         $0.updateCriticalLow(false)
+                        $0.updateFull(false)
                         $0.updateUsage(percentage: 0, color: .gray, label: "Pas de batterie")
                     }
                     return
                 }
+                let isFull = battery.percentage >= 99.5
                 let color: NSColor
-                if battery.isCharging {
+                if isFull {
+                    color = fullColor
+                } else if battery.isCharging {
                     color = chargingColor
                 } else if battery.percentage < Double(threshold) {
                     color = lowColor
@@ -638,6 +654,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                     $0.updateCharging(battery.isCharging)
                     $0.updateDischarging(!battery.isCharging)
                     $0.updateCriticalLow(isCritical)
+                    $0.updateFull(isFull)
                     $0.updateUsage(percentage: battery.percentage, color: color, label: label)
                 }
             }
@@ -651,6 +668,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                     $0.updateCharging(false)
                     $0.updateDischarging(false)
                     $0.updateCriticalLow(false)
+                    $0.updateFull(false)
                     $0.updateUsage(percentage: usage.percentage, color: color, label: label)
                 }
             }
@@ -664,6 +682,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                     $0.updateCharging(false)
                     $0.updateDischarging(false)
                     $0.updateCriticalLow(false)
+                    $0.updateFull(false)
                     $0.updateUsage(percentage: usage.percentage, color: color, label: label)
                 }
             }

@@ -71,10 +71,14 @@ struct SourceSettingsView: View {
                 EffectPreviewBox(state: .charging, style: settings.chargingAnimation, percentage: 62, color: settings.chargingColor)
                 Text("En charge — couleur de charge + animation de charge.")
                     .font(.caption).foregroundStyle(.secondary)
+                EffectPreviewBox(state: .full, style: settings.fullAnimation, percentage: 100, color: settings.batteryFullColor)
+                Text("Pleine (100 %) — couleur dédiée + animation de plein.")
+                    .font(.caption).foregroundStyle(.secondary)
             }
 
             Section("Couleurs batterie") {
                 ColorPicker("Chargée", selection: batteryColorBinding, supportsOpacity: false)
+                ColorPicker("Pleine (100 %)", selection: batteryFullColorBinding, supportsOpacity: false)
                 ColorPicker("Faible", selection: batteryLowColorBinding, supportsOpacity: false)
                 Stepper(value: $settings.batteryLowThreshold, in: 5...50, step: 5) {
                     HStack(spacing: 6) {
@@ -145,6 +149,9 @@ struct SourceSettingsView: View {
     }
     private var batteryLowColorBinding: Binding<Color> {
         Binding(get: { settings.batteryLowColor }, set: { settings.batteryLowColorHex = $0.toHex() })
+    }
+    private var batteryFullColorBinding: Binding<Color> {
+        Binding(get: { settings.batteryFullColor }, set: { settings.batteryFullColorHex = $0.toHex() })
     }
     private var cpuColorBinding: Binding<Color> {
         Binding(get: { settings.cpuColor }, set: { settings.cpuColorHex = $0.toHex() })

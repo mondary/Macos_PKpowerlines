@@ -51,5 +51,6 @@ enum BarAnimation: String, CaseIterable, Identifiable {
     static let dischargingOptions: [BarAnimation] = [.none, .consumption, .flow, .waves, .twinkle, .breathing]
     static let criticalOptions: [BarAnimation] = [.none, .pulse, .breathing]
     static let levelOptions: [BarAnimation] = [.none, .flow, .waves, .twinkle, .breathing]
+    static let fullOptions: [BarAnimation] = [.none, .flow, .waves, .twinkle, .breathing]
     static let networkOptions: [BarAnimation] = [.none, .stream, .pulses, .flow, .waves]
 }

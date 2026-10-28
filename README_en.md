@@ -24,6 +24,7 @@ Version **2026.10.10**
 - 🌊 **Animated flow** — subtle fill oscillation, capped at 2 px (3 px while charging), with an off switch
 - ⚡ **Charging spark** — an electric light sweep runs along the bar while charging
 - 🚨 **Critical battery alert** — below an adjustable critical threshold (15% by default, not charging), the bar pulses like an alert heartbeat
+- 🔋 **"Full" state (100%)** — dedicated color and animation when the battery is full
 - 🅰️ **Overflowing text** — the powerline stays at 7 px and flush with the screen edge: the % is drawn at 11 pt **on the line**, lifted above the edge (its top leaves the screen) and overflowing below
 - 💨 **Consumption** — while discharging, the bar's edge erodes and a thin wisp of smoke drifts away
 - 🎛️ **Per-state and per-source animations** — in Bar: one animation per battery state (charging, discharging, alert), one for level (RAM & CPU) and a dedicated network one — **Data stream** (light packets speeding up with throughput) and **Pulses** (rate proportional to speed). Every option with a live preview that plays even when unselected
@@ -75,6 +76,7 @@ Version **2026.10.10**
 | Network ceiling | 1–1000 MB/s | Settings → Powerline |
 | Battery color | ColorPicker | Settings → Powerline |
 | Low-battery color | ColorPicker + threshold | Settings → Powerline |
+| Full (100%) color | ColorPicker | Settings → Powerline |
 | Critical threshold | 3–20% (default: 15%) | Settings → Powerline |
 | Position | Top / Bottom / Left / Right | Settings → Powerline |
 | Offset | -40 to +400px (1px steps) | Settings → Powerline |

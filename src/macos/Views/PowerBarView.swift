@@ -40,10 +40,12 @@ final class PowerBarView: NSView {
     private var isCharging = false
     private var isDischarging = false
     private var isCriticalLow = false
+    private var isFull = false
     private var source: MonitorType = .battery
     private var chargingStyle: BarAnimation = .spark
     private var dischargingStyle: BarAnimation = .consumption
     private var criticalStyle: BarAnimation = .pulse
+    private var fullStyle: BarAnimation = .waves
     private var levelStyle: BarAnimation = .waves
     private var networkStyle: BarAnimation = .stream
     private var flowPhase: CGFloat = 0
@@ -260,14 +262,15 @@ final class PowerBarView: NSView {
     }
 
     /// Animation choisie pour chaque état / source.
-    func updateAnimations(charging: BarAnimation, discharging: BarAnimation, critical: BarAnimation, level: BarAnimation, network: BarAnimation) {
+    func updateAnimations(charging: BarAnimation, discharging: BarAnimation, critical: BarAnimation, full: BarAnimation, level: BarAnimation, network: BarAnimation) {
         let changed = charging != chargingStyle
             || discharging != dischargingStyle || critical != criticalStyle
-            || level != levelStyle || network != networkStyle
+            || full != fullStyle || level != levelStyle || network != networkStyle
         guard changed else { return }
         chargingStyle = charging
         dischargingStyle = discharging
         criticalStyle = critical
+        fullStyle = full
         levelStyle = level
         networkStyle = network
         streamLayers.forEach { $0.isHidden = true }
@@ -278,6 +281,12 @@ final class PowerBarView: NSView {
         clearSmoke()
         barFill?.fillOpacity = opacity
         percentageLabel?.alphaValue = 1
+        restartFlowTimer()
+    }
+
+    func updateFull(_ full: Bool) {
+        guard isFull != full else { return }
+        isFull = full
         restartFlowTimer()
     }
 
@@ -296,6 +305,7 @@ final class PowerBarView: NSView {
         switch source {
         case .battery:
             if isCriticalLow { return criticalStyle }
+            if isFull { return fullStyle }
             if isCharging { return chargingStyle }
             return dischargingStyle
         case .network:

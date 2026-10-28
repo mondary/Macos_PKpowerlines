@@ -1,5 +1,9 @@
 # Changelog
 
+## [2026.10.26] - 2026-10-28
+### Added
+- **État « Pleine » (100 %)** : couleur dédiée (or par défaut) et animation propre, avec aperçu dans Source et section « Animation — pleine (100 %) » dans Barre.
+
 ## [2026.10.25] - 2026-10-28
 ### Added
 - **Animations par source** : deux effets dédiés au réseau — Flux de données (paquets lumineux dont la vitesse et la taille suivent le débit) et Impulsions (bande lumineuse dont la cadence accélère avec la vitesse).

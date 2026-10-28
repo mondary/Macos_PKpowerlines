@@ -109,6 +109,10 @@ struct AppearanceSettingsView: View {
                     .font(.caption).foregroundStyle(.secondary)
             }
 
+            Section("Animation — pleine (100 %)") {
+                AnimationGrid(options: BarAnimation.fullOptions, selection: $settings.fullAnimation, state: .full, percentage: 100)
+            }
+
             Section("Animation — niveau (RAM & CPU)") {
                 AnimationGrid(options: BarAnimation.levelOptions, selection: $settings.levelAnimation, state: .discharging, percentage: 62)
             }

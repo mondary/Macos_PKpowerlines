@@ -5,6 +5,7 @@ enum PreviewState {
     case charging
     case discharging
     case critical
+    case full
 }
 
 /// Vraie `PowerBarView` embarquée dans les réglages : ce que voit l'aperçu
@@ -35,12 +36,14 @@ struct PowerBarPreview: NSViewRepresentable {
         view.updateCharging(state == .charging)
         view.updateDischarging(state == .discharging)
         view.updateCriticalLow(state == .critical)
+        view.updateFull(state == .full)
 
         let resolved = style ?? settingsStyle
         view.updateAnimations(
             charging: state == .charging ? resolved : .none,
             discharging: state == .discharging ? resolved : .none,
             critical: state == .critical ? resolved : .none,
+            full: state == .full ? resolved : .none,
             level: resolved,
             network: resolved
         )
@@ -77,6 +80,7 @@ struct PowerBarPreview: NSViewRepresentable {
             case .charging: return settings.chargingAnimation
             case .discharging: return settings.dischargingAnimation
             case .critical: return settings.criticalAnimation
+            case .full: return settings.fullAnimation
             }
         }
     }
@@ -85,6 +89,7 @@ struct PowerBarPreview: NSViewRepresentable {
         switch state {
         case .charging: return settings.chargingColor
         case .critical: return settings.batteryLowColor
+        case .full: return settings.batteryFullColor
         case .discharging:
             switch settings.monitorType {
             case .ram: return settings.ramColor
