@@ -1,5 +1,9 @@
 # Changelog
 
+## [2026.10.29] - 2026-10-28
+### Fixed
+- **README anglais** : la bannière de version annonçait encore 2026.10.10, désormais alignée sur la version courante (miroir FR/EN).
+
 ## [2026.10.28] - 2026-10-28
 ### Added
 - **Animation « Défilé »** : une encoche sombre parcourt la ligne — contraste garanti même sur la ligne blanche de 2 px de l'état plein (devient l'animation par défaut du 100 %). Disponible aussi pour le niveau et le réseau.
