@@ -1,5 +1,9 @@
 # Changelog
 
+## [2026.10.22] - 2026-10-28
+### Fixed
+- Menu Bar Spacing : tous les contrôles (espacement, restauration) sont désactivés sur macOS 27, pas seulement le padding.
+
 ## [2026.10.21] - 2026-10-28
 ### Changed
 - **Couleurs et animations fusionnées** dans une page unique « Couleurs & animations » (états batterie, couleurs par source, puis l'animation de chaque état).

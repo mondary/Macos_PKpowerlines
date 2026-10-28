@@ -68,6 +68,7 @@ struct MenuBarSettingsView: View {
                 Text("Espace entre chaque item (icône système, apps tierces). Plus c'est petit, plus tu gagnes de place.")
                     .font(.caption).foregroundStyle(.secondary)
             }
+            .disabled(Self.spacingBrokenBySystem)
 
             Section("État") {
                 HStack(spacing: 12) {
@@ -90,8 +91,10 @@ struct MenuBarSettingsView: View {
                         Label("Restaurer défauts Apple", systemImage: "arrow.uturn.backward")
                     }
                     .buttonStyle(.bordered)
+                    .disabled(Self.spacingBrokenBySystem)
                 }
             }
+            .disabled(Self.spacingBrokenBySystem)
         }
         .formStyle(.grouped)
         .onAppear(perform: readCurrent)
