@@ -26,12 +26,12 @@ Version **2026.10.10**
 - 🚨 **Critical battery alert** — below an adjustable critical threshold (15% by default, not charging), the bar pulses like an alert heartbeat
 - 🅰️ **Overflowing text** — the powerline stays at 7 px and flush with the screen edge: the % is drawn at 11 pt **on the line**, lifted above the edge (its top leaves the screen) and overflowing below
 - 💨 **Consumption** — while discharging, the bar's edge erodes and a thin wisp of smoke drifts away
-- 🎛️ **Adjustable animations** — a dedicated page with one switch and live preview per effect: flow, charging spark, critical pulse, consumption (erosion + smoke), waves, twinkles, slow breathing
-- 🖥️ **Previews everywhere** — the real bar previewed in Appearance (mock desktop), Colors (the 4 battery states) and Position (mock screen with the chosen edge and offset)
+- 🎛️ **Per-state animations** — one animation chosen for each battery state (idle, charging, discharging, critical alert) among 8 options including None; every option with a live preview that plays even when unselected
+- 🖥️ **Previews everywhere** — the real bar previewed in Bar (mock screen: edge, offset, height), Animations (every option) and Colors (the 4 battery states)
 - ↕️ **Offset** — pixel by pixel (can overlap the menu bar, or shift on the sides)
 - ⏱️ **Frequency** — refresh every 1–10s
 - 🧩 **Universal binary** — `arm64` + `x86_64`
-- 🪟 **SwiftUI settings** — searchable sidebar with dedicated **Credits**, **Project Library** and **Support** (Ko-fi) pages; Project Library and Credits also open directly from the menu bar icon
+- 🪟 **SwiftUI settings** — searchable sidebar, card-based source picker with dedicated **Credits**, **Project Library** and **Support** (Ko-fi) pages; Project Library and Credits also open directly from the menu bar icon
 - 🔄 **Sparkle updates** — About keeps the Stable/Dev update panel pinned at the bottom, with the check button above the channel selector; the sidebar flags available updates and manual checks refresh the feed
 - 💚 **Credited inspiration** — PKpowerlines credits PowerLine: Status bar meters, the Android app that inspired its slim indicators
 
@@ -67,7 +67,7 @@ Version **2026.10.10**
 | Height | 4–40px | Settings → Powerline (slider) |
 | Height presets | 4 / 8 / 12 / 20px | Settings → Powerline or ⌘4/⌘1/⌘2/⌘3 |
 | Opacity | 20–100% | Settings → Powerline |
-| Font | 7 fonts | Settings → Powerline |
+| Font | 10 fonts | Settings → Bar |
 | RAM color | ColorPicker | Settings → Powerline |
 | CPU color | ColorPicker | Settings → Powerline |
 | Network color | ColorPicker | Settings → Powerline |

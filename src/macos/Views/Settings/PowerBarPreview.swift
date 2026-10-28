@@ -1,18 +1,23 @@
 import SwiftUI
 
+/// État batterie simulé dans les aperçus.
+enum PreviewState {
+    case idle
+    case charging
+    case discharging
+    case critical
+}
+
 /// Vraie `PowerBarView` embarquée dans les réglages : ce que voit l'aperçu
 /// utilise exactement le même code de rendu et d'animation que la barre réelle.
 struct PowerBarPreview: NSViewRepresentable {
     @EnvironmentObject var settings: AppSettings
 
-    /// États forcés pour illustrer un effet (charge, décharge, alerte).
-    var charging = false
-    var discharging = false
-    var critical = false
+    var state: PreviewState = .idle
+    /// Animation montrée ; `nil` = celle réglée pour cet état.
+    var style: BarAnimation? = nil
     var percentage: Double = 62
-    /// Position simulée (l'aperçu Position s'en sert pour ancrer la barre).
     var position: BarPosition = .top
-    /// Couleur imposée (aperçu des états batterie).
     var colorOverride: Color? = nil
 
     func makeNSView(context: Context) -> PowerBarView {
@@ -26,17 +31,18 @@ struct PowerBarPreview: NSViewRepresentable {
         view.updateShowPercentage(true)
         view.updateOpacity(settings.barOpacity)
         view.updateFont(settings.barFont)
-        view.updateAnimatedFlow(settings.animatedFlow)
-        view.updateSparkEnabled(settings.sparkOnCharge)
-        view.updateCriticalPulseEnabled(settings.criticalPulse)
-        view.updateConsumptionEnabled(settings.consumptionEffect)
-        view.updateWavesEnabled(settings.fillWaves)
-        view.updateTwinklesEnabled(settings.twinkles)
-        view.updateBreathingEnabled(settings.breathing)
-        view.updateCharging(charging)
-        view.updateDischarging(discharging)
-        view.updateCriticalLow(critical)
-        let prefix = charging ? "⚡ " : ""
+        view.updateCharging(state == .charging)
+        view.updateDischarging(state == .discharging)
+        view.updateCriticalLow(state == .critical)
+
+        let resolved = style ?? settingsStyle
+        view.updateAnimations(
+            idle: state == .idle ? resolved : .none,
+            charging: state == .charging ? resolved : .none,
+            discharging: state == .discharging ? resolved : .none,
+            critical: state == .critical ? resolved : .none
+        )
+        let prefix = state == .charging ? "⚡ " : ""
         view.updateUsage(
             percentage: percentage,
             color: NSColor(colorOverride ?? previewColor),
@@ -44,29 +50,37 @@ struct PowerBarPreview: NSViewRepresentable {
         )
     }
 
+    private var settingsStyle: BarAnimation {
+        switch state {
+        case .idle: return settings.idleAnimation
+        case .charging: return settings.chargingAnimation
+        case .discharging: return settings.dischargingAnimation
+        case .critical: return settings.criticalAnimation
+        }
+    }
+
     private var previewColor: Color {
-        switch settings.monitorType {
-        case .ram:
-            return settings.ramColor
-        case .cpu:
-            return settings.cpuColor
-        case .network:
-            return settings.networkColor
-        case .battery:
-            if charging { return settings.chargingColor }
-            if critical { return settings.batteryLowColor }
-            return settings.batteryColor
+        switch state {
+        case .charging: return settings.chargingColor
+        case .critical: return settings.batteryLowColor
+        case .idle, .discharging:
+            switch settings.monitorType {
+            case .ram: return settings.ramColor
+            case .cpu: return settings.cpuColor
+            case .network: return settings.networkColor
+            case .battery: return settings.batteryColor
+            }
         }
     }
 }
 
 /// Boîte sombre avec la barre collée en haut : reproduit le bord de l'écran
 /// (le texte levé est coupé au bord supérieur, comme en vrai).
+/// L'animation montrée joue TOUJOURS, même si elle n'est pas sélectionnée.
 struct EffectPreviewBox: View {
     @EnvironmentObject var settings: AppSettings
-    var charging = false
-    var discharging = false
-    var critical = false
+    var state: PreviewState = .idle
+    var style: BarAnimation? = nil
     var percentage: Double = 62
     var color: Color? = nil
 
@@ -77,16 +91,14 @@ struct EffectPreviewBox: View {
                 startPoint: .top, endPoint: .bottom
             )
             PowerBarPreview(
-                charging: charging,
-                discharging: discharging,
-                critical: critical,
+                state: state,
+                style: style,
                 percentage: percentage,
                 colorOverride: color
             )
             .frame(height: max(16, settings.barHeight))
         }
-        .frame(height: 42)
-        .frame(maxWidth: .infinity)
+        .frame(height: 40)
         .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
     }
 }
@@ -127,7 +139,7 @@ struct DesktopPreview: View {
     }
 }
 
-/// Faux écran pour la page Position : montre le bord choisi, l'offset réel
+/// Faux écran pour la page Barre : montre le bord choisi, l'offset réel
 /// (plafonné pour rester lisible) et le sens de remplissage.
 struct PositionPreview: View {
     @EnvironmentObject var settings: AppSettings

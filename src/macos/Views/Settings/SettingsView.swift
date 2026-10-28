@@ -31,10 +31,9 @@ struct SettingsView: View {
             Group {
                 switch selection ?? .source {
                 case .source:     SourceSettingsView().pageHeader("Source", "Choisis ce que la barre mesure et à quelle fréquence.", icon: "dot.radiowaves.left.and.right")
-                case .appearance: AppearanceSettingsView().pageHeader("Apparence", "Hauteur, opacité et police du pourcentage.", icon: "paintbrush")
-                case .animations: AnimationsSettingsView().pageHeader("Animations", "Active ou coupe chaque effet de la barre, indépendamment.", icon: "sparkles")
+                case .appearance: AppearanceSettingsView().pageHeader("Barre", "Bord de l'écran, offset, hauteur, opacité et texte du %.", icon: "paintbrush")
+                case .animations: AnimationsSettingsView().pageHeader("Animations", "Choisis l'animation de chaque état de la batterie.", icon: "sparkles")
                 case .colors:     ColorsSettingsView().pageHeader("Couleurs", "La couleur de chaque source, seuil batterie compris.", icon: "paintpalette")
-                case .position:   PositionSettingsView().pageHeader("Position", "Bord de l'écran, offset au pixel et préréglages.", icon: "rectangle.portrait")
                 case .menuBar:    MenuBarSettingsView().pageHeader("Menu Bar", "Aère la menu bar de macOS en ajustant son espacement caché.", icon: "menubar.rectangle")
                 case .credits:    CreditsSettingsView()
                 case .library:    LibrarySettingsView()
@@ -153,7 +152,6 @@ enum SettingsSection: String, CaseIterable, Identifiable {
     case appearance
     case animations
     case colors
-    case position
     case menuBar
     case credits
     case library
@@ -165,10 +163,9 @@ enum SettingsSection: String, CaseIterable, Identifiable {
     var title: String {
         switch self {
         case .source:     return "Source"
-        case .appearance: return "Apparence"
+        case .appearance: return "Barre"
         case .animations: return "Animations"
         case .colors:     return "Couleurs"
-        case .position:   return "Position"
         case .menuBar:    return "Menu Bar"
         case .credits:    return "Crédits"
         case .library:    return "Bibliothèque de projets"
@@ -183,7 +180,6 @@ enum SettingsSection: String, CaseIterable, Identifiable {
         case .appearance: return "paintbrush"
         case .animations: return "sparkles"
         case .colors:     return "paintpalette"
-        case .position:   return "rectangle.portrait"
         case .menuBar:    return "menubar.rectangle"
         case .credits:    return "text.book.closed"
         case .library:    return "square.grid.2x2"
@@ -208,6 +204,6 @@ enum SettingsSection: String, CaseIterable, Identifiable {
     }
 
     var keywords: String {
-        "\(rawValue) \(title) \(category) batterie ram cpu réseau position hauteur police don café projets animation animations effet étincelle charge pulsation fumée érosion".lowercased()
+        "\(rawValue) \(title) \(category) batterie ram cpu réseau barre position offset bord hauteur opacité police don café projets animation animations effet étincelle charge pulsation fumée érosion ondes scintillement respiration".lowercased()
     }
 }

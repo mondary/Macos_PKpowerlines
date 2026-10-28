@@ -8,6 +8,9 @@ enum BarFont: String, CaseIterable, Identifiable, Codable {
     case sfMono
     case monaco
     case courier
+    case avenirNext
+    case futura
+    case optima
 
     var id: String { rawValue }
 
@@ -20,6 +23,9 @@ enum BarFont: String, CaseIterable, Identifiable, Codable {
         case .sfMono:        return "SF Mono"
         case .monaco:        return "Monaco"
         case .courier:       return "Courier"
+        case .avenirNext:    return "Avenir Next"
+        case .futura:        return "Futura"
+        case .optima:        return "Optima"
         }
     }
 
@@ -32,6 +38,9 @@ enum BarFont: String, CaseIterable, Identifiable, Codable {
         case .sfMono:        return NSFont(name: "SFMono-Regular", size: size) ?? .systemFont(ofSize: size)
         case .monaco:        return NSFont(name: "Monaco", size: size) ?? .systemFont(ofSize: size)
         case .courier:       return NSFont(name: "Courier", size: size) ?? .systemFont(ofSize: size)
+        case .avenirNext:    return NSFont(name: "AvenirNext-Regular", size: size) ?? .systemFont(ofSize: size)
+        case .futura:        return NSFont(name: "Futura-Medium", size: size) ?? .systemFont(ofSize: size)
+        case .optima:        return NSFont(name: "Optima-Regular", size: size) ?? .systemFont(ofSize: size)
         }
     }
 }

@@ -6,15 +6,12 @@ struct SourceSettingsView: View {
     var body: some View {
         Form {
             Section("Source suivie") {
-                Picker("Source", selection: $settings.monitorType) {
+                LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
                     ForEach(MonitorType.allCases) { type in
-                        Label(type.displayName, systemImage: type.icon).tag(type)
+                        sourceCard(type)
                     }
                 }
-                .pickerStyle(.menu)
-                .labelsHidden()
-                Text(settings.monitorType.description)
-                    .font(.caption).foregroundStyle(.secondary)
+                .padding(.vertical, 2)
             }
 
             Section("Fréquence de mise à jour") {
@@ -27,20 +24,46 @@ struct SourceSettingsView: View {
                 Text("La batterie évolue lentement : 10 s suffisent largement. Réserve 1–2 s aux sources vives (RAM, CPU, réseau).")
                     .font(.caption).foregroundStyle(.secondary)
             }
-
-            Section("Affichage du texte") {
-                Toggle("Afficher le % (ou le débit)", isOn: $settings.showPercentage)
-                    .toggleStyle(.switch)
-                Text("Masque le texte sur la barre. La barre powerline reste affichée dans tous les cas ; le % s'écrit sur la ligne, levé au-dessus du bord de l'écran.")
-                    .font(.caption).foregroundStyle(.secondary)
-
-                Toggle("Forcer le % en batterie faible", isOn: $settings.forcePercentageWhenLow)
-                    .toggleStyle(.switch)
-                    .disabled(settings.monitorType != .battery)
-                Text("Quand la batterie passe sous le seuil « Faible » (zone rouge), le % s'affiche en permanence, même si l'option ci-dessus est désactivée. La barre garde son épaisseur.")
-                    .font(.caption).foregroundStyle(.secondary)
-            }
         }
         .formStyle(.grouped)
+    }
+
+    private func sourceCard(_ type: MonitorType) -> some View {
+        let active = settings.monitorType == type
+        return Button {
+            settings.monitorType = type
+        } label: {
+            VStack(alignment: .leading, spacing: 6) {
+                HStack(spacing: 8) {
+                    Image(systemName: type.icon)
+                        .font(.system(size: 16, weight: .medium))
+                        .frame(width: 22)
+                        .foregroundStyle(active ? Color.accentColor : Color.secondary)
+                    Text(type.displayName)
+                        .font(.callout.weight(active ? .semibold : .regular))
+                    Spacer(minLength: 0)
+                    if active {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 13))
+                            .foregroundStyle(Color.accentColor)
+                    }
+                }
+                Text(type.description)
+                    .font(.caption2).foregroundStyle(.secondary)
+                    .lineLimit(2, reservesSpace: true)
+                    .multilineTextAlignment(.leading)
+            }
+            .padding(10)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(active ? Color.accentColor.opacity(0.1) : Color(nsColor: .controlBackgroundColor))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .stroke(active ? Color.accentColor : Color.secondary.opacity(0.25), lineWidth: active ? 1.5 : 1)
+            )
+        }
+        .buttonStyle(.plain)
     }
 }

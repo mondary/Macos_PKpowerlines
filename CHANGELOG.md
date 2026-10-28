@@ -1,5 +1,14 @@
 # Changelog
 
+## [2026.10.20] - 2026-10-28
+### Added
+- **Animations par état** : une seule animation choisie pour chaque état de la batterie (repos / charge / décharge / alerte critique), parmi 8 options dont « Aucune ». Chaque option est une carte avec aperçu en direct qui joue même non sélectionnée. Migration automatique des anciens toggles.
+- **3 polices supplémentaires** pour le % : Avenir Next, Futura, Optima (10 au total).
+### Changed
+- **Réglages réorganisés** : la page « Barre » fusionne Apparence et Position (bord, offset, hauteur, opacité, texte du %, police) ; la page Source passe en cartes et ne garde que la source et la fréquence ; les réglages du texte déménagent dans Barre. La sidebar POWERLINE passe de 5 à 4 pages.
+### Fixed
+- **Menu Bar** : sur macOS 27, Apple ne respecte plus les clés d'espacement — bannière « indisponible » et réglages désactivés au lieu de sembler cassés (vérifié : les clés s'écrivent mais ControlCenter les ignore).
+
 ## [2026.10.19] - 2026-10-27
 ### Added
 - **Trois nouvelles animations** : Ondes (deux bandes lumineuses traversant le remplissage au repos), Scintillement (petits éclats à rythmes décalés), Respiration lente (opacité ± 7 %) — chacune avec son interrupteur et son aperçu en direct dans Réglages → Animations.

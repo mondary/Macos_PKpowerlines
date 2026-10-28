@@ -12,6 +12,7 @@ final class AppSettings: ObservableObject {
         static let barPosition = "barPosition"
         static let barOffset = "barOffset"
         static let barFont = "barFont"
+        // Anciennes clés booléennes (migration vers les styles par état).
         static let animatedFlow = "animatedFlow"
         static let sparkOnCharge = "sparkOnCharge"
         static let criticalPulse = "criticalPulse"
@@ -19,6 +20,10 @@ final class AppSettings: ObservableObject {
         static let fillWaves = "fillWaves"
         static let twinkles = "twinkles"
         static let breathing = "breathing"
+        static let idleAnimation = "idleAnimation"
+        static let chargingAnimation = "chargingAnimation"
+        static let dischargingAnimation = "dischargingAnimation"
+        static let criticalAnimation = "criticalAnimation"
         static let showPercentage = "showPercentage"
         static let forcePercentageWhenLow = "forcePercentageWhenLow"
         static let ramColor = "ramColor"
@@ -38,13 +43,10 @@ final class AppSettings: ObservableObject {
     @Published var barPosition: BarPosition { didSet { defaults.set(barPosition.rawValue, forKey: Keys.barPosition) } }
     @Published var barOffset: CGFloat { didSet { defaults.set(Double(barOffset), forKey: Keys.barOffset) } }
     @Published var barFont: BarFont { didSet { defaults.set(barFont.rawValue, forKey: Keys.barFont) } }
-    @Published var animatedFlow: Bool { didSet { defaults.set(animatedFlow, forKey: Keys.animatedFlow) } }
-    @Published var sparkOnCharge: Bool { didSet { defaults.set(sparkOnCharge, forKey: Keys.sparkOnCharge) } }
-    @Published var criticalPulse: Bool { didSet { defaults.set(criticalPulse, forKey: Keys.criticalPulse) } }
-    @Published var consumptionEffect: Bool { didSet { defaults.set(consumptionEffect, forKey: Keys.consumptionEffect) } }
-    @Published var fillWaves: Bool { didSet { defaults.set(fillWaves, forKey: Keys.fillWaves) } }
-    @Published var twinkles: Bool { didSet { defaults.set(twinkles, forKey: Keys.twinkles) } }
-    @Published var breathing: Bool { didSet { defaults.set(breathing, forKey: Keys.breathing) } }
+    @Published var idleAnimation: BarAnimation { didSet { defaults.set(idleAnimation.rawValue, forKey: Keys.idleAnimation) } }
+    @Published var chargingAnimation: BarAnimation { didSet { defaults.set(chargingAnimation.rawValue, forKey: Keys.chargingAnimation) } }
+    @Published var dischargingAnimation: BarAnimation { didSet { defaults.set(dischargingAnimation.rawValue, forKey: Keys.dischargingAnimation) } }
+    @Published var criticalAnimation: BarAnimation { didSet { defaults.set(criticalAnimation.rawValue, forKey: Keys.criticalAnimation) } }
     @Published var showPercentage: Bool { didSet { defaults.set(showPercentage, forKey: Keys.showPercentage) } }
     @Published var forcePercentageWhenLow: Bool { didSet { defaults.set(forcePercentageWhenLow, forKey: Keys.forcePercentageWhenLow) } }
     @Published var ramColorHex: String { didSet { defaults.set(ramColorHex, forKey: Keys.ramColor) } }
@@ -85,13 +87,19 @@ final class AppSettings: ObservableObject {
         self.barOffset = CGFloat(storedOffset ?? 0)
         let fontRaw = defaults.string(forKey: Keys.barFont) ?? BarFont.systemBold.rawValue
         self.barFont = BarFont(rawValue: fontRaw) ?? .systemBold
-        self.animatedFlow = (defaults.object(forKey: Keys.animatedFlow) as? Bool) ?? true
-        self.sparkOnCharge = (defaults.object(forKey: Keys.sparkOnCharge) as? Bool) ?? true
-        self.criticalPulse = (defaults.object(forKey: Keys.criticalPulse) as? Bool) ?? true
-        self.consumptionEffect = (defaults.object(forKey: Keys.consumptionEffect) as? Bool) ?? true
-        self.fillWaves = (defaults.object(forKey: Keys.fillWaves) as? Bool) ?? true
-        self.twinkles = (defaults.object(forKey: Keys.twinkles) as? Bool) ?? false
-        self.breathing = (defaults.object(forKey: Keys.breathing) as? Bool) ?? false
+        // Migration : les anciens toggles booléens deviennent un style par état.
+        let oldFlow = defaults.object(forKey: Keys.animatedFlow) as? Bool ?? true
+        let oldSpark = defaults.object(forKey: Keys.sparkOnCharge) as? Bool ?? true
+        let oldPulse = defaults.object(forKey: Keys.criticalPulse) as? Bool ?? true
+        let oldConsumption = defaults.object(forKey: Keys.consumptionEffect) as? Bool ?? true
+        let oldWaves = defaults.object(forKey: Keys.fillWaves) as? Bool ?? true
+        let oldTwinkles = defaults.object(forKey: Keys.twinkles) as? Bool ?? false
+        let oldBreathing = defaults.object(forKey: Keys.breathing) as? Bool ?? false
+        let migratedIdle: BarAnimation = oldBreathing ? .breathing : oldTwinkles ? .twinkle : oldWaves ? .waves : oldFlow ? .flow : .none
+        self.idleAnimation = BarAnimation(rawValue: defaults.string(forKey: Keys.idleAnimation) ?? "") ?? migratedIdle
+        self.chargingAnimation = BarAnimation(rawValue: defaults.string(forKey: Keys.chargingAnimation) ?? "") ?? (oldSpark ? .spark : .none)
+        self.dischargingAnimation = BarAnimation(rawValue: defaults.string(forKey: Keys.dischargingAnimation) ?? "") ?? (oldConsumption ? .consumption : .none)
+        self.criticalAnimation = BarAnimation(rawValue: defaults.string(forKey: Keys.criticalAnimation) ?? "") ?? (oldPulse ? .pulse : .none)
         self.showPercentage = (defaults.object(forKey: Keys.showPercentage) as? Bool) ?? true
         self.forcePercentageWhenLow = (defaults.object(forKey: Keys.forcePercentageWhenLow) as? Bool) ?? true
         self.ramColorHex = defaults.string(forKey: Keys.ramColor) ?? "#FF3B30"

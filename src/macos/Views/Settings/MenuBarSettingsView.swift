@@ -8,16 +8,22 @@ struct MenuBarSettingsView: View {
     @State private var lastAppliedPadding: Int = MenuBarSpacing.appleDefaultsPadding
     @State private var lastAppliedSpacing: Int = MenuBarSpacing.appleDefaultsSpacing
 
+    /// macOS 27 ignore les clés d'espacement de la menu bar (vérifié : les clés
+    /// s'écrivent mais ControlCenter ne les respecte plus).
+    private static let spacingBrokenBySystem = ProcessInfo.processInfo.operatingSystemVersion.majorVersion >= 27
+
     var body: some View {
         Form {
             Section {
                 HStack(alignment: .top, spacing: 10) {
-                    Image(systemName: "exclamationmark.triangle.fill")
-                        .foregroundStyle(.orange)
+                    Image(systemName: Self.spacingBrokenBySystem ? "xmark.octagon.fill" : "exclamationmark.triangle.fill")
+                        .foregroundStyle(Self.spacingBrokenBySystem ? Color.red : Color.orange)
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Modifie un réglage caché de macOS")
+                        Text(Self.spacingBrokenBySystem ? "Indisponible sur cette version de macOS" : "Modifie un réglage caché de macOS")
                             .font(.subheadline.weight(.semibold))
-                        Text("L'espacement est appliqué en direct pendant le drag (relance ControlCenter, ~300 ms de debounce). Ça peut interrompre un AirDrop ou un screen share en cours. Totalement réversible via « Restaurer défauts Apple ».")
+                        Text(Self.spacingBrokenBySystem
+                             ? "macOS 27 ne respecte plus les clés d'espacement de la menu bar : les réglages ci-dessous n'ont plus d'effet. Ils restent disponibles pour les versions antérieures."
+                             : "L'espacement est appliqué en direct pendant le drag (relance ControlCenter, ~300 ms de debounce). Ça peut interrompre un AirDrop ou un screen share en cours. Totalement réversible via « Restaurer défauts Apple ».")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .fixedSize(horizontal: false, vertical: true)
@@ -40,6 +46,7 @@ struct MenuBarSettingsView: View {
                             .frame(width: 60, alignment: .trailing).foregroundStyle(.secondary)
                     }
                 }
+                .disabled(Self.spacingBrokenBySystem)
                 Text("Espace à l'intérieur de chaque item de la menu bar (autour de l'icône).")
                     .font(.caption).foregroundStyle(.secondary)
             }

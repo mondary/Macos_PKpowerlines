@@ -367,53 +367,32 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             }
             .store(in: &cancellables)
 
-        settings.$animatedFlow
+        settings.$idleAnimation
             .removeDuplicates()
             .dropFirst()
             .receive(on: RunLoop.main)
-            .sink { [weak self] animated in self?.barViews.forEach { $0.updateAnimatedFlow(animated) } }
+            .sink { [weak self] _ in self?.syncAnimations() }
             .store(in: &cancellables)
 
-        settings.$sparkOnCharge
+        settings.$chargingAnimation
             .removeDuplicates()
             .dropFirst()
             .receive(on: RunLoop.main)
-            .sink { [weak self] enabled in self?.barViews.forEach { $0.updateSparkEnabled(enabled) } }
+            .sink { [weak self] _ in self?.syncAnimations() }
             .store(in: &cancellables)
 
-        settings.$criticalPulse
+        settings.$dischargingAnimation
             .removeDuplicates()
             .dropFirst()
             .receive(on: RunLoop.main)
-            .sink { [weak self] enabled in self?.barViews.forEach { $0.updateCriticalPulseEnabled(enabled) } }
+            .sink { [weak self] _ in self?.syncAnimations() }
             .store(in: &cancellables)
 
-        settings.$consumptionEffect
+        settings.$criticalAnimation
             .removeDuplicates()
             .dropFirst()
             .receive(on: RunLoop.main)
-            .sink { [weak self] enabled in self?.barViews.forEach { $0.updateConsumptionEnabled(enabled) } }
-            .store(in: &cancellables)
-
-        settings.$fillWaves
-            .removeDuplicates()
-            .dropFirst()
-            .receive(on: RunLoop.main)
-            .sink { [weak self] enabled in self?.barViews.forEach { $0.updateWavesEnabled(enabled) } }
-            .store(in: &cancellables)
-
-        settings.$twinkles
-            .removeDuplicates()
-            .dropFirst()
-            .receive(on: RunLoop.main)
-            .sink { [weak self] enabled in self?.barViews.forEach { $0.updateTwinklesEnabled(enabled) } }
-            .store(in: &cancellables)
-
-        settings.$breathing
-            .removeDuplicates()
-            .dropFirst()
-            .receive(on: RunLoop.main)
-            .sink { [weak self] enabled in self?.barViews.forEach { $0.updateBreathingEnabled(enabled) } }
+            .sink { [weak self] _ in self?.syncAnimations() }
             .store(in: &cancellables)
 
         settings.$monitorType
@@ -490,13 +469,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         view.updateForceShowText(isLowBatteryText)
         view.updateOpacity(settings.barOpacity)
         view.updateFont(settings.barFont)
-        view.updateAnimatedFlow(settings.animatedFlow)
-        view.updateSparkEnabled(settings.sparkOnCharge)
-        view.updateCriticalPulseEnabled(settings.criticalPulse)
-        view.updateConsumptionEnabled(settings.consumptionEffect)
-        view.updateWavesEnabled(settings.fillWaves)
-        view.updateTwinklesEnabled(settings.twinkles)
-        view.updateBreathingEnabled(settings.breathing)
+        syncAnimations(onto: view)
         view.updateCharging(false)
         view.updateDischarging(false)
         view.updateCriticalLow(false)
@@ -581,6 +554,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func syncBarThickness() {
         let thickness = effectiveBarThickness
         barViews.forEach { $0.updateBarThickness(thickness) }
+    }
+
+    /// Propage les animations choisies pour chaque état de la batterie.
+    private func syncAnimations() {
+        barViews.forEach { syncAnimations(onto: $0) }
+    }
+
+    private func syncAnimations(onto view: PowerBarView) {
+        view.updateAnimations(
+            idle: settings.idleAnimation,
+            charging: settings.chargingAnimation,
+            discharging: settings.dischargingAnimation,
+            critical: settings.criticalAnimation
+        )
     }
 
     private func updateUsage() {

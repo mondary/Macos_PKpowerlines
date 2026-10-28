@@ -6,7 +6,7 @@
 
 ✨ Application macOS native (menu-bar) qui affiche une barre en temps réel en haut de chaque écran : RAM ou batterie. Binaire universel Intel + Apple Silicon.
 
-Version **2026.10.19**
+Version **2026.10.20**
 
 ![PKpowerlines — fenêtre de réglages](store/v1/screenshots/02-reglages.png)
 
@@ -26,12 +26,12 @@ Version **2026.10.19**
 - 🚨 **Alerte batterie critique** — sous un seuil critique réglable (15 % par défaut, hors charge), la barre pulse comme un battement d'alerte
 - 🅰️ **Texte débordant** — la powerline reste à 7 px et collée au bord de l'écran : le % s'écrit en 11 pt **sur la ligne**, levé au-dessus du bord (le haut sort de l'écran) et débordant sous la ligne
 - 💨 **Consommation** — en décharge, le bord de la barre s'érode et un fin panache de fumée s'en échappe
-- 🎛️ **Animations réglables** — une page dédiée avec un interrupteur et un aperçu en direct par effet : flux, étincelle de charge, pulsation critique, consommation (érosion + fumée), ondes, scintillement, respiration lente
-- 🖥️ **Aperçus partout** — la vraie barre prévisualisée dans Apparence (faux bureau), Couleurs (les 4 états batterie) et Position (faux écran avec le bord choisi et l'offset)
+- 🎛️ **Animations par état** — une animation choisie pour chaque état de la batterie (repos, charge, décharge, alerte critique) parmi 8 options dont « Aucune » ; chaque option avec aperçu en direct qui joue même non sélectionnée
+- 🖥️ **Aperçus partout** — la vraie barre prévisualisée dans Barre (faux écran : bord, offset, hauteur), Animations (chaque option) et Couleurs (les 4 états batterie)
 - ↕️ **Offset** — pixel par pixel (peut chevaucher la menu bar, ou décaler sur les côtés)
 - ⏱️ **Fréquence** — mise à jour toutes les 1–10s
 - 🧩 **Binaire universel** — `arm64` + `x86_64`
-- 🪟 **Réglages SwiftUI** — sidebar avec recherche (groupes POWERLINE / PK PROJECTS), **Crédits**, **Bibliothèque de projets** et **Soutenir** (Ko-fi) ; Bibliothèque et Crédits sont aussi accessibles directement depuis le menu de l’icône
+- 🪟 **Réglages SwiftUI** — sidebar avec recherche, source en cartes (groupes POWERLINE / PK PROJECTS), **Crédits**, **Bibliothèque de projets** et **Soutenir** (Ko-fi) ; Bibliothèque et Crédits sont aussi accessibles directement depuis le menu de l’icône
 - 🔄 **Mises à jour Sparkle** — À propos conserve le panneau Stable/Dev en bas de la fenêtre, avec le bouton de vérification au-dessus du choix de canal ; la sidebar signale les mises à jour disponibles et le contrôle manuel rafraîchit le flux
 - 💚 **Inspiration créditée** — PKpowerlines cite PowerLine: Status bar meters, l’application Android qui a inspiré ses indicateurs fins
 
@@ -67,7 +67,7 @@ Version **2026.10.19**
 | Hauteur | 4–40px | Réglages → Powerline (slider) |
 | Presets hauteur | 4 / 8 / 12 / 20px | Réglages → Powerline ou ⌘4/⌘1/⌘2/⌘3 |
 | Opacité | 20–100% | Réglages → Powerline |
-| Police | 7 polices | Réglages → Powerline |
+| Police | 10 polices | Réglages → Barre |
 | Couleur RAM | ColorPicker | Réglages → Powerline |
 | Couleur CPU | ColorPicker | Réglages → Powerline |
 | Couleur Réseau | ColorPicker | Réglages → Powerline |

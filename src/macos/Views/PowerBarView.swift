@@ -37,16 +37,13 @@ final class PowerBarView: NSView {
     private var barThickness: CGFloat = 0
     private var showPercentageFlag: Bool = true
     private var forceShowText: Bool = false
-    private var flowEnabled = true
     private var isCharging = false
     private var isDischarging = false
     private var isCriticalLow = false
-    private var sparkEnabled = true
-    private var criticalPulseEnabled = true
-    private var consumptionEnabled = true
-    private var wavesEnabled = true
-    private var twinklesEnabled = false
-    private var breathingEnabled = false
+    private var idleStyle: BarAnimation = .flow
+    private var chargingStyle: BarAnimation = .spark
+    private var dischargingStyle: BarAnimation = .consumption
+    private var criticalStyle: BarAnimation = .pulse
     private var flowPhase: CGFloat = 0
     private var flowTimer: DispatchSourceTimer?
     private var sparkLayer: CAGradientLayer?
@@ -240,11 +237,6 @@ final class PowerBarView: NSView {
         updateBarFrame()
     }
 
-    func updateAnimatedFlow(_ animated: Bool) {
-        flowEnabled = animated
-        restartFlowTimer()
-    }
-
     func updateCharging(_ charging: Bool) {
         isCharging = charging
         restartFlowTimer()
@@ -257,48 +249,21 @@ final class PowerBarView: NSView {
         restartFlowTimer()
     }
 
-    func updateSparkEnabled(_ enabled: Bool) {
-        guard sparkEnabled != enabled else { return }
-        sparkEnabled = enabled
-        if !enabled { sparkLayer?.isHidden = true }
-        restartFlowTimer()
-    }
-
-    func updateCriticalPulseEnabled(_ enabled: Bool) {
-        guard criticalPulseEnabled != enabled else { return }
-        criticalPulseEnabled = enabled
-        if !enabled {
-            barFill?.fillOpacity = opacity
-            percentageLabel?.alphaValue = 1
-        }
-        restartFlowTimer()
-    }
-
-    func updateConsumptionEnabled(_ enabled: Bool) {
-        guard consumptionEnabled != enabled else { return }
-        consumptionEnabled = enabled
-        if !enabled { clearSmoke() }
-        restartFlowTimer()
-    }
-
-    func updateWavesEnabled(_ enabled: Bool) {
-        guard wavesEnabled != enabled else { return }
-        wavesEnabled = enabled
-        if !enabled { waveBands.forEach { $0.isHidden = true } }
-        restartFlowTimer()
-    }
-
-    func updateTwinklesEnabled(_ enabled: Bool) {
-        guard twinklesEnabled != enabled else { return }
-        twinklesEnabled = enabled
-        if !enabled { twinkleLayers.forEach { $0.isHidden = true } }
-        restartFlowTimer()
-    }
-
-    func updateBreathingEnabled(_ enabled: Bool) {
-        guard breathingEnabled != enabled else { return }
-        breathingEnabled = enabled
-        if !enabled { barFill?.fillOpacity = opacity }
+    /// Animation choisie pour chaque état de la batterie.
+    func updateAnimations(idle: BarAnimation, charging: BarAnimation, discharging: BarAnimation, critical: BarAnimation) {
+        let changed = idle != idleStyle || charging != chargingStyle
+            || discharging != dischargingStyle || critical != criticalStyle
+        guard changed else { return }
+        idleStyle = idle
+        chargingStyle = charging
+        dischargingStyle = discharging
+        criticalStyle = critical
+        sparkLayer?.isHidden = true
+        waveBands.forEach { $0.isHidden = true }
+        twinkleLayers.forEach { $0.isHidden = true }
+        clearSmoke()
+        barFill?.fillOpacity = opacity
+        percentageLabel?.alphaValue = 1
         restartFlowTimer()
     }
 
@@ -312,13 +277,16 @@ final class PowerBarView: NSView {
         restartFlowTimer()
     }
 
+    /// Animation jouée pour l'état courant de la batterie.
+    private var activeStyle: BarAnimation {
+        if isCriticalLow { return criticalStyle }
+        if isCharging { return chargingStyle }
+        if isDischarging { return dischargingStyle }
+        return idleStyle
+    }
+
     private func restartFlowTimer() {
-        // Le timer tourne pour la vague discrète (flux animé) ET pour les
-        // effets d'état (pulsation critique, étincelle de charge), toujours actifs.
-        let needsAnimation = flowEnabled || isCharging || isCriticalLow
-            || (isDischarging && consumptionEnabled)
-            || wavesEnabled || twinklesEnabled || breathingEnabled
-        guard needsAnimation, window != nil else {
+        guard activeStyle != .none, window != nil else {
             flowTimer?.cancel()
             flowTimer = nil
             flowPhase = 0
@@ -342,14 +310,16 @@ final class PowerBarView: NSView {
 
     private func advanceFlow() {
         flowPhase += isCharging ? 0.42 : 0.24
-        applyAnimatedFillFrame(wave: flowWave + erosionOffset())
+        let wave: CGFloat = activeStyle == .flow ? flowWave : 0
+        let erosion: CGFloat = activeStyle == .consumption ? erosionOffset() : 0
+        applyAnimatedFillFrame(wave: wave + erosion)
         tickEffects()
     }
 
     /// Érosion du bord de remplissage en décharge : petites entailles qui
     /// mangent le bord, sans jamais dépasser le niveau réel.
     private func erosionOffset() -> CGFloat {
-        guard isDischarging, consumptionEnabled, window != nil else { return 0 }
+        guard window != nil else { return 0 }
         let length = isVertical ? bounds.height : bounds.width
         let room = min(length * currentPercentage, length * (1 - currentPercentage))
         guard room > 2 else { return 0 }
@@ -362,32 +332,32 @@ final class PowerBarView: NSView {
 
     private func tickEffects() {
         let t = Date().timeIntervalSinceReferenceDate
-        if isCriticalLow, criticalPulseEnabled, window != nil {
+        switch activeStyle {
+        case .pulse:
             // Battement d'alerte : plancher relevé pour rester visible même avec
             // une opacité utilisateur basse — la barre pulse entre ~40 % et 80 %/100 %.
             let alertBase = max(opacity, 0.8)
             let pulse = abs(sin(t * 3.4))
             barFill?.fillOpacity = alertBase * (0.5 + 0.5 * pulse)
             percentageLabel?.alphaValue = CGFloat(0.55 + 0.45 * pulse)
-        } else {
-            // Respiration lente : légère modulation de l'opacité au repos.
-            let breathe = breathingEnabled && window != nil
-                ? 0.86 + 0.14 * sin(t * 1.4)
-                : 1
-            barFill?.fillOpacity = opacity * breathe
+        case .breathing:
+            // Respiration lente : légère modulation de l'opacité.
+            barFill?.fillOpacity = opacity * (0.86 + 0.14 * sin(t * 1.4))
+            percentageLabel?.alphaValue = 1
+        default:
+            barFill?.fillOpacity = opacity
             percentageLabel?.alphaValue = 1
         }
-        updateSpark(t: t)
-        updateWaveBands(t: t)
-        updateTwinkles(t: t)
-        updateSmoke()
+        if activeStyle == .spark { updateSpark(t: t) } else { sparkLayer?.isHidden = true }
+        if activeStyle == .waves { updateWaveBands(t: t) } else { waveBands.forEach { $0.isHidden = true } }
+        if activeStyle == .twinkle { updateTwinkles(t: t) } else { twinkleLayers.forEach { $0.isHidden = true } }
+        if activeStyle == .consumption { updateSmoke() } else { clearSmoke() }
     }
 
-    /// Ondes : deux bandes lumineuses très douces qui traversent le remplissage
-    /// au repos (l'étincelle prend le relais pendant la charge).
+    /// Ondes : deux bandes lumineuses très douces qui traversent le remplissage.
     private func updateWaveBands(t: TimeInterval) {
-        let active = wavesEnabled && !isCharging && window != nil && currentPercentage > 0.05
-        guard active, let fill = barFill, let fillLayer = fill.layer else {
+        guard window != nil, currentPercentage > 0.05,
+              let fill = barFill, let fillLayer = fill.layer else {
             waveBands.forEach { $0.isHidden = true }
             return
         }
@@ -431,8 +401,8 @@ final class PowerBarView: NSView {
     /// Scintillement : petits éclats qui apparaissent et disparaissent dans le
     /// remplissage, chacun à son propre rythme.
     private func updateTwinkles(t: TimeInterval) {
-        let active = twinklesEnabled && window != nil && currentPercentage > 0.05
-        guard active, let fill = barFill, let fillLayer = fill.layer else {
+        guard window != nil, currentPercentage > 0.05,
+              let fill = barFill, let fillLayer = fill.layer else {
             twinkleLayers.forEach { $0.isHidden = true }
             return
         }
@@ -468,7 +438,7 @@ final class PowerBarView: NSView {
 
     /// Bande lumineuse qui balaie le remplissage avec un scintillement électrique pendant la charge.
     private func updateSpark(t: TimeInterval) {
-        guard isCharging, sparkEnabled, window != nil,
+        guard isCharging, window != nil,
               let fill = barFill, let fillLayer = fill.layer,
               currentPercentage > 0.02 else {
             sparkLayer?.isHidden = true
@@ -523,7 +493,7 @@ final class PowerBarView: NSView {
     // MARK: - Consommation (érosion + fumée en décharge)
 
     private func updateSmoke() {
-        let active = isDischarging && consumptionEnabled && window != nil && currentPercentage > 0.01
+        let active = window != nil && currentPercentage > 0.01
         guard active, let fill = barFill else {
             clearSmoke()
             return
@@ -612,7 +582,7 @@ final class PowerBarView: NSView {
     }
 
     private var flowWave: CGFloat {
-        guard flowEnabled, window != nil else { return 0 }
+        guard activeStyle == .flow, window != nil else { return 0 }
         let length = isVertical ? bounds.height : bounds.width
         // Mouvement discret, réduit près de 0/100 % pour conserver le niveau réel.
         let amplitude = min(isCharging ? 3 : 2, length * currentPercentage, length * (1 - currentPercentage))
