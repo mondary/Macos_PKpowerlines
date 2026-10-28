@@ -6,7 +6,7 @@
 
 ✨ Application macOS native (menu-bar) qui affiche une barre en temps réel en haut de chaque écran : RAM ou batterie. Binaire universel Intel + Apple Silicon.
 
-Version **2026.10.20**
+Version **2026.10.21**
 
 ![PKpowerlines — fenêtre de réglages](store/v1/screenshots/02-reglages.png)
 
@@ -19,17 +19,18 @@ Version **2026.10.20**
 - 🌌 **Toujours visible** — tous les Spaces, niveau barre système, click-through
 - 🎨 **Couleurs custom** — RAM, CPU, Réseau, Batterie, Batterie faible, couleur de charge, toutes modifiables via ColorPicker
 - 🔤 **Police custom** — 7 polices au choix, taille auto-adaptative, % centré verticalement
-- 🎚️ **Hauteur custom** — slider 4–40px + 4 presets (⌘4/⌘1/⌘2/⌘3)
+- 🎚️ **Hauteur custom** — slider 4–40px + 4 presets (⌘4/⌘1/⌘2/⌘3), chaque preset garde sa vraie épaisseur
 - 💧 **Opacité** — de 20% à 100%
 - 🌊 **Flux animé** — oscillation discrète du remplissage, limitée à 2 px (3 px en charge), désactivable
 - ⚡ **Étincelle de charge** — un balayage lumineux électrique parcourt la barre pendant la charge
 - 🚨 **Alerte batterie critique** — sous un seuil critique réglable (15 % par défaut, hors charge), la barre pulse comme un battement d'alerte
 - 🅰️ **Texte débordant** — la powerline reste à 7 px et collée au bord de l'écran : le % s'écrit en 11 pt **sur la ligne**, levé au-dessus du bord (le haut sort de l'écran) et débordant sous la ligne
 - 💨 **Consommation** — en décharge, le bord de la barre s'érode et un fin panache de fumée s'en échappe
-- 🎛️ **Animations par état** — une animation choisie pour chaque état de la batterie (repos, charge, décharge, alerte critique) parmi 8 options dont « Aucune » ; chaque option avec aperçu en direct qui joue même non sélectionnée
-- 🖥️ **Aperçus partout** — la vraie barre prévisualisée dans Barre (faux écran : bord, offset, hauteur), Animations (chaque option) et Couleurs (les 4 états batterie)
+- 🎛️ **Animations par état** — une animation choisie pour chaque état de la batterie (en charge, en décharge, alerte critique — pas d'état « repos ») parmi les options dont « Aucune » ; chaque option avec aperçu en direct qui joue même non sélectionnée
+- 🖥️ **Aperçus partout** — la vraie barre prévisualisée dans Barre (faux écran : bord, offset, hauteur) et Couleurs & animations (états batterie + chaque option d'animation)
 - ↕️ **Offset** — pixel par pixel (peut chevaucher la menu bar, ou décaler sur les côtés)
 - ⏱️ **Fréquence** — mise à jour toutes les 1–10s
+- 🧰 **Menu Bar Spacing** — un espacement menu bar natif pour macOS 26 et antérieurs (retiré par Apple dans macOS 27, contrôles désactivés proprement)
 - 🧩 **Binaire universel** — `arm64` + `x86_64`
 - 🪟 **Réglages SwiftUI** — sidebar avec recherche, source en cartes (groupes POWERLINE / PK PROJECTS), **Crédits**, **Bibliothèque de projets** et **Soutenir** (Ko-fi) ; Bibliothèque et Crédits sont aussi accessibles directement depuis le menu de l’icône
 - 🔄 **Mises à jour Sparkle** — À propos conserve le panneau Stable/Dev en bas de la fenêtre, avec le bouton de vérification au-dessus du choix de canal ; la sidebar signale les mises à jour disponibles et le contrôle manuel rafraîchit le flux
@@ -67,7 +68,7 @@ Version **2026.10.20**
 | Hauteur | 4–40px | Réglages → Powerline (slider) |
 | Presets hauteur | 4 / 8 / 12 / 20px | Réglages → Powerline ou ⌘4/⌘1/⌘2/⌘3 |
 | Opacité | 20–100% | Réglages → Powerline |
-| Police | 10 polices | Réglages → Barre |
+| Police | 16 polices | Réglages → Barre |
 | Couleur RAM | ColorPicker | Réglages → Powerline |
 | Couleur CPU | ColorPicker | Réglages → Powerline |
 | Couleur Réseau | ColorPicker | Réglages → Powerline |

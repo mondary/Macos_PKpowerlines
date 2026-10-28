@@ -174,6 +174,12 @@ struct AppearanceSettingsView: View {
         case .avenirNext:    return .custom("Avenir Next", size: size)
         case .futura:        return .custom("Futura", size: size)
         case .optima:        return .custom("Optima", size: size)
+        case .georgia:       return .custom("Georgia", size: size)
+        case .trebuchet:     return .custom("Trebuchet MS", size: size)
+        case .verdana:       return .custom("Verdana", size: size)
+        case .gillSans:      return .custom("Gill Sans", size: size)
+        case .baskerville:   return .custom("Baskerville", size: size)
+        case .rockwell:      return .custom("Rockwell", size: size)
         }
     }
 }

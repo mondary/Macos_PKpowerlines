@@ -20,7 +20,6 @@ final class AppSettings: ObservableObject {
         static let fillWaves = "fillWaves"
         static let twinkles = "twinkles"
         static let breathing = "breathing"
-        static let idleAnimation = "idleAnimation"
         static let chargingAnimation = "chargingAnimation"
         static let dischargingAnimation = "dischargingAnimation"
         static let criticalAnimation = "criticalAnimation"
@@ -43,7 +42,6 @@ final class AppSettings: ObservableObject {
     @Published var barPosition: BarPosition { didSet { defaults.set(barPosition.rawValue, forKey: Keys.barPosition) } }
     @Published var barOffset: CGFloat { didSet { defaults.set(Double(barOffset), forKey: Keys.barOffset) } }
     @Published var barFont: BarFont { didSet { defaults.set(barFont.rawValue, forKey: Keys.barFont) } }
-    @Published var idleAnimation: BarAnimation { didSet { defaults.set(idleAnimation.rawValue, forKey: Keys.idleAnimation) } }
     @Published var chargingAnimation: BarAnimation { didSet { defaults.set(chargingAnimation.rawValue, forKey: Keys.chargingAnimation) } }
     @Published var dischargingAnimation: BarAnimation { didSet { defaults.set(dischargingAnimation.rawValue, forKey: Keys.dischargingAnimation) } }
     @Published var criticalAnimation: BarAnimation { didSet { defaults.set(criticalAnimation.rawValue, forKey: Keys.criticalAnimation) } }
@@ -95,10 +93,9 @@ final class AppSettings: ObservableObject {
         let oldWaves = defaults.object(forKey: Keys.fillWaves) as? Bool ?? true
         let oldTwinkles = defaults.object(forKey: Keys.twinkles) as? Bool ?? false
         let oldBreathing = defaults.object(forKey: Keys.breathing) as? Bool ?? false
-        let migratedIdle: BarAnimation = oldBreathing ? .breathing : oldTwinkles ? .twinkle : oldWaves ? .waves : oldFlow ? .flow : .none
-        self.idleAnimation = BarAnimation(rawValue: defaults.string(forKey: Keys.idleAnimation) ?? "") ?? migratedIdle
         self.chargingAnimation = BarAnimation(rawValue: defaults.string(forKey: Keys.chargingAnimation) ?? "") ?? (oldSpark ? .spark : .none)
-        self.dischargingAnimation = BarAnimation(rawValue: defaults.string(forKey: Keys.dischargingAnimation) ?? "") ?? (oldConsumption ? .consumption : .none)
+        let migratedDischarging: BarAnimation = oldBreathing ? .breathing : oldTwinkles ? .twinkle : oldConsumption ? .consumption : oldWaves ? .waves : oldFlow ? .flow : .none
+        self.dischargingAnimation = BarAnimation(rawValue: defaults.string(forKey: Keys.dischargingAnimation) ?? "") ?? migratedDischarging
         self.criticalAnimation = BarAnimation(rawValue: defaults.string(forKey: Keys.criticalAnimation) ?? "") ?? (oldPulse ? .pulse : .none)
         self.showPercentage = (defaults.object(forKey: Keys.showPercentage) as? Bool) ?? true
         self.forcePercentageWhenLow = (defaults.object(forKey: Keys.forcePercentageWhenLow) as? Bool) ?? true

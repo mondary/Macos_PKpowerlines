@@ -11,6 +11,12 @@ enum BarFont: String, CaseIterable, Identifiable, Codable {
     case avenirNext
     case futura
     case optima
+    case georgia
+    case trebuchet
+    case verdana
+    case gillSans
+    case baskerville
+    case rockwell
 
     var id: String { rawValue }
 
@@ -26,6 +32,12 @@ enum BarFont: String, CaseIterable, Identifiable, Codable {
         case .avenirNext:    return "Avenir Next"
         case .futura:        return "Futura"
         case .optima:        return "Optima"
+        case .georgia:       return "Georgia"
+        case .trebuchet:     return "Trebuchet MS"
+        case .verdana:       return "Verdana"
+        case .gillSans:      return "Gill Sans"
+        case .baskerville:   return "Baskerville"
+        case .rockwell:      return "Rockwell"
         }
     }
 
@@ -41,6 +53,12 @@ enum BarFont: String, CaseIterable, Identifiable, Codable {
         case .avenirNext:    return NSFont(name: "AvenirNext-Regular", size: size) ?? .systemFont(ofSize: size)
         case .futura:        return NSFont(name: "Futura-Medium", size: size) ?? .systemFont(ofSize: size)
         case .optima:        return NSFont(name: "Optima-Regular", size: size) ?? .systemFont(ofSize: size)
+        case .georgia:       return NSFont(name: "Georgia", size: size) ?? .systemFont(ofSize: size)
+        case .trebuchet:     return NSFont(name: "TrebuchetMS", size: size) ?? .systemFont(ofSize: size)
+        case .verdana:       return NSFont(name: "Verdana", size: size) ?? .systemFont(ofSize: size)
+        case .gillSans:      return NSFont(name: "GillSans", size: size) ?? .systemFont(ofSize: size)
+        case .baskerville:   return NSFont(name: "Baskerville", size: size) ?? .systemFont(ofSize: size)
+        case .rockwell:      return NSFont(name: "Rockwell-Regular", size: size) ?? .systemFont(ofSize: size)
         }
     }
 }

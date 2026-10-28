@@ -40,7 +40,6 @@ final class PowerBarView: NSView {
     private var isCharging = false
     private var isDischarging = false
     private var isCriticalLow = false
-    private var idleStyle: BarAnimation = .flow
     private var chargingStyle: BarAnimation = .spark
     private var dischargingStyle: BarAnimation = .consumption
     private var criticalStyle: BarAnimation = .pulse
@@ -250,11 +249,10 @@ final class PowerBarView: NSView {
     }
 
     /// Animation choisie pour chaque état de la batterie.
-    func updateAnimations(idle: BarAnimation, charging: BarAnimation, discharging: BarAnimation, critical: BarAnimation) {
-        let changed = idle != idleStyle || charging != chargingStyle
+    func updateAnimations(charging: BarAnimation, discharging: BarAnimation, critical: BarAnimation) {
+        let changed = charging != chargingStyle
             || discharging != dischargingStyle || critical != criticalStyle
         guard changed else { return }
-        idleStyle = idle
         chargingStyle = charging
         dischargingStyle = discharging
         criticalStyle = critical
@@ -281,8 +279,7 @@ final class PowerBarView: NSView {
     private var activeStyle: BarAnimation {
         if isCriticalLow { return criticalStyle }
         if isCharging { return chargingStyle }
-        if isDischarging { return dischargingStyle }
-        return idleStyle
+        return dischargingStyle
     }
 
     private func restartFlowTimer() {

@@ -19,10 +19,10 @@ struct MenuBarSettingsView: View {
                     Image(systemName: Self.spacingBrokenBySystem ? "xmark.octagon.fill" : "exclamationmark.triangle.fill")
                         .foregroundStyle(Self.spacingBrokenBySystem ? Color.red : Color.orange)
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(Self.spacingBrokenBySystem ? "Indisponible sur cette version de macOS" : "Modifie un réglage caché de macOS")
+                        Text(Self.spacingBrokenBySystem ? "Retiré par Apple dans macOS 27" : "Modifie un réglage caché de macOS")
                             .font(.subheadline.weight(.semibold))
                         Text(Self.spacingBrokenBySystem
-                             ? "macOS 27 ne respecte plus les clés d'espacement de la menu bar : les réglages ci-dessous n'ont plus d'effet. Ils restent disponibles pour les versions antérieures."
+                             ? "Apple a réécrit la menu bar dans macOS 27 et supprimé les réglages cachés d'espacement (confirmé par Menu Bar Spacing de Sindre Sorhus et BetterTouchTool : aucun contournement connu). Les contrôles sont désactivés — le code reste prêt si Apple les réhabilite."
                              : "L'espacement est appliqué en direct pendant le drag (relance ControlCenter, ~300 ms de debounce). Ça peut interrompre un AirDrop ou un screen share en cours. Totalement réversible via « Restaurer défauts Apple ».")
                             .font(.caption)
                             .foregroundStyle(.secondary)

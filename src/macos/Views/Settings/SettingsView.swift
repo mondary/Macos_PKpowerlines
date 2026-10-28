@@ -18,7 +18,7 @@ struct SettingsView: View {
 
     private var groupedSections: [(String, [SettingsSection])] {
         let grouped = Dictionary(grouping: filteredSections, by: \.category)
-        return ["POWERLINE", "PK PROJECTS"].compactMap { key in
+        return ["POWERLINE", "SYSTÈME", "PK PROJECTS"].compactMap { key in
             guard let values = grouped[key], !values.isEmpty else { return nil }
             return (key, values)
         }
@@ -32,8 +32,7 @@ struct SettingsView: View {
                 switch selection ?? .source {
                 case .source:     SourceSettingsView().pageHeader("Source", "Choisis ce que la barre mesure et à quelle fréquence.", icon: "dot.radiowaves.left.and.right")
                 case .appearance: AppearanceSettingsView().pageHeader("Barre", "Bord de l'écran, offset, hauteur, opacité et texte du %.", icon: "paintbrush")
-                case .animations: AnimationsSettingsView().pageHeader("Animations", "Choisis l'animation de chaque état de la batterie.", icon: "sparkles")
-                case .colors:     ColorsSettingsView().pageHeader("Couleurs", "La couleur de chaque source, seuil batterie compris.", icon: "paintpalette")
+                case .style:      StyleSettingsView().pageHeader("Couleurs & animations", "Les couleurs par source et l'animation de chaque état de la batterie.", icon: "paintpalette")
                 case .menuBar:    MenuBarSettingsView().pageHeader("Menu Bar", "Aère la menu bar de macOS en ajustant son espacement caché.", icon: "menubar.rectangle")
                 case .credits:    CreditsSettingsView()
                 case .library:    LibrarySettingsView()
@@ -150,8 +149,7 @@ struct SettingsView: View {
 enum SettingsSection: String, CaseIterable, Identifiable {
     case source
     case appearance
-    case animations
-    case colors
+    case style
     case menuBar
     case credits
     case library
@@ -164,9 +162,8 @@ enum SettingsSection: String, CaseIterable, Identifiable {
         switch self {
         case .source:     return "Source"
         case .appearance: return "Barre"
-        case .animations: return "Animations"
-        case .colors:     return "Couleurs"
-        case .menuBar:    return "Menu Bar"
+        case .style:      return "Couleurs & animations"
+        case .menuBar:    return "Menu Bar Spacing"
         case .credits:    return "Crédits"
         case .library:    return "Bibliothèque de projets"
         case .support:    return "Soutenir"
@@ -178,8 +175,7 @@ enum SettingsSection: String, CaseIterable, Identifiable {
         switch self {
         case .source:     return "dot.radiowaves.left.and.right"
         case .appearance: return "paintbrush"
-        case .animations: return "sparkles"
-        case .colors:     return "paintpalette"
+        case .style:      return "paintpalette"
         case .menuBar:    return "menubar.rectangle"
         case .credits:    return "text.book.closed"
         case .library:    return "square.grid.2x2"
@@ -198,8 +194,9 @@ enum SettingsSection: String, CaseIterable, Identifiable {
 
     var category: String {
         switch self {
+        case .menuBar:                           return "SYSTÈME"
         case .credits, .library, .support, .about: return "PK PROJECTS"
-        default:                         return "POWERLINE"
+        default:                                  return "POWERLINE"
         }
     }
 

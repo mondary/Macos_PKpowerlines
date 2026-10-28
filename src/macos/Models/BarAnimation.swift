@@ -39,9 +39,9 @@ enum BarAnimation: String, CaseIterable, Identifiable {
         }
     }
 
-    /// Options proposées selon l'état de la batterie.
-    static let idleOptions: [BarAnimation] = [.none, .flow, .waves, .twinkle, .breathing]
+    /// Options proposées selon l'état de la batterie. Il n'y a pas d'état
+    /// « repos » : un portable est toujours soit en charge, soit en décharge.
     static let chargingOptions: [BarAnimation] = [.none, .spark, .flow, .waves]
-    static let dischargingOptions: [BarAnimation] = [.none, .consumption, .flow, .waves]
+    static let dischargingOptions: [BarAnimation] = [.none, .consumption, .flow, .waves, .twinkle, .breathing]
     static let criticalOptions: [BarAnimation] = [.none, .pulse, .breathing]
 }

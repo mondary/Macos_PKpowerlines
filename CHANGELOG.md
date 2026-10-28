@@ -1,5 +1,14 @@
 # Changelog
 
+## [2026.10.21] - 2026-10-28
+### Changed
+- **Couleurs et animations fusionnées** dans une page unique « Couleurs & animations » (états batterie, couleurs par source, puis l'animation de chaque état).
+- **Suppression de l'état « au repos »** : un portable est toujours en charge ou en décharge, cette section ne se déclenchait jamais. Ses animations rejoignent « en décharge » (flux, ondes, scintillement, respiration, consommation).
+- **Menu Bar Spacing sort du groupe POWERLINE** : page renommée et déplacée dans un groupe « SYSTÈME » (elle n'a rien à voir avec la powerline).
+- Message macOS 27 précisé : Apple a retiré les réglages cachés (sources : Menu Bar Spacing de Sindre Sorhus, BetterTouchTool), aucun contournement connu ; contrôles désactivés.
+### Added
+- **6 fontes supplémentaires** pour le % : Georgia, Trebuchet MS, Verdana, Gill Sans, Baskerville, Rockwell (16 au total).
+
 ## [2026.10.20] - 2026-10-28
 ### Added
 - **Animations par état** : une seule animation choisie pour chaque état de la batterie (repos / charge / décharge / alerte critique), parmi 8 options dont « Aucune ». Chaque option est une carte avec aperçu en direct qui joue même non sélectionnée. Migration automatique des anciens toggles.

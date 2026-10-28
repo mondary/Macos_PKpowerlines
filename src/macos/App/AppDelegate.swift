@@ -367,13 +367,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             }
             .store(in: &cancellables)
 
-        settings.$idleAnimation
-            .removeDuplicates()
-            .dropFirst()
-            .receive(on: RunLoop.main)
-            .sink { [weak self] _ in self?.syncAnimations() }
-            .store(in: &cancellables)
-
         settings.$chargingAnimation
             .removeDuplicates()
             .dropFirst()
@@ -563,7 +556,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func syncAnimations(onto view: PowerBarView) {
         view.updateAnimations(
-            idle: settings.idleAnimation,
             charging: settings.chargingAnimation,
             discharging: settings.dischargingAnimation,
             critical: settings.criticalAnimation

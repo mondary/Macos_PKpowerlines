@@ -2,7 +2,6 @@ import SwiftUI
 
 /// État batterie simulé dans les aperçus.
 enum PreviewState {
-    case idle
     case charging
     case discharging
     case critical
@@ -13,7 +12,7 @@ enum PreviewState {
 struct PowerBarPreview: NSViewRepresentable {
     @EnvironmentObject var settings: AppSettings
 
-    var state: PreviewState = .idle
+    var state: PreviewState = .discharging
     /// Animation montrée ; `nil` = celle réglée pour cet état.
     var style: BarAnimation? = nil
     var percentage: Double = 62
@@ -37,7 +36,6 @@ struct PowerBarPreview: NSViewRepresentable {
 
         let resolved = style ?? settingsStyle
         view.updateAnimations(
-            idle: state == .idle ? resolved : .none,
             charging: state == .charging ? resolved : .none,
             discharging: state == .discharging ? resolved : .none,
             critical: state == .critical ? resolved : .none
@@ -52,7 +50,6 @@ struct PowerBarPreview: NSViewRepresentable {
 
     private var settingsStyle: BarAnimation {
         switch state {
-        case .idle: return settings.idleAnimation
         case .charging: return settings.chargingAnimation
         case .discharging: return settings.dischargingAnimation
         case .critical: return settings.criticalAnimation
@@ -63,7 +60,7 @@ struct PowerBarPreview: NSViewRepresentable {
         switch state {
         case .charging: return settings.chargingColor
         case .critical: return settings.batteryLowColor
-        case .idle, .discharging:
+        case .discharging:
             switch settings.monitorType {
             case .ram: return settings.ramColor
             case .cpu: return settings.cpuColor
@@ -79,7 +76,7 @@ struct PowerBarPreview: NSViewRepresentable {
 /// L'animation montrée joue TOUJOURS, même si elle n'est pas sélectionnée.
 struct EffectPreviewBox: View {
     @EnvironmentObject var settings: AppSettings
-    var state: PreviewState = .idle
+    var state: PreviewState = .discharging
     var style: BarAnimation? = nil
     var percentage: Double = 62
     var color: Color? = nil
