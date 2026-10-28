@@ -1,5 +1,13 @@
 # Changelog
 
+## [2026.10.23] - 2026-10-28
+### Added
+- **Nerd Fonts** : toutes les Nerd Fonts installées sont détectées automatiquement et proposées pour le % (section dédiée du sélecteur), en plus des 16 classiques.
+### Changed
+- **Couleurs contextuelles** : la page Source n'affiche plus que la couleur de la source choisie (RAM, CPU, Réseau, ou Batterie avec seuils et aperçu des 4 états).
+- **Animations déplacées dans Barre** : les trois sélecteurs par état sont en grille compacte (2 colonnes, aperçus en direct).
+- La page « Couleurs & animations » disparaît : la sidebar POWERLINE revient à deux pages claires — Source (source, fréquence, couleur) et Barre (position, hauteur, opacité, texte, police, animations).
+
 ## [2026.10.22] - 2026-10-28
 ### Fixed
 - Menu Bar Spacing : tous les contrôles (espacement, restauration) sont désactivés sur macOS 27, pas seulement le padding.

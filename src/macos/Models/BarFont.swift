@@ -1,64 +1,69 @@
 import AppKit
 
-enum BarFont: String, CaseIterable, Identifiable, Codable {
-    case systemBold
-    case systemRegular
-    case helveticaNeue
-    case menlo
-    case sfMono
-    case monaco
-    case courier
-    case avenirNext
-    case futura
-    case optima
-    case georgia
-    case trebuchet
-    case verdana
-    case gillSans
-    case baskerville
-    case rockwell
+/// Police du pourcentage. Les classiques sont toujours proposées ; toutes les
+/// Nerd Fonts installées sur le Mac sont détectées et ajoutées automatiquement.
+struct BarFont: Identifiable, Hashable, Codable {
+    let id: String
+    let displayName: String
 
-    var id: String { rawValue }
+    var isNerdFont: Bool { id != Self.systemBold.id && id != Self.systemRegular.id && id.contains("NerdFont") }
 
-    var displayName: String {
-        switch self {
-        case .systemBold:    return "Système (gras)"
-        case .systemRegular: return "Système"
-        case .helveticaNeue: return "Helvetica Neue"
-        case .menlo:         return "Menlo"
-        case .sfMono:        return "SF Mono"
-        case .monaco:        return "Monaco"
-        case .courier:       return "Courier"
-        case .avenirNext:    return "Avenir Next"
-        case .futura:        return "Futura"
-        case .optima:        return "Optima"
-        case .georgia:       return "Georgia"
-        case .trebuchet:     return "Trebuchet MS"
-        case .verdana:       return "Verdana"
-        case .gillSans:      return "Gill Sans"
-        case .baskerville:   return "Baskerville"
-        case .rockwell:      return "Rockwell"
+    func nsFont(size: CGFloat) -> NSFont {
+        switch id {
+        case Self.systemBold.id:
+            return NSFont.boldSystemFont(ofSize: size)
+        case Self.systemRegular.id:
+            return NSFont.systemFont(ofSize: size)
+        default:
+            return NSFont(name: id, size: size) ?? NSFont.systemFont(ofSize: size)
         }
     }
 
-    func nsFont(size: CGFloat) -> NSFont {
-        switch self {
-        case .systemBold:    return NSFont.boldSystemFont(ofSize: size)
-        case .systemRegular: return NSFont.systemFont(ofSize: size)
-        case .helveticaNeue: return NSFont(name: "HelveticaNeue", size: size) ?? .systemFont(ofSize: size)
-        case .menlo:         return NSFont(name: "Menlo", size: size) ?? .systemFont(ofSize: size)
-        case .sfMono:        return NSFont(name: "SFMono-Regular", size: size) ?? .systemFont(ofSize: size)
-        case .monaco:        return NSFont(name: "Monaco", size: size) ?? .systemFont(ofSize: size)
-        case .courier:       return NSFont(name: "Courier", size: size) ?? .systemFont(ofSize: size)
-        case .avenirNext:    return NSFont(name: "AvenirNext-Regular", size: size) ?? .systemFont(ofSize: size)
-        case .futura:        return NSFont(name: "Futura-Medium", size: size) ?? .systemFont(ofSize: size)
-        case .optima:        return NSFont(name: "Optima-Regular", size: size) ?? .systemFont(ofSize: size)
-        case .georgia:       return NSFont(name: "Georgia", size: size) ?? .systemFont(ofSize: size)
-        case .trebuchet:     return NSFont(name: "TrebuchetMS", size: size) ?? .systemFont(ofSize: size)
-        case .verdana:       return NSFont(name: "Verdana", size: size) ?? .systemFont(ofSize: size)
-        case .gillSans:      return NSFont(name: "GillSans", size: size) ?? .systemFont(ofSize: size)
-        case .baskerville:   return NSFont(name: "Baskerville", size: size) ?? .systemFont(ofSize: size)
-        case .rockwell:      return NSFont(name: "Rockwell-Regular", size: size) ?? .systemFont(ofSize: size)
-        }
+    // MARK: - Classiques
+
+    static let systemBold = BarFont(id: "systemBold", displayName: "Système (gras)")
+    static let systemRegular = BarFont(id: "systemRegular", displayName: "Système")
+
+    static let builtIns: [BarFont] = [
+        .systemBold,
+        .systemRegular,
+        BarFont(id: "HelveticaNeue", displayName: "Helvetica Neue"),
+        BarFont(id: "Menlo-Regular", displayName: "Menlo"),
+        BarFont(id: "SFMono-Regular", displayName: "SF Mono"),
+        BarFont(id: "Monaco", displayName: "Monaco"),
+        BarFont(id: "Courier", displayName: "Courier"),
+        BarFont(id: "AvenirNext-Regular", displayName: "Avenir Next"),
+        BarFont(id: "Futura-Medium", displayName: "Futura"),
+        BarFont(id: "Optima-Regular", displayName: "Optima"),
+        BarFont(id: "Georgia", displayName: "Georgia"),
+        BarFont(id: "TrebuchetMS", displayName: "Trebuchet MS"),
+        BarFont(id: "Verdana", displayName: "Verdana"),
+        BarFont(id: "GillSans", displayName: "Gill Sans"),
+        BarFont(id: "Baskerville", displayName: "Baskerville"),
+        BarFont(id: "Rockwell-Regular", displayName: "Rockwell")
+    ]
+
+    // MARK: - Nerd Fonts installées
+
+    /// Familles « Nerd Font » détectées sur le système, avec leur nom PostScript
+    /// régulier pour que `NSFont(name:)` fonctionne à coup sûr.
+    static let nerdFonts: [BarFont] = {
+        let manager = NSFontManager.shared
+        return manager.availableFontFamilies
+            .filter { $0.localizedCaseInsensitiveContains("nerd font") }
+            .sorted()
+            .compactMap { family in
+                let members = manager.availableMembers(ofFontFamily: family) ?? []
+                let regular = members.first { ($0.count > 1 && ($0[1] as? String) == "Regular") } ?? members.first
+                guard let postScript = regular?.first as? String else { return nil }
+                return BarFont(id: postScript, displayName: family)
+            }
+    }()
+
+    /// Classiques + Nerd Fonts, pour les sélecteurs.
+    static var all: [BarFont] { builtIns + nerdFonts }
+
+    static func byID(_ id: String) -> BarFont? {
+        all.first { $0.id == id }
     }
 }

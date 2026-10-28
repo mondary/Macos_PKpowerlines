@@ -24,9 +24,77 @@ struct SourceSettingsView: View {
                 Text("La batterie évolue lentement : 10 s suffisent largement. Réserve 1–2 s aux sources vives (RAM, CPU, réseau).")
                     .font(.caption).foregroundStyle(.secondary)
             }
+
+            sourceSections
         }
         .formStyle(.grouped)
     }
+
+    // MARK: - Couleurs contextuelles à la source choisie
+
+    @ViewBuilder
+    private var sourceSections: some View {
+        switch settings.monitorType {
+        case .ram:
+            Section("Couleur RAM") {
+                ColorPicker("Couleur", selection: ramColorBinding, supportsOpacity: false)
+                EffectPreviewBox(state: .discharging, percentage: 62, color: settings.ramColor)
+            }
+        case .cpu:
+            Section("Couleur CPU") {
+                ColorPicker("Couleur", selection: cpuColorBinding, supportsOpacity: false)
+                EffectPreviewBox(state: .discharging, percentage: 62, color: settings.cpuColor)
+            }
+        case .network:
+            Section("Réseau") {
+                ColorPicker("Couleur", selection: networkColorBinding, supportsOpacity: false)
+                HStack(spacing: 12) {
+                    Slider(value: $settings.networkMaxMBps, in: 1...1000)
+                    Text("\(Int(settings.networkMaxMBps)) MB/s").monospacedDigit()
+                        .frame(width: 80, alignment: .trailing).foregroundStyle(.secondary)
+                }
+                Text("La barre se remplit proportionnellement au débit cumulé (↓ + ↑) par rapport à ce plafond. Le texte affiche toujours les débits réels.")
+                    .font(.caption).foregroundStyle(.secondary)
+                EffectPreviewBox(state: .discharging, percentage: 62, color: settings.networkColor)
+            }
+        case .battery:
+            Section("États de la batterie") {
+                EffectPreviewBox(state: .discharging, percentage: 62, color: settings.batteryColor)
+                Text("Chargée — couleur « Chargée », avec l'animation de décharge.")
+                    .font(.caption).foregroundStyle(.secondary)
+                EffectPreviewBox(state: .discharging, percentage: 15, color: settings.batteryLowColor)
+                Text("Faible — couleur « Faible » sous le seuil.")
+                    .font(.caption).foregroundStyle(.secondary)
+                EffectPreviewBox(state: .critical, style: settings.criticalAnimation, percentage: 8, color: settings.batteryLowColor)
+                Text("Critique — animation d'alerte sous le seuil critique.")
+                    .font(.caption).foregroundStyle(.secondary)
+                EffectPreviewBox(state: .charging, style: settings.chargingAnimation, percentage: 62, color: settings.chargingColor)
+                Text("En charge — couleur de charge + animation de charge.")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+
+            Section("Couleurs batterie") {
+                ColorPicker("Chargée", selection: batteryColorBinding, supportsOpacity: false)
+                ColorPicker("Faible", selection: batteryLowColorBinding, supportsOpacity: false)
+                Stepper(value: $settings.batteryLowThreshold, in: 5...50, step: 5) {
+                    HStack(spacing: 6) {
+                        Text("Seuil faible")
+                        Text("\(settings.batteryLowThreshold) %").monospacedDigit().foregroundStyle(.secondary)
+                    }
+                }
+                Stepper(value: $settings.batteryCriticalThreshold, in: 3...min(20, settings.batteryLowThreshold), step: 1) {
+                    HStack(spacing: 6) {
+                        Text("Seuil critique")
+                        Text("\(min(settings.batteryCriticalThreshold, settings.batteryLowThreshold)) %").monospacedDigit().foregroundStyle(.secondary)
+                    }
+                }
+                Text("En dessous du seuil faible, la couleur « Faible » prend le relais ; sous le seuil critique (hors charge), l'animation d'alerte joue.")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    // MARK: - Cartes de source
 
     private func sourceCard(_ type: MonitorType) -> some View {
         let active = settings.monitorType == type
@@ -65,5 +133,23 @@ struct SourceSettingsView: View {
             )
         }
         .buttonStyle(.plain)
+    }
+
+    // MARK: - Bindings couleurs
+
+    private var ramColorBinding: Binding<Color> {
+        Binding(get: { settings.ramColor }, set: { settings.ramColorHex = $0.toHex() })
+    }
+    private var batteryColorBinding: Binding<Color> {
+        Binding(get: { settings.batteryColor }, set: { settings.batteryColorHex = $0.toHex() })
+    }
+    private var batteryLowColorBinding: Binding<Color> {
+        Binding(get: { settings.batteryLowColor }, set: { settings.batteryLowColorHex = $0.toHex() })
+    }
+    private var cpuColorBinding: Binding<Color> {
+        Binding(get: { settings.cpuColor }, set: { settings.cpuColorHex = $0.toHex() })
+    }
+    private var networkColorBinding: Binding<Color> {
+        Binding(get: { settings.networkColor }, set: { settings.networkColorHex = $0.toHex() })
     }
 }

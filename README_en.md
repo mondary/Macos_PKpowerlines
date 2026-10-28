@@ -17,7 +17,7 @@ Version **2026.10.10**
 - 🧭 **4 edges** — top, bottom, **left**, **right** (vertical bar on the sides)
 - 👁️ **% toggle** — show or hide the text (powerline bar always visible)
 - 🌌 **Always visible** — every Space, status bar level, click-through
-- 🎨 **Custom colors** — RAM, CPU, Network, Battery, Low-battery, Charging colors via ColorPicker
+- 🎨 **Contextual colors** — in Source, only the selected source's color is offered (RAM, CPU, Network, or Battery with its low/critical thresholds and 4-state preview)
 - 🔤 **Custom font** — 7 fonts, auto-adaptive size, vertically centered percentage
 - 🎚️ **Custom height** — slider 4–40px + 4 presets (⌘4/⌘1/⌘2/⌘3)
 - 💧 **Opacity** — 20% to 100%
@@ -26,8 +26,8 @@ Version **2026.10.10**
 - 🚨 **Critical battery alert** — below an adjustable critical threshold (15% by default, not charging), the bar pulses like an alert heartbeat
 - 🅰️ **Overflowing text** — the powerline stays at 7 px and flush with the screen edge: the % is drawn at 11 pt **on the line**, lifted above the edge (its top leaves the screen) and overflowing below
 - 💨 **Consumption** — while discharging, the bar's edge erodes and a thin wisp of smoke drifts away
-- 🎛️ **Per-state animations** — one animation chosen for each battery state (charging, discharging, critical alert — there is no idle state) among options including None; every option with a live preview that plays even when unselected
-- 🖥️ **Previews everywhere** — the real bar previewed in Bar (mock screen: edge, offset, height) and Colors & animations (battery states + every animation option)
+- 🎛️ **Per-state animations** — in Bar, one animation chosen for each state (charging, discharging, critical alert — there is no idle state) among options including None; every option with a live preview that plays even when unselected
+- 🖥️ **Previews everywhere** — the real bar previewed in Bar (mock screen: edge, offset, height) and in Source (battery states)
 - ↕️ **Offset** — pixel by pixel (can overlap the menu bar, or shift on the sides)
 - ⏱️ **Frequency** — refresh every 1–10s
 - 🧰 **Menu Bar Spacing** — native menu bar spacing for macOS 26 and earlier (removed by Apple in macOS 27; controls are cleanly disabled)
@@ -68,7 +68,7 @@ Version **2026.10.10**
 | Height | 4–40px | Settings → Powerline (slider) |
 | Height presets | 4 / 8 / 12 / 20px | Settings → Powerline or ⌘4/⌘1/⌘2/⌘3 |
 | Opacity | 20–100% | Settings → Powerline |
-| Font | 16 fonts | Settings → Bar |
+| Font | 16 classics + every installed Nerd Font (auto-detected) | Settings → Bar |
 | RAM color | ColorPicker | Settings → Powerline |
 | CPU color | ColorPicker | Settings → Powerline |
 | Network color | ColorPicker | Settings → Powerline |

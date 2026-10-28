@@ -7,7 +7,7 @@ struct AppearanceSettingsView: View {
         Form {
             Section("Aperçu") {
                 PositionPreview()
-                Text("La vraie barre avec tes réglages : bord, offset, hauteur, opacité, police, texte et animation de repos.")
+                Text("La vraie barre avec tes réglages : bord, offset, hauteur, opacité, police, texte et animations.")
                     .font(.caption).foregroundStyle(.secondary)
             }
 
@@ -74,17 +74,38 @@ struct AppearanceSettingsView: View {
                     .disabled(settings.monitorType != .battery)
 
                 Picker("Police", selection: $settings.barFont) {
-                    ForEach(BarFont.allCases) { f in Text(f.displayName).tag(f) }
+                    Section("Classiques") {
+                        ForEach(BarFont.builtIns) { f in Text(f.displayName).tag(f) }
+                    }
+                    if !BarFont.nerdFonts.isEmpty {
+                        Section("Nerd Fonts installées (\(BarFont.nerdFonts.count))") {
+                            ForEach(BarFont.nerdFonts) { f in Text(f.displayName).tag(f) }
+                        }
+                    }
                 }
                 HStack(spacing: 8) {
                     Text("Aperçu").font(.caption).foregroundStyle(.secondary)
                     Text("42%")
-                        .font(customFont(settings.barFont, height: 16))
+                        .font(Font(settings.barFont.nsFont(size: 15)))
                         .foregroundStyle(.white)
                         .padding(.horizontal, 8).padding(.vertical, 3)
                         .background(RoundedRectangle(cornerRadius: 5).fill(Color(white: 0.18)))
                 }
-                Text("Sous 16 px, la ligne reste collée au bord et le % (11 pt) s'écrit dessus, levé au-dessus du bord et débordant dessous.")
+                Text("Les Nerd Fonts installées sur ton Mac sont détectées automatiquement. Sous 16 px, la ligne reste collée au bord et le % (11 pt) s'écrit dessus, levé au-dessus du bord et débordant dessous.")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+
+            Section("Animation — en charge") {
+                AnimationGrid(options: BarAnimation.chargingOptions, selection: $settings.chargingAnimation, state: .charging, percentage: 62)
+            }
+
+            Section("Animation — en décharge") {
+                AnimationGrid(options: BarAnimation.dischargingOptions, selection: $settings.dischargingAnimation, state: .discharging, percentage: 88)
+            }
+
+            Section("Animation — alerte critique") {
+                AnimationGrid(options: BarAnimation.criticalOptions, selection: $settings.criticalAnimation, state: .critical, percentage: 8)
+                Text("Une animation par état : un portable est toujours en charge ou en décharge, il n'y a pas d'état « repos ». Les aperçus jouent aussi les animations non sélectionnées.")
                     .font(.caption).foregroundStyle(.secondary)
             }
         }
@@ -160,26 +181,49 @@ struct AppearanceSettingsView: View {
         }
         .buttonStyle(.plain)
     }
+}
 
-    private func customFont(_ barFont: BarFont, height: CGFloat) -> SwiftUI.Font {
-        let size = max(6, min(height * 0.75, 22))
-        switch barFont {
-        case .systemBold:    return .system(size: size, weight: .bold)
-        case .systemRegular: return .system(size: size)
-        case .helveticaNeue: return .custom("Helvetica Neue", size: size)
-        case .menlo:         return .custom("Menlo", size: size)
-        case .sfMono:        return .custom("SF Mono", size: size)
-        case .monaco:        return .custom("Monaco", size: size)
-        case .courier:       return .custom("Courier", size: size)
-        case .avenirNext:    return .custom("Avenir Next", size: size)
-        case .futura:        return .custom("Futura", size: size)
-        case .optima:        return .custom("Optima", size: size)
-        case .georgia:       return .custom("Georgia", size: size)
-        case .trebuchet:     return .custom("Trebuchet MS", size: size)
-        case .verdana:       return .custom("Verdana", size: size)
-        case .gillSans:      return .custom("Gill Sans", size: size)
-        case .baskerville:   return .custom("Baskerville", size: size)
-        case .rockwell:      return .custom("Rockwell", size: size)
+/// Grille compacte de cartes d'animation pour un état : chaque carte joue son
+/// aperçu en direct, la sélection est cerclée.
+private struct AnimationGrid: View {
+    let options: [BarAnimation]
+    @Binding var selection: BarAnimation
+    let state: PreviewState
+    let percentage: Double
+
+    private let columns = [GridItem(.flexible(), spacing: 8), GridItem(.flexible(), spacing: 8)]
+
+    var body: some View {
+        LazyVGrid(columns: columns, spacing: 8) {
+            ForEach(options) { option in
+                Button {
+                    selection = option
+                } label: {
+                    VStack(spacing: 6) {
+                        EffectPreviewBox(state: state, style: option, percentage: percentage)
+                        HStack(spacing: 5) {
+                            Image(systemName: selection == option ? "checkmark.circle.fill" : "circle")
+                                .font(.system(size: 11))
+                                .foregroundStyle(selection == option ? Color.accentColor : Color.secondary.opacity(0.45))
+                            Text(option.displayName)
+                                .font(.caption.weight(selection == option ? .semibold : .regular))
+                                .lineLimit(1)
+                            Spacer(minLength: 0)
+                        }
+                    }
+                    .padding(6)
+                    .background(
+                        RoundedRectangle(cornerRadius: 9, style: .continuous)
+                            .fill(selection == option ? Color.accentColor.opacity(0.1) : Color(nsColor: .controlBackgroundColor))
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 9, style: .continuous)
+                            .stroke(selection == option ? Color.accentColor : Color.clear, lineWidth: 1.5)
+                    )
+                }
+                .buttonStyle(.plain)
+            }
         }
+        .padding(.vertical, 2)
     }
 }

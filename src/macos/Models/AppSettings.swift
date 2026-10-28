@@ -41,7 +41,7 @@ final class AppSettings: ObservableObject {
     @Published var barOpacity: Double { didSet { defaults.set(barOpacity, forKey: Keys.barOpacity) } }
     @Published var barPosition: BarPosition { didSet { defaults.set(barPosition.rawValue, forKey: Keys.barPosition) } }
     @Published var barOffset: CGFloat { didSet { defaults.set(Double(barOffset), forKey: Keys.barOffset) } }
-    @Published var barFont: BarFont { didSet { defaults.set(barFont.rawValue, forKey: Keys.barFont) } }
+    @Published var barFont: BarFont { didSet { defaults.set(barFont.id, forKey: Keys.barFont) } }
     @Published var chargingAnimation: BarAnimation { didSet { defaults.set(chargingAnimation.rawValue, forKey: Keys.chargingAnimation) } }
     @Published var dischargingAnimation: BarAnimation { didSet { defaults.set(dischargingAnimation.rawValue, forKey: Keys.dischargingAnimation) } }
     @Published var criticalAnimation: BarAnimation { didSet { defaults.set(criticalAnimation.rawValue, forKey: Keys.criticalAnimation) } }
@@ -83,8 +83,8 @@ final class AppSettings: ObservableObject {
         self.barPosition = BarPosition(rawValue: posRaw) ?? .top
         let storedOffset = defaults.object(forKey: Keys.barOffset) as? Double
         self.barOffset = CGFloat(storedOffset ?? 0)
-        let fontRaw = defaults.string(forKey: Keys.barFont) ?? BarFont.systemBold.rawValue
-        self.barFont = BarFont(rawValue: fontRaw) ?? .systemBold
+        let fontRaw = defaults.string(forKey: Keys.barFont) ?? BarFont.systemBold.id
+        self.barFont = BarFont.byID(fontRaw) ?? .systemBold
         // Migration : les anciens toggles booléens deviennent un style par état.
         let oldFlow = defaults.object(forKey: Keys.animatedFlow) as? Bool ?? true
         let oldSpark = defaults.object(forKey: Keys.sparkOnCharge) as? Bool ?? true
