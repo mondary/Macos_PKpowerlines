@@ -1,5 +1,9 @@
 # Changelog
 
+## [2026.10.24] - 2026-10-28
+### Fixed
+- Aperçus : quand la source est Réseau, la barre simule des débits (« ↓ 2,4 MB/s ↑ 128 KB/s ») au lieu d'un « 62 % » sans signification ; les autres sources gardent leur pourcentage.
+
 ## [2026.10.23] - 2026-10-28
 ### Added
 - **Nerd Fonts** : toutes les Nerd Fonts installées sont détectées automatiquement et proposées pour le % (section dédiée du sélecteur), en plus des 16 classiques.

@@ -18,6 +18,7 @@ struct PowerBarPreview: NSViewRepresentable {
     var percentage: Double = 62
     var position: BarPosition = .top
     var colorOverride: Color? = nil
+    var labelOverride: String? = nil
 
     func makeNSView(context: Context) -> PowerBarView {
         PowerBarView(frame: .zero)
@@ -40,12 +41,26 @@ struct PowerBarPreview: NSViewRepresentable {
             discharging: state == .discharging ? resolved : .none,
             critical: state == .critical ? resolved : .none
         )
-        let prefix = state == .charging ? "⚡ " : ""
         view.updateUsage(
-            percentage: percentage,
+            percentage: effectivePercentage,
             color: NSColor(colorOverride ?? previewColor),
-            label: "\(prefix)\(Int(percentage))%"
+            label: labelOverride ?? defaultLabel
         )
+    }
+
+    /// Remplissage cohérent avec le libellé réseau (~2,5 Mo/s sur un plafond de 10).
+    private var effectivePercentage: Double {
+        if settings.monitorType == .network, state == .discharging { return 25 }
+        return percentage
+    }
+
+    /// Libellé crédible selon la source : le réseau affiche des débits, pas un %.
+    private var defaultLabel: String {
+        let prefix = state == .charging ? "⚡ " : ""
+        if settings.monitorType == .network, state == .discharging {
+            return "↓ 2,4 MB/s  ↑ 128 KB/s"
+        }
+        return "\(prefix)\(Int(percentage))%"
     }
 
     private var settingsStyle: BarAnimation {

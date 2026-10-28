@@ -43,7 +43,7 @@ struct SourceSettingsView: View {
         case .cpu:
             Section("Couleur CPU") {
                 ColorPicker("Couleur", selection: cpuColorBinding, supportsOpacity: false)
-                EffectPreviewBox(state: .discharging, percentage: 62, color: settings.cpuColor)
+                EffectPreviewBox(state: .discharging, percentage: 37, color: settings.cpuColor)
             }
         case .network:
             Section("Réseau") {
@@ -55,7 +55,7 @@ struct SourceSettingsView: View {
                 }
                 Text("La barre se remplit proportionnellement au débit cumulé (↓ + ↑) par rapport à ce plafond. Le texte affiche toujours les débits réels.")
                     .font(.caption).foregroundStyle(.secondary)
-                EffectPreviewBox(state: .discharging, percentage: 62, color: settings.networkColor)
+                EffectPreviewBox(state: .discharging, percentage: 42, color: settings.networkColor)
             }
         case .battery:
             Section("États de la batterie") {
