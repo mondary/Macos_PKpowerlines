@@ -1,5 +1,9 @@
 # Changelog
 
+## [2026.10.28] - 2026-10-28
+### Added
+- **Animation « Défilé »** : une encoche sombre parcourt la ligne — contraste garanti même sur la ligne blanche de 2 px de l'état plein (devient l'animation par défaut du 100 %). Disponible aussi pour le niveau et le réseau.
+
 ## [2026.10.27] - 2026-10-28
 ### Changed
 - **100 % repensé** : plus de jaune — la ligne passe en extra-extra fin (2 px), le texte disparaît et la couleur par défaut est un argent doux animé par le reflet de l'état plein.

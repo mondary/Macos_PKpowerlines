@@ -105,7 +105,7 @@ final class AppSettings: ObservableObject {
         let migratedDischarging: BarAnimation = oldBreathing ? .breathing : oldTwinkles ? .twinkle : oldConsumption ? .consumption : oldWaves ? .waves : oldFlow ? .flow : .none
         self.dischargingAnimation = BarAnimation(rawValue: defaults.string(forKey: Keys.dischargingAnimation) ?? "") ?? migratedDischarging
         self.criticalAnimation = BarAnimation(rawValue: defaults.string(forKey: Keys.criticalAnimation) ?? "") ?? (oldPulse ? .pulse : .none)
-        self.fullAnimation = BarAnimation(rawValue: defaults.string(forKey: Keys.fullAnimation) ?? "") ?? .waves
+        self.fullAnimation = BarAnimation(rawValue: defaults.string(forKey: Keys.fullAnimation) ?? "") ?? .scan
         self.levelAnimation = BarAnimation(rawValue: defaults.string(forKey: Keys.levelAnimation) ?? "") ?? .waves
         self.networkAnimation = BarAnimation(rawValue: defaults.string(forKey: Keys.networkAnimation) ?? "") ?? .stream
         self.showPercentage = (defaults.object(forKey: Keys.showPercentage) as? Bool) ?? true

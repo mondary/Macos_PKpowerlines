@@ -12,6 +12,7 @@ enum BarAnimation: String, CaseIterable, Identifiable {
     case pulse
     case stream
     case pulses
+    case scan
 
     var id: String { rawValue }
 
@@ -27,6 +28,7 @@ enum BarAnimation: String, CaseIterable, Identifiable {
         case .pulse: return "Pulsation d'alerte"
         case .stream: return "Flux de données"
         case .pulses: return "Impulsions"
+        case .scan: return "Défilé"
         }
     }
 
@@ -42,6 +44,7 @@ enum BarAnimation: String, CaseIterable, Identifiable {
         case .pulse: return "Battement d'alerte de l'opacité."
         case .stream: return "Petits paquets lumineux qui filent avec le débit."
         case .pulses: return "Ondes cadencées : plus le débit monte, plus ça pulse vite."
+        case .scan: return "Une encoche sombre parcourt la ligne — visible même à 2 px."
         }
     }
 
@@ -50,7 +53,7 @@ enum BarAnimation: String, CaseIterable, Identifiable {
     static let chargingOptions: [BarAnimation] = [.none, .spark, .flow, .waves]
     static let dischargingOptions: [BarAnimation] = [.none, .consumption, .flow, .waves, .twinkle, .breathing]
     static let criticalOptions: [BarAnimation] = [.none, .pulse, .breathing]
-    static let levelOptions: [BarAnimation] = [.none, .flow, .waves, .twinkle, .breathing]
-    static let fullOptions: [BarAnimation] = [.none, .flow, .waves, .twinkle, .breathing]
-    static let networkOptions: [BarAnimation] = [.none, .stream, .pulses, .flow, .waves]
+    static let levelOptions: [BarAnimation] = [.none, .flow, .waves, .twinkle, .breathing, .scan]
+    static let fullOptions: [BarAnimation] = [.scan, .none, .flow, .waves, .twinkle, .breathing]
+    static let networkOptions: [BarAnimation] = [.none, .stream, .pulses, .flow, .waves, .scan]
 }

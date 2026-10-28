@@ -56,6 +56,7 @@ final class PowerBarView: NSView {
     private var puffLayers: [CALayer] = []
     private var streamLayers: [CALayer] = []
     private var speedPulseBand: CAGradientLayer?
+    private var scanBand: CAGradientLayer?
     private var puffs: [SmokePuff] = []
     private var smokeTick = 0
 
@@ -277,6 +278,7 @@ final class PowerBarView: NSView {
         networkStyle = network
         streamLayers.forEach { $0.isHidden = true }
         speedPulseBand?.isHidden = true
+        scanBand?.isHidden = true
         sparkLayer?.isHidden = true
         waveBands.forEach { $0.isHidden = true }
         twinkleLayers.forEach { $0.isHidden = true }
@@ -329,6 +331,7 @@ final class PowerBarView: NSView {
             twinkleLayers.forEach { $0.isHidden = true }
             streamLayers.forEach { $0.isHidden = true }
             speedPulseBand?.isHidden = true
+            scanBand?.isHidden = true
             clearSmoke()
             barFill?.fillOpacity = opacity
             percentageLabel?.alphaValue = 1
@@ -389,6 +392,53 @@ final class PowerBarView: NSView {
         if activeStyle == .consumption { updateSmoke() } else { clearSmoke() }
         if activeStyle == .stream { updateStream(t: t) } else { streamLayers.forEach { $0.isHidden = true } }
         if activeStyle == .pulses { updateSpeedPulses(t: t) } else { speedPulseBand?.isHidden = true }
+        if activeStyle == .scan { updateScan(t: t) } else { scanBand?.isHidden = true }
+    }
+
+    /// Défilé : une encoche sombre parcourt la ligne. Contraste garanti même
+    /// sur une ligne blanche de 2 px.
+    private func updateScan(t: TimeInterval) {
+        guard window != nil, currentPercentage > 0.01,
+              let fill = barFill, let fillLayer = fill.layer else {
+            scanBand?.isHidden = true
+            return
+        }
+        let length = isVertical ? fill.bounds.height : fill.bounds.width
+        let thickness = isVertical ? fill.bounds.width : fill.bounds.height
+        guard length > 14 else {
+            scanBand?.isHidden = true
+            return
+        }
+        if scanBand == nil {
+            let band = CAGradientLayer()
+            band.colors = [
+                NSColor.black.withAlphaComponent(0).cgColor,
+                NSColor.black.withAlphaComponent(0.45).cgColor,
+                NSColor.black.withAlphaComponent(0).cgColor
+            ]
+            band.locations = [0, 0.5, 1]
+            band.cornerRadius = 1
+            fillLayer.addSublayer(band)
+            scanBand = band
+        }
+        guard let band = scanBand else { return }
+        let period: Double = 2.0
+        let progress = CGFloat((t / period).truncatingRemainder(dividingBy: 1))
+        let bandLength = min(max(12, length * 0.28), 70)
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        band.isHidden = false
+        band.opacity = 1
+        if isVertical {
+            band.startPoint = CGPoint(x: 0.5, y: 0)
+            band.endPoint = CGPoint(x: 0.5, y: 1)
+            band.frame = CGRect(x: 0, y: (length - bandLength) * (1 - progress), width: thickness, height: bandLength)
+        } else {
+            band.startPoint = CGPoint(x: 0, y: 0.5)
+            band.endPoint = CGPoint(x: 1, y: 0.5)
+            band.frame = CGRect(x: (length - bandLength) * progress, y: 0, width: bandLength, height: thickness)
+        }
+        CATransaction.commit()
     }
 
     /// Flux de données : petits paquets lumineux qui filent le long du
