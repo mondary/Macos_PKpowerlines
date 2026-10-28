@@ -1,8 +1,12 @@
 # Changelog
 
+## [2026.10.27] - 2026-10-28
+### Changed
+- **100 % repensé** : plus de jaune — la ligne passe en extra-extra fin (2 px), le texte disparaît et la couleur par défaut est un argent doux animé par le reflet de l'état plein.
+
 ## [2026.10.26] - 2026-10-28
 ### Added
-- **État « Pleine » (100 %)** : couleur dédiée (or par défaut) et animation propre, avec aperçu dans Source et section « Animation — pleine (100 %) » dans Barre.
+- **État « Pleine » (100 %)** : couleur dédiée et animation propre, avec aperçu dans Source et section « Animation — pleine (100 %) » dans Barre.
 
 ## [2026.10.25] - 2026-10-28
 ### Added

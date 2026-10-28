@@ -131,7 +131,7 @@ final class PowerBarView: NSView {
         percentageLabel?.stringValue = currentLabel
         percentageLabel?.frameRotation = 0
 
-        let canShow = (showPercentageFlag && windowHeight >= 8) || forceShowText
+        let canShow = ((showPercentageFlag && windowHeight >= 8) || forceShowText) && !isFull
         percentageLabel?.isHidden = !canShow
         guard canShow else { return }
 
@@ -175,7 +175,7 @@ final class PowerBarView: NSView {
         percentageLabel?.stringValue = currentLabel
 
         // La taille de police s'adapte à l'ÉPAISSEUR (largeur) de la fenêtre.
-        let canShow = (showPercentageFlag && w >= 8) || forceShowText
+        let canShow = ((showPercentageFlag && w >= 8) || forceShowText) && !isFull
         percentageLabel?.isHidden = !canShow
         guard canShow else { return }
 
@@ -213,7 +213,9 @@ final class PowerBarView: NSView {
     private var effectiveBarThickness: CGFloat {
         let windowThickness = isVertical ? bounds.width : bounds.height
         guard barThickness > 0 else { return windowThickness }
-        return min(barThickness, windowThickness)
+        // À 100 %, la powerline devient une ligne extra-extra fine et discrète.
+        let thickness = isFull ? min(barThickness, 2) : barThickness
+        return min(thickness, windowThickness)
     }
 
     // MARK: - Public setters
@@ -287,6 +289,7 @@ final class PowerBarView: NSView {
     func updateFull(_ full: Bool) {
         guard isFull != full else { return }
         isFull = full
+        updateBarFrame()
         restartFlowTimer()
     }
 

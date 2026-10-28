@@ -6,7 +6,7 @@
 
 ✨ Application macOS native (menu-bar) qui affiche une barre en temps réel en haut de chaque écran : RAM ou batterie. Binaire universel Intel + Apple Silicon.
 
-Version **2026.10.26**
+Version **2026.10.27**
 
 ![PKpowerlines — fenêtre de réglages](store/v1/screenshots/02-reglages.png)
 
@@ -24,7 +24,7 @@ Version **2026.10.26**
 - 🌊 **Flux animé** — oscillation discrète du remplissage, limitée à 2 px (3 px en charge), désactivable
 - ⚡ **Étincelle de charge** — un balayage lumineux électrique parcourt la barre pendant la charge
 - 🚨 **Alerte batterie critique** — sous un seuil critique réglable (15 % par défaut, hors charge), la barre pulse comme un battement d'alerte
-- 🔋 **État « Pleine » (100 %)** — couleur et animation dédiées quand la batterie est pleine
+- 🔋 **État « Pleine » (100 %)** — la ligne devient extra-extra fine (2 px), le chiffre disparaît et un reflet argenté l'anime discrètement
 - 🅰️ **Texte débordant** — la powerline reste à 7 px et collée au bord de l'écran : le % s'écrit en 11 pt **sur la ligne**, levé au-dessus du bord (le haut sort de l'écran) et débordant sous la ligne
 - 💨 **Consommation** — en décharge, le bord de la barre s'érode et un fin panache de fumée s'en échappe
 - 🎛️ **Animations par état et par source** — dans Barre : une animation par état batterie (charge, décharge, alerte), une pour le niveau (RAM & CPU) et une dédiée au réseau — **Flux de données** (paquets lumineux qui accélèrent avec le débit) et **Impulsions** (cadence proportionnelle à la vitesse). Chaque option avec aperçu en direct qui joue même non sélectionnée

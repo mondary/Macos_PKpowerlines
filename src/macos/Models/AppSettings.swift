@@ -113,7 +113,7 @@ final class AppSettings: ObservableObject {
         self.ramColorHex = defaults.string(forKey: Keys.ramColor) ?? "#FF3B30"
         self.batteryColorHex = defaults.string(forKey: Keys.batteryColor) ?? "#34C759"
         self.batteryLowColorHex = defaults.string(forKey: Keys.batteryLowColor) ?? "#FF3B30"
-        self.batteryFullColorHex = defaults.string(forKey: Keys.batteryFullColor) ?? "#FFD60A"
+        self.batteryFullColorHex = defaults.string(forKey: Keys.batteryFullColor) ?? "#D7D7DD"
         self.batteryLowThreshold = (defaults.object(forKey: Keys.batteryLowThreshold) as? Int) ?? 20
         self.batteryCriticalThreshold = (defaults.object(forKey: Keys.batteryCriticalThreshold) as? Int) ?? 15
         self.cpuColorHex = defaults.string(forKey: Keys.cpuColor) ?? "#FF9500"
