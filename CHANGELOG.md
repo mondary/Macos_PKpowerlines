@@ -1,5 +1,9 @@
 # Changelog
 
+## [2026.10.31] - 2026-10-28
+### Added
+- **`PKSTACK.md`** : cartographie des skills du hub utilisées sur le projet et de leurs livrables.
+
 ## [2026.10.30] - 2026-10-28
 ### Changed
 - **Landing à la racine du store** : la source bilingue vit désormais dans `store/index.html` (+ `styles.css`, `app.js`, `assets/`) ; le bundle FTP `store/website/` est généré par `scripts/website.sh` et ignoré par Git.
