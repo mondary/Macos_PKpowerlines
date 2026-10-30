@@ -6,7 +6,7 @@
 
 ✨ Native macOS menu-bar app that displays a real-time bar at the top of every screen: RAM or battery. Universal Intel + Apple Silicon binary.
 
-Version **2026.10.31**
+Version **2026.10.32**
 
 ![PKpowerlines — settings window](store/v1/screenshots/02-reglages.png)
 

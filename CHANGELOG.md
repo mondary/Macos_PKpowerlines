@@ -1,5 +1,9 @@
 # Changelog
 
+## [2026.10.32] - 2026-10-30
+### Changed
+- **README miroir** : la section « Build & Package » est désormais distincte de l'installation en français, comme dans la version anglaise.
+
 ## [2026.10.31] - 2026-10-28
 ### Added
 - **`PKSTACK.md`** : cartographie des skills du hub utilisées sur le projet et de leurs livrables.
