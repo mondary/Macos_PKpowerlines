@@ -1,5 +1,9 @@
 # Changelog
 
+## [2026.11.9] - 2026-11-09
+### Added
+- **Statistiques batterie dans le menu** — flux instantané en watts (+ en charge, − en décharge, 0 W batterie pleine) lu dans `AppleSmartBattery` (tension × ampérage) et consommation système en temps réel via `PowerTelemetryData.SystemLoad` ; rafraîchi à chaque tick, quel que soit le mode de la barre.
+
 ## [2026.10.32] - 2026-10-30
 ### Changed
 - **README miroir** : la section « Build & Package » est désormais distincte de l'installation en français, comme dans la version anglaise.

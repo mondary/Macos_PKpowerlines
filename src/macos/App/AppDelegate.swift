@@ -42,6 +42,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var needsScreenRebuild = false
     private var isLowBatteryText = false
     private var statusMenu: NSMenu?
+    private var batteryPowerMenuItem: NSMenuItem?
+    private var systemLoadMenuItem: NSMenuItem?
 
     /// Hauteur de fenêtre quand le texte est affiché : le texte déborde de la
     /// ligne vers le haut (hors écran) et vers le bas, la ligne garde son épaisseur.
@@ -103,6 +105,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let versionItem = NSMenuItem(title: "PKpowerlines · v\(appVersion)", action: nil, keyEquivalent: "")
         versionItem.isEnabled = false
         menu.addItem(versionItem)
+        menu.addItem(NSMenuItem.separator())
+        // Statistiques batterie — valeurs rafraîchies en continu par updateUsage().
+        let powerItem = NSMenuItem(title: "Puissance : …", action: nil, keyEquivalent: "")
+        powerItem.isEnabled = false
+        powerItem.image = NSImage(systemSymbolName: "bolt.fill", accessibilityDescription: nil)
+        powerItem.image?.size = NSSize(width: 16, height: 16)
+        menu.addItem(powerItem)
+        batteryPowerMenuItem = powerItem
+
+        let loadItem = NSMenuItem(title: "Consommation système : …", action: nil, keyEquivalent: "")
+        loadItem.isEnabled = false
+        loadItem.image = NSImage(systemSymbolName: "cpu", accessibilityDescription: nil)
+        loadItem.image?.size = NSSize(width: 16, height: 16)
+        menu.addItem(loadItem)
+        systemLoadMenuItem = loadItem
+
         menu.addItem(NSMenuItem.separator())
 
         let settingsItem = NSMenuItem(title: "Réglages…", action: #selector(openSettings), keyEquivalent: ",")
@@ -594,6 +612,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func updateUsage() {
+        // Statistiques du menu : la batterie est lue quel que soit le mode de la barre.
+        let battery = batteryMonitor.getBatteryUsage()
+        refreshBatteryStats(battery)
         switch settings.monitorType {
         case .ram:
             setLowBatteryText(false)
@@ -610,7 +631,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 }
             }
         case .battery:
-            let battery = batteryMonitor.getBatteryUsage()
             let threshold = settings.batteryLowThreshold
             // Le seuil critique ne peut jamais dépasser le seuil « Faible ».
             let criticalThreshold = min(settings.batteryCriticalThreshold, threshold)
@@ -693,6 +713,39 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if kbps < 1 { return "0 KB/s" }
         if kbps < 1024 { return "\(Int(kbps)) KB/s" }
         return String(format: "%.1f MB/s", kbps / 1024)
+    }
+
+    /// Met à jour la section « Statistiques batterie » du menu (flux + consommation).
+    private func refreshBatteryStats(_ battery: BatteryUsage) {
+        guard let powerItem = batteryPowerMenuItem else { return }
+        guard battery.percentage >= 0 else {
+            powerItem.isHidden = true
+            systemLoadMenuItem?.isHidden = true
+            return
+        }
+        powerItem.isHidden = false
+        if let watts = battery.powerWatts {
+            powerItem.title = Self.batteryPowerTitle(watts)
+        } else {
+            powerItem.title = "Puissance : indisponible"
+        }
+        if let load = battery.systemLoadWatts {
+            systemLoadMenuItem?.isHidden = false
+            systemLoadMenuItem?.title = "Consommation système : \(Self.formatWatts(load))"
+        } else {
+            systemLoadMenuItem?.isHidden = true
+        }
+    }
+
+    /// +W en charge, −W en décharge, 0 W batterie pleine / au repos.
+    private static func batteryPowerTitle(_ watts: Double) -> String {
+        if watts > 0.05 { return "⚡ Charge : +\(formatWatts(watts))" }
+        if watts < -0.05 { return "Décharge : −\(formatWatts(-watts))" }
+        return "Puissance : 0 W"
+    }
+
+    private static func formatWatts(_ watts: Double) -> String {
+        String(format: "%.1f", watts).replacingOccurrences(of: ".", with: ",") + " W"
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {

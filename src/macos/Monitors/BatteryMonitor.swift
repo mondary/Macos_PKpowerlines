@@ -1,16 +1,23 @@
 import Foundation
+import IOKit
 import IOKit.ps
 
 struct BatteryUsage {
     let percentage: Double
     let isCharging: Bool
     let isPlugged: Bool
+    /// Flux instantané de la batterie en watts (positif = charge, négatif = décharge).
+    let powerWatts: Double?
+    /// Consommation instantanée du système en watts (télémétrie SMC), si disponible.
+    let systemLoadWatts: Double?
 }
 
 final class BatteryMonitor {
     func getBatteryUsage() -> BatteryUsage {
+        let telemetry = readSmartBatteryTelemetry()
         guard let snapshot = IOPSCopyPowerSourcesInfo()?.takeRetainedValue() else {
-            return BatteryUsage(percentage: -1, isCharging: false, isPlugged: false)
+            return BatteryUsage(percentage: -1, isCharging: false, isPlugged: false,
+                                powerWatts: nil, systemLoadWatts: nil)
         }
         let sources = IOPSCopyPowerSourcesList(snapshot).takeRetainedValue() as Array
         for source in sources {
@@ -20,9 +27,57 @@ final class BatteryMonitor {
                 let percentage = max > 0 ? Double(current) / Double(max) * 100 : -1
                 let isCharging = (desc[kIOPSIsChargingKey] as? Bool) ?? false
                 let isPlugged = (desc[kIOPSPowerSourceStateKey] as? String) == kIOPSACPowerValue
-                return BatteryUsage(percentage: percentage, isCharging: isCharging, isPlugged: isPlugged)
+                let powerWatts = Self.signedPower(telemetry.batteryWatts, isCharging: isCharging, isPlugged: isPlugged)
+                return BatteryUsage(percentage: percentage, isCharging: isCharging, isPlugged: isPlugged,
+                                    powerWatts: powerWatts, systemLoadWatts: telemetry.systemLoadWatts)
             }
         }
-        return BatteryUsage(percentage: -1, isCharging: false, isPlugged: false)
+        return BatteryUsage(percentage: -1, isCharging: false, isPlugged: false,
+                            powerWatts: nil, systemLoadWatts: nil)
+    }
+
+    private struct Telemetry {
+        var batteryWatts: Double?
+        var systemLoadWatts: Double?
+    }
+
+    /// Lit `AppleSmartBattery` dans l'IORegistry : tension × ampérage instantané
+    /// pour le flux de la batterie, et `PowerTelemetryData.SystemLoad` (mW) pour
+    /// la consommation réelle du système — disponible même batterie pleine.
+    private func readSmartBatteryTelemetry() -> Telemetry {
+        let empty = Telemetry(batteryWatts: nil, systemLoadWatts: nil)
+        let service = IOServiceGetMatchingService(kIOMainPortDefault, IOServiceMatching("AppleSmartBattery"))
+        guard service != IO_OBJECT_NULL else { return empty }
+        defer { IOObjectRelease(service) }
+
+        var props: Unmanaged<CFMutableDictionary>?
+        guard IORegistryEntryCreateCFProperties(service, &props, kCFAllocatorDefault, 0) == kIOReturnSuccess,
+              let dict = props?.takeRetainedValue() as? [String: Any] else {
+            return empty
+        }
+
+        var batteryWatts: Double?
+        let voltage = (dict["Voltage"] as? Int) ?? (dict["AppleRawBatteryVoltage"] as? Int)
+        let amperage = (dict["InstantAmperage"] as? Int) ?? (dict["Amperage"] as? Int)
+        if let voltage, voltage > 0, let amperage {
+            batteryWatts = Double(voltage) * Double(amperage) / 1_000_000
+        }
+
+        var systemLoadWatts: Double?
+        if let telemetry = dict["PowerTelemetryData"] as? [String: Any],
+           let systemLoad = telemetry["SystemLoad"] as? Double {
+            systemLoadWatts = systemLoad / 1_000
+        }
+
+        return Telemetry(batteryWatts: batteryWatts, systemLoadWatts: systemLoadWatts)
+    }
+
+    /// Apple Silicon rapporte un ampérage signé (charge +, décharge −) ;
+    /// on corrige les éventuelles incohérences avec l'état réel.
+    private static func signedPower(_ watts: Double?, isCharging: Bool, isPlugged: Bool) -> Double? {
+        guard var w = watts else { return nil }
+        if isCharging, w < 0 { w = -w }
+        if !isCharging, !isPlugged, w > 0 { w = -w }
+        return w
     }
 }
