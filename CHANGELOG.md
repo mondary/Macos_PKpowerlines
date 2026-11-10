@@ -1,5 +1,9 @@
 # Changelog
 
+## [2026.11.10] - 2026-11-10
+### Changed
+- **Statistiques batterie affinées** : plus de doublon sur batterie (une seule ligne Consommation −W) ; branché en charge, « Charge : +X W » et « Consommation système : −Y W » en watts négatifs, sans double éclair ; état branché/charge lu dans l'IORegistry (bascule ~1 s au lieu d'~1 min via IOPS) et menu rafraîchi chaque seconde, la barre suivant immédiatement tout changement d'état.
+
 ## [2026.11.9] - 2026-11-09
 ### Added
 - **Statistiques batterie dans le menu** — flux instantané en watts (+ en charge, − en décharge, 0 W batterie pleine) lu dans `AppleSmartBattery` (tension × ampérage) et consommation système en temps réel via `PowerTelemetryData.SystemLoad` ; rafraîchi à chaque tick, quel que soit le mode de la barre.

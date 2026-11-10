@@ -25,8 +25,12 @@ final class BatteryMonitor {
                 let current = desc[kIOPSCurrentCapacityKey] as? Int ?? 0
                 let max = desc[kIOPSMaxCapacityKey] as? Int ?? 100
                 let percentage = max > 0 ? Double(current) / Double(max) * 100 : -1
-                let isCharging = (desc[kIOPSIsChargingKey] as? Bool) ?? false
-                let isPlugged = (desc[kIOPSPowerSourceStateKey] as? String) == kIOPSACPowerValue
+                // IOPS met ~1 min à basculer après branchement : l'état réel
+                // (IsCharging / ExternalConnected de l'IORegistry) bascule en ~1 s.
+                let isCharging = telemetry.isCharging
+                    ?? ((desc[kIOPSIsChargingKey] as? Bool) ?? false)
+                let isPlugged = telemetry.externalConnected
+                    ?? ((desc[kIOPSPowerSourceStateKey] as? String) == kIOPSACPowerValue)
                 let powerWatts = Self.signedPower(telemetry.batteryWatts, isCharging: isCharging, isPlugged: isPlugged)
                 return BatteryUsage(percentage: percentage, isCharging: isCharging, isPlugged: isPlugged,
                                     powerWatts: powerWatts, systemLoadWatts: telemetry.systemLoadWatts)
@@ -39,13 +43,15 @@ final class BatteryMonitor {
     private struct Telemetry {
         var batteryWatts: Double?
         var systemLoadWatts: Double?
+        var isCharging: Bool?
+        var externalConnected: Bool?
     }
 
     /// Lit `AppleSmartBattery` dans l'IORegistry : tension × ampérage instantané
-    /// pour le flux de la batterie, et `PowerTelemetryData.SystemLoad` (mW) pour
-    /// la consommation réelle du système — disponible même batterie pleine.
+    /// pour le flux de la batterie, `PowerTelemetryData.SystemLoad` (mW) pour la
+    /// consommation réelle du système, et l'état branché/charge réactif.
     private func readSmartBatteryTelemetry() -> Telemetry {
-        let empty = Telemetry(batteryWatts: nil, systemLoadWatts: nil)
+        let empty = Telemetry(batteryWatts: nil, systemLoadWatts: nil, isCharging: nil, externalConnected: nil)
         let service = IOServiceGetMatchingService(kIOMainPortDefault, IOServiceMatching("AppleSmartBattery"))
         guard service != IO_OBJECT_NULL else { return empty }
         defer { IOObjectRelease(service) }
@@ -69,15 +75,21 @@ final class BatteryMonitor {
             systemLoadWatts = systemLoad / 1_000
         }
 
-        return Telemetry(batteryWatts: batteryWatts, systemLoadWatts: systemLoadWatts)
+        return Telemetry(
+            batteryWatts: batteryWatts,
+            systemLoadWatts: systemLoadWatts,
+            isCharging: dict["IsCharging"] as? Bool,
+            externalConnected: dict["ExternalConnected"] as? Bool
+        )
     }
 
-    /// Apple Silicon rapporte un ampérage signé (charge +, décharge −) ;
-    /// on corrige les éventuelles incohérences avec l'état réel.
+    /// L'ampérage est signé sur Apple Silicon mais lissé : juste après un
+    /// branchement il peut encore être négatif. On aligne le signe sur l'état
+    /// réel : positif si charge, négatif si sur batterie, nul branché sans charge.
     private static func signedPower(_ watts: Double?, isCharging: Bool, isPlugged: Bool) -> Double? {
-        guard var w = watts else { return nil }
-        if isCharging, w < 0 { w = -w }
-        if !isCharging, !isPlugged, w > 0 { w = -w }
-        return w
+        guard let w = watts else { return nil }
+        if isCharging { return abs(w) }
+        if !isPlugged { return -abs(w) }
+        return 0
     }
 }

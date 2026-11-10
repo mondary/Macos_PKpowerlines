@@ -6,14 +6,14 @@
 
 ✨ Native macOS menu-bar app that displays a real-time bar at the top of every screen: RAM or battery. Universal Intel + Apple Silicon binary.
 
-Version **2026.11.9**
+Version **2026.11.10**
 
 ![PKpowerlines — settings window](store/v1/screenshots/02-reglages.png)
 
 ## ✅ Features
 
 - 📊 **Four sources** — RAM (active + wired), **CPU** (overall load), **Network** (↓/↑ throughput), Battery (percentage, charging state, dynamic color)
-- ⚡ **Battery stats** — the icon menu shows the instantaneous wattage (positive while charging, negative while discharging, 0 W when full) and the live system power draw (SMC telemetry)
+- ⚡ **Battery stats** — the icon menu shows the power draw in watts (−W, what the Mac pulls) on battery; plugged in and charging, the flow into the battery (+W) and the system power draw (−W) — state and telemetry read from the IORegistry, refreshed every second
 - 🖥️ **Multi-screen** — one bar per screen
 - 🧭 **4 edges** — top, bottom, **left**, **right** (vertical bar on the sides)
 - 👁️ **% toggle** — show or hide the text (powerline bar always visible)
@@ -52,7 +52,7 @@ Version **2026.11.9**
 
  1. Launch the app → the bar appears at the top.
  2. Click the **PKpowerlines icon** in the menu bar:
-    - **Battery stats** — wattage (+ charging, − discharging, 0 W full) and system power draw, refreshed continuously
+    - **Battery stats** — on battery: Consumption −X W; plugged in: Charge +X W and System power draw −Y W; refreshed every second
     - **Settings…** (⌘,) — change mode, color, position, font
     - **Reposition** (⌘R) — force powerline repositioning (useful after resolution change)
     - Height presets (⌘4 / ⌘1 / ⌘2 / ⌘3)

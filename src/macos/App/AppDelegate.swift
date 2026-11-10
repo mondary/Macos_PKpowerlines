@@ -44,6 +44,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusMenu: NSMenu?
     private var batteryPowerMenuItem: NSMenuItem?
     private var systemLoadMenuItem: NSMenuItem?
+    private var statsTimer: Timer?
+    private var lastKnownCharging: Bool?
+    private var lastKnownPlugged: Bool?
+    /// Rythme du polling des statistiques du menu (la barre garde son réglage).
+    private static let statsRefreshInterval: TimeInterval = 1
+
 
     /// Hauteur de fenêtre quand le texte est affiché : le texte déborde de la
     /// ligne vers le haut (hors écran) et vers le bas, la ligne garde son épaisseur.
@@ -552,7 +558,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             if index < screens.count {
                 let screen = screens[index]
                 let newFrame = barFrame(on: screen)
-                
+
                 if newFrame != window.frame {
                     window.setFrame(newFrame, display: true, animate: false)
                 }
@@ -569,6 +575,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func startMonitoring() {
         updateUsage()
         restartTimer()
+        // Stats du menu à 1 s : la détection charge/débranche est quasi immédiate
+        // (IOPS met ~1 min à basculer, l'IORegistry ~1 s).
+        statsTimer = Timer.scheduledTimer(withTimeInterval: Self.statsRefreshInterval, repeats: true) { [weak self] _ in
+            self?.refreshBatteryStatsTick()
+        }
     }
 
     private func restartTimer() {
@@ -715,37 +726,49 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         return String(format: "%.1f MB/s", kbps / 1024)
     }
 
-    /// Met à jour la section « Statistiques batterie » du menu (flux + consommation).
+    /// Met à jour la section « Statistiques batterie » du menu.
+    /// Sur batterie : une seule ligne, la consommation (watts négatifs) ;
+    /// branché en charge : flux vers la batterie (+W) et consommation système (−W).
     private func refreshBatteryStats(_ battery: BatteryUsage) {
         guard let powerItem = batteryPowerMenuItem else { return }
+        lastKnownCharging = battery.isCharging
+        lastKnownPlugged = battery.isPlugged
         guard battery.percentage >= 0 else {
             powerItem.isHidden = true
             systemLoadMenuItem?.isHidden = true
             return
         }
-        powerItem.isHidden = false
-        if let watts = battery.powerWatts {
-            powerItem.title = Self.batteryPowerTitle(watts)
+        if battery.isCharging, let watts = battery.powerWatts, watts > 0.05 {
+            powerItem.isHidden = false
+            powerItem.title = "Charge : +\(Self.formatWatts(watts))"
         } else {
-            powerItem.title = "Puissance : indisponible"
+            powerItem.isHidden = true
         }
-        if let load = battery.systemLoadWatts {
+        let systemLoad = battery.systemLoadWatts ?? battery.powerWatts.map { abs($0) }
+        if let load = systemLoad {
             systemLoadMenuItem?.isHidden = false
-            systemLoadMenuItem?.title = "Consommation système : \(Self.formatWatts(load))"
+            let label = battery.isPlugged ? "Consommation système : " : "Consommation : "
+            systemLoadMenuItem?.title = label + Self.formatWatts(-load)
         } else {
             systemLoadMenuItem?.isHidden = true
         }
     }
 
-    /// +W en charge, −W en décharge, 0 W batterie pleine / au repos.
-    private static func batteryPowerTitle(_ watts: Double) -> String {
-        if watts > 0.05 { return "⚡ Charge : +\(formatWatts(watts))" }
-        if watts < -0.05 { return "Décharge : −\(formatWatts(-watts))" }
-        return "Puissance : 0 W"
+    /// Polling rapide (1 s) des stats du menu ; un changement d'état
+    /// charge/débranche redessine aussi la barre immédiatement.
+    private func refreshBatteryStatsTick() {
+        let battery = batteryMonitor.getBatteryUsage()
+        if battery.isCharging != lastKnownCharging || battery.isPlugged != lastKnownPlugged {
+            updateUsage()
+        } else {
+            refreshBatteryStats(battery)
+        }
     }
 
     private static func formatWatts(_ watts: Double) -> String {
-        String(format: "%.1f", watts).replacingOccurrences(of: ".", with: ",") + " W"
+        String(format: "%.1f", watts)
+            .replacingOccurrences(of: ".", with: ",")
+            .replacingOccurrences(of: "-", with: "−") + " W"
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
