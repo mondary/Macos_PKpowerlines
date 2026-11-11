@@ -726,9 +726,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         return String(format: "%.1f MB/s", kbps / 1024)
     }
 
-    /// Met à jour la section « Statistiques batterie » du menu.
-    /// Sur batterie : une seule ligne, la consommation (watts négatifs) ;
-    /// branché en charge : flux vers la batterie (+W) et consommation système (−W).
+    /// Met à jour la section « Statistiques batterie » du menu et l'info-bulle
+    /// de survol de l'icône (% + conso). Sur batterie : une seule ligne, la
+    /// consommation (watts négatifs) ; branché en charge : flux vers la
+    /// batterie (+W) et consommation système (−W).
     private func refreshBatteryStats(_ battery: BatteryUsage) {
         guard let powerItem = batteryPowerMenuItem else { return }
         lastKnownCharging = battery.isCharging
@@ -736,21 +737,32 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard battery.percentage >= 0 else {
             powerItem.isHidden = true
             systemLoadMenuItem?.isHidden = true
+            statusItem?.button?.toolTip = nil
             return
         }
-        if battery.isCharging, let watts = battery.powerWatts, watts > 0.05 {
+        let systemLoad = battery.systemLoadWatts ?? battery.powerWatts.map { abs($0) }
+        let chargingWatts = battery.isCharging ? battery.powerWatts : nil
+        if let watts = chargingWatts, watts > 0.05 {
             powerItem.isHidden = false
             powerItem.title = "Charge : +\(Self.formatWatts(watts))"
         } else {
             powerItem.isHidden = true
         }
-        let systemLoad = battery.systemLoadWatts ?? battery.powerWatts.map { abs($0) }
         if let load = systemLoad {
             systemLoadMenuItem?.isHidden = false
             let label = battery.isPlugged ? "Consommation système : " : "Consommation : "
             systemLoadMenuItem?.title = label + Self.formatWatts(-load)
         } else {
             systemLoadMenuItem?.isHidden = true
+        }
+        // Info-bulle au survol de l'icône : % + puissance en un coup d'œil.
+        let pct = "\(Int(battery.percentage.rounded())) %"
+        if let watts = chargingWatts, watts > 0.05 {
+            statusItem?.button?.toolTip = "\(pct) · charge +\(Self.formatWatts(watts))"
+        } else if let load = systemLoad {
+            statusItem?.button?.toolTip = "\(pct) · \(Self.formatWatts(-load))"
+        } else {
+            statusItem?.button?.toolTip = pct
         }
     }
 

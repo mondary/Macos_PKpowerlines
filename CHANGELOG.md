@@ -1,5 +1,9 @@
 # Changelog
 
+## [2026.11.11] - 2026-11-11
+### Added
+- **Info-bulle au survol de l'icône** — % de batterie et puissance (charge +X W ou tirage −X W) d'un simple survol de l'icône de la barre des menus, rafraîchie chaque seconde.
+
 ## [2026.11.10] - 2026-11-10
 ### Changed
 - **Statistiques batterie affinées** : plus de doublon sur batterie (une seule ligne Consommation −W) ; branché en charge, « Charge : +X W » et « Consommation système : −Y W » en watts négatifs, sans double éclair ; état branché/charge lu dans l'IORegistry (bascule ~1 s au lieu d'~1 min via IOPS) et menu rafraîchi chaque seconde, la barre suivant immédiatement tout changement d'état.

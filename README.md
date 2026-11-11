@@ -6,14 +6,14 @@
 
 ✨ Application macOS native (menu-bar) qui affiche une barre en temps réel en haut de chaque écran : RAM ou batterie. Binaire universel Intel + Apple Silicon.
 
-Version **2026.11.10**
+Version **2026.11.11**
 
 ![PKpowerlines — fenêtre de réglages](store/v1/screenshots/02-reglages.png)
 
 ## ✅ Fonctionnalités
 
 - 📊 **Quatre sources** — RAM (active + wired), **CPU** (charge globale), **Réseau** (débit ↓/↑), Batterie (pourcentage, état de charge, couleur dynamique)
-- ⚡ **Statistiques batterie** — le menu de l'icône affiche la consommation en watts (−W, ce que le Mac tire) sur batterie ; branché en charge, le flux vers la batterie (+W) et la consommation système (−W) — état et télémétrie lus dans l'IORegistry, rafraîchis chaque seconde
+- ⚡ **Statistiques batterie** — le menu de l'icône affiche la consommation en watts (−W, ce que le Mac tire) sur batterie ; branché en charge, le flux vers la batterie (+W) et la consommation système (−W) — état et télémétrie lus dans l'IORegistry, rafraîchis chaque seconde ; au survol de l'icône, une info-bulle résume % et puissance
 - 🖥️ **Multi-écrans** — une barre par écran
 - 🧭 **4 bords** — haut, bas, **gauche**, **droite** (barre verticale sur les côtés)
 - 👁️ **Toggle %** — afficher ou masquer le texte (barre powerline toujours présente)
@@ -52,7 +52,7 @@ Version **2026.11.10**
 
  1. Lance l'app → la barre apparaît en haut.
  2. Clique sur l'**icône PKpowerlines** dans la barre des menus :
-    - **Statistiques batterie** — sur batterie : Consommation −X W ; branché : Charge +X W et Consommation système −Y W ; rafraîchi chaque seconde
+    - **Statistiques batterie** — sur batterie : Consommation −X W ; branché : Charge +X W et Consommation système −Y W ; rafraîchi chaque seconde, info-bulle % + watts au survol de l'icône
     - **Réglages…** (⌘,) — change le mode, la couleur, la position, la police
     - **Repositionner** (⌘R) — force le repositionnement de la powerline (utile après changement de résolution)
     - Presets hauteur (⌘4 / ⌘1 / ⌘2 / ⌘3)
